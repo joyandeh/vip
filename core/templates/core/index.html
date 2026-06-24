@@ -1,0 +1,175 @@
+{% extends 'core/base.html' %}
+
+{% block title %}tronlnd | بازار کریپتو و محاسبه‌گر سریع{% endblock %}
+
+{% block content %}
+<div class="welcome-section text-center my-4 pt-2">
+    <h1 class="fw-black text-white mb-1" style="font-size: 1.8rem; font-weight: 900; letter-spacing: -0.5px;">
+        بازار معاملاتی <span class="text-neon-green">tronlnd</span>
+    </h1>
+    <p class="text-custom-muted small mb-0">خرید و فروش سریع و امن ارزهای دیجیتال</p>
+</div>
+
+<div class="crypto-list-section mb-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h6 class="fw-bold mb-0 text-cyan"><i class="fa-solid fa-fire me-1"></i> ارزهای برتر</h6>
+        <span class="text-custom-muted dropdown-toggle" style="font-size: 0.75rem; cursor: pointer;">بر حسب USDT</span>
+    </div>
+
+    <div class="row g-3">
+        {% for crypto in cryptos %}
+        <div class="col-12">
+            <div class="glass-card p-3 d-flex align-items-center justify-content-between asset-row">
+                <div class="d-flex align-items-center gap-3">
+                    <div class="crypto-icon-wrap d-flex align-items-center justify-content-center bg-dark rounded-circle" style="width: 44px; height: 44px; border: 1px solid rgba(255,255,255,0.05);">
+                        {% if crypto.symbol|lower == 'trx' %}
+                            <i class="fa-solid fa-t h5 mb-0 text-neon-green"></i>
+                        {% elif crypto.symbol|lower == 'btc' %}
+                            <i class="fa-brands fa-bitcoin h5 mb-0" style="color: #f7931a;"></i>
+                        {% elif crypto.symbol|lower == 'eth' %}
+                            <i class="fa-brands fa-ethereum h5 mb-0 text-cyan"></i>
+                        {% else %}
+                            <i class="fa-solid fa-coins h5 mb-0 text-custom-muted"></i>
+                        {% endif %}
+                    </div>
+                    <div>
+                        <h6 class="mb-0 fw-bold text-white">{{ crypto.symbol }}</h6>
+                        <small class="text-custom-muted" style="font-size: 0.75rem;">{{ crypto.name }}</small>
+                    </div>
+                </div>
+                
+                <div class="text-end">
+                    <div class="fw-bold text-white text-ltr">{{ crypto.price_usd }} $</div>
+                    <div class="text-neon-green small" style="font-size: 0.8rem; font-weight: 500;">
+                        {{ crypto.price_toman }} <span style="font-size: 0.7rem; color: var(--text-muted);">تومان</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12 text-center py-4">
+            <p class="text-custom-muted small">ارزی برای نمایش یافت نشد.</p>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<div class="glass-card p-4 mb-4 position-relative overflow-hidden" style="border-color: rgba(0, 229, 255, 0.15);">
+    <div class="position-absolute top-0 end-0 p-3 opacity-10">
+        <i class="fa-solid fa-calculator h1 text-cyan"></i>
+    </div>
+    
+    <h6 class="fw-bold mb-3 text-white d-flex align-items-center gap-2">
+        <i class="fa-solid fa-calculator text-cyan"></i>
+        <span>محاسبه‌گر سریع قیمت</span>
+    </h6>
+    
+    <div class="calculator-box">
+        <div class="mb-3">
+            <label for="cryptoSelect" class="form-label text-custom-muted small">انتخاب رمزارز</label>
+            <div class="input-group">
+                <span class="input-group-text bg-transparent border-secondary-subtle text-cyan" style="border-radius: 0 14px 14px 0;"><i class="fa-solid fa-coins"></i></span>
+                <select id="cryptoSelect" class="form-select bg-dark text-white border-secondary-subtle py-2.5" style="border-radius: 14px 0 0 14px; font-size: 0.9rem;">
+                    {% for crypto in cryptos %}
+                        <option value="{{ crypto.price_toman }}" data-symbol="{{ crypto.symbol }}">
+                            {{ crypto.name }} ({{ crypto.symbol }})
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+
+        <div class="mb-4">
+            <label for="amount" class="form-label text-custom-muted small">مقدار / تعداد خرید</label>
+            <div class="input-group">
+                <span class="input-group-text bg-transparent border-secondary-subtle text-cyan" style="border-radius: 0 14px 14px 0;"><i class="fa-solid fa-arrow-input-to-bracket"></i></span>
+                <input type="number" id="amount" class="form-control bg-dark text-white border-secondary-subtle py-2.5 text-center fw-bold" value="1" min="0" step="any" style="border-radius: 14px 0 0 14px; font-size: 1rem;">
+            </div>
+        </div>
+
+        <div class="total-display-box p-3 rounded-3 text-center" style="background: rgba(11, 14, 20, 0.6); border: 1px dashed var(--border-glass);">
+            <span class="text-custom-muted d-block small mb-1">مبلغ کل تقریبی:</span>
+            <h4 id="total" class="fw-black text-neon-green mb-0" style="font-weight: 800;">۰ تومان</h4>
+        </div>
+    </div>
+</div>
+
+{% if not user.is_authenticated %}
+<div class="text-center py-3 mb-4">
+    <a href="{% url 'register' %}" class="btn btn-modern btn-modern-primary w-100 py-3 fw-bold shadow-lg">
+        <i class="fa-solid fa-user-plus me-2"></i> همین حالا شروع کنید
+    </a>
+</div>
+{% endif %}
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    function updateCalculator() {
+        const cryptoSelect = document.getElementById('cryptoSelect');
+        const amountInput = document.getElementById('amount');
+        const totalDisplay = document.getElementById('total');
+
+        if (!cryptoSelect || !amountInput || !totalDisplay) return;
+
+        let price = cryptoSelect.value;
+        let amount = amountInput.value;
+
+        if (!price || amount < 0 || amount === '') {
+            totalDisplay.innerHTML = '۰ تومان';
+            return;
+        }
+
+        // تبدیل و پاکسازی رشته عددی برای جلوگیری از تداخل متون فارسی/انگلیسی در دیتابیس
+        let cleanPrice = String(price).replace(/[٠-٩]/g, d => '٠١٢٣٤٥٦٧٨٩'.indexOf(d)).replace(/[۰-۹]/g, d => '۰۱۲۳۴۵۶۷۸۹'.indexOf(d));
+        let total = Number(cleanPrice) * Number(amount);
+
+        if (isNaN(total)) {
+            totalDisplay.innerHTML = '۰ تومان';
+            return;
+        }
+
+        totalDisplay.innerHTML = total.toLocaleString('fa-IR') + ' <span style="font-size: 0.85rem; font-weight: normal; color: #fff;">تومان</span>';
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        const cryptoSelect = document.getElementById('cryptoSelect');
+        const amountInput = document.getElementById('amount');
+
+        if (cryptoSelect && amountInput) {
+            cryptoSelect.addEventListener('change', updateCalculator);
+            cryptoSelect.addEventListener('input', updateCalculator);
+            amountInput.addEventListener('input', updateCalculator);
+            
+            updateCalculator();
+        }
+    });
+</script>
+
+<style>
+    .asset-row {
+        transition: transform 0.2s ease, background-color 0.2s ease;
+        cursor: pointer;
+    }
+    .asset-row:hover {
+        transform: scale(1.01);
+        background: rgba(255, 255, 255, 0.08) !important;
+    }
+    .form-select, .form-control {
+        border-color: rgba(255, 255, 255, 0.1) !important;
+    }
+    .form-select:focus, .form-control:focus {
+        box-shadow: 0 0 0 0.25rem rgba(0, 229, 255, 0.15) !important;
+        border-color: var(--accent-cyan) !important;
+    }
+    select option {
+        background: #141a26;
+        color: #fff;
+    }
+    .text-ltr {
+        direction: ltr;
+        display: inline-block;
+    }
+</style>
+{% endblock %}

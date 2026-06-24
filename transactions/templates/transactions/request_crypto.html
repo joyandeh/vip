@@ -1,0 +1,162 @@
+{% extends 'core/base.html' %}
+
+{% block title %}tronlnd | ثبت درخواست جدید{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* استایل‌دهی مستقیم به فیلدهای داینامیک جنگو {{ form.as_p }} */
+    .django-form-wrapper p {
+        margin-bottom: 1.25rem;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .django-form-wrapper label {
+        font-size: 0.85rem;
+        color: var(--text-muted);
+        margin-bottom: 6px;
+        font-weight: 500;
+        text-align: right;
+    }
+
+    .django-form-wrapper input,
+    .django-form-wrapper select,
+    .django-form-wrapper textarea {
+        width: 100%;
+        padding: 12px 16px;
+        background-color: rgba(11, 14, 20, 0.8) !important;
+        border: 1px solid rgba(255, 255, 255, 0.1) !important;
+        border-radius: 14px;
+        color: #ffffff !important;
+        font-size: 0.95rem;
+        transition: all 0.2s ease;
+        outline: none;
+    }
+
+    .django-form-wrapper textarea {
+        height: 100px;
+        resize: none;
+    }
+
+    .django-form-wrapper input:focus,
+    .django-form-wrapper select:focus,
+    .django-form-wrapper textarea:focus {
+        border-color: var(--accent-cyan) !important;
+        box-shadow: 0 0 0 4px rgba(0, 229, 255, 0.1) !important;
+    }
+
+    /* مدیریت لیست خطاهای فیلدها و خطاهای کلی فرم */
+    .django-form-wrapper .errorlist, .form-non-field-errors {
+        list-style: none;
+        padding-right: 0;
+        margin-bottom: 12px;
+        font-size: 0.8rem;
+        color: #ff5252;
+        background: rgba(255, 82, 82, 0.08);
+        padding: 8px 12px;
+        border-radius: 10px;
+        border: 1px solid rgba(255, 82, 82, 0.15);
+    }
+
+    /* استایل شبیه‌ساز کارت بانکی لوکس (Figma Credit Card Design) */
+    .bank-card-preview {
+        background: linear-gradient(135deg, rgba(20, 30, 48, 0.9) 0%, rgba(36, 59, 85, 0.7) 100%);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 20px;
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.25);
+        position: relative;
+    }
+
+    .card-chip {
+        width: 38px;
+        height: 28px;
+        background: linear-gradient(135deg, #e0aa3e, #f7f093);
+        border-radius: 6px;
+        opacity: 0.8;
+    }
+
+    .text-ltr {
+        direction: ltr;
+        display: inline-block;
+        text-align: left;
+    }
+
+    .card-number-style {
+        font-size: 1.15rem;
+        letter-spacing: 2px;
+        color: var(--accent-cyan);
+        font-weight: 700;
+        font-family: monospace, sans-serif;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container my-4 pt-2">
+    
+    <div class="d-flex align-items-center gap-2 mb-4">
+        <div class="d-flex align-items-center justify-content-center" style="width: 42px; height: 42px; background: rgba(0, 230, 118, 0.08); border: 1px solid rgba(0, 230, 118, 0.15); border-radius: 12px;">
+            <i class="fa-solid fa-file-invoice-dollar text-neon-green h5 mb-0"></i>
+        </div>
+        <div>
+            <h5 class="fw-black text-white mb-0" style="font-weight: 800;">ثبت درخواست معامله</h5>
+            <p class="text-custom-muted small mb-0">تنظیم سفارش خرید یا فروش رمزارز</p>
+        </div>
+    </div>
+
+    <div class="bank-card-preview p-3 mb-4 overflow-hidden">
+        <div class="position-absolute bottom-0 end-0 p-2 opacity-10" style="font-size: 4rem; transform: rotate(-15deg);">
+            <i class="fa-solid fa-building-columns text-white"></i>
+        </div>
+
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <span class="small text-custom-muted" style="font-size: 0.75rem;">حساب بانکی تایید شده متصل</span>
+            <div class="card-chip"></div>
+        </div>
+
+        <div class="mb-3">
+            <span class="text-custom-muted d-block small mb-1" style="font-size: 0.7rem;">شماره کارت جهت تسویه:</span>
+            <div class="card-number-style text-ltr w-100">{{ request.user.card_number|default:"---- ---- ---- ----" }}</div>
+        </div>
+
+        <div class="d-flex justify-content-between align-items-center pt-2" style="border-top: 1px solid rgba(255,255,255,0.05);">
+            <div>
+                <span class="text-custom-muted d-block small" style="font-size: 0.65rem;">صاحب حساب</span>
+                <span class="small fw-bold text-white">{{ request.user.full_name|default:"تکمیل نشده" }}</span>
+            </div>
+            <div>
+                {% if request.user.is_verified %}
+                    <span class="badge bg-success-subtle text-neon-green small rounded-pill px-2 py-1" style="font-size: 0.65rem;">
+                        <i class="fa-solid fa-shield-check me-1"></i>حساب تایید شده
+                    </span>
+                {% else %}
+                    <span class="badge bg-warning-subtle text-warning small rounded-pill px-2 py-1" style="font-size: 0.65rem;">
+                        <i class="fa-solid fa-triangle-exclamation me-1"></i>احراز نشده
+                    </span>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <div class="glass-card p-4">
+        <form method="post" class="django-form-wrapper">
+            {% csrf_token %}
+            
+            {% if form.non_field_errors %}
+                <div class="form-non-field-errors">
+                    {% for error in form.non_field_errors %}
+                        <p class="mb-0 small"><i class="fa-solid fa-triangle-exclamation me-1"></i> {{ error }}</p>
+                    {% endfor %}
+                </div>
+            {% endif %}
+            
+            {{ form.as_p }}
+
+            <button type="submit" class="btn btn-modern btn-modern-primary w-100 py-3 mt-2 fw-bold text-dark">
+                <i class="fa-solid fa-paper-plane me-1"></i> ارسال و ثبت درخواست سفارش
+            </button>
+        </form>
+    </div>
+
+</div>
+{% endblock %}

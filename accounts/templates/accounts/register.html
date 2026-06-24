@@ -1,0 +1,147 @@
+{% extends 'core/base.html' %}
+
+{% block title %}tronlnd | ایجاد حساب کاربری جدید{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* استایل‌دهی مستقیم به فیلدها و کانتینرهای تولید شده توسط {{ form.as_p }} */
+    .django-form-wrapper p {
+        margin-bottom: 1.15rem;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .django-form-wrapper label {
+        font-size: 0.85rem;
+        color: var(--text-muted);
+        margin-bottom: 6px;
+        font-weight: 500;
+        text-align: right;
+    }
+
+    /* استایل‌دهی به ورودی‌های متنی و فیلدهای آپلود فایل */
+    .django-form-wrapper input[type="text"],
+    .django-form-wrapper input[type="email"],
+    .django-form-wrapper input[type="password"],
+    .django-form-wrapper input[type="number"],
+    .django-form-wrapper select {
+        width: 100%;
+        padding: 11px 16px;
+        background-color: rgba(11, 14, 20, 0.8) !important;
+        border: 1px solid rgba(255, 255, 255, 0.1) !important;
+        border-radius: 14px;
+        color: #ffffff !important;
+        font-size: 0.95rem;
+        transition: all 0.2s ease;
+        outline: none;
+    }
+
+    .django-form-wrapper input:focus, 
+    .django-form-wrapper select:focus {
+        border-color: var(--accent-cyan) !important;
+        box-shadow: 0 0 0 4px rgba(0, 229, 255, 0.1) !important;
+    }
+
+    /* استایل‌دهی اختصاصی به فیلد آپلود فایل (کارت ملی و سلفی) */
+    .django-form-wrapper input[type="file"] {
+        background: rgba(255, 255, 255, 0.03);
+        border: 1px dashed rgba(255, 255, 255, 0.15);
+        border-radius: 12px;
+        padding: 10px;
+        color: var(--text-muted);
+        font-size: 0.85rem;
+        cursor: pointer;
+    }
+
+    .django-form-wrapper input[type="file"]::-webkit-file-upload-button {
+        background: rgba(0, 229, 255, 0.1);
+        border: 1px solid rgba(0, 229, 255, 0.2);
+        border-radius: 8px;
+        color: var(--accent-cyan);
+        padding: 6px 12px;
+        margin-right: 10px;
+        cursor: pointer;
+        transition: background 0.2s;
+    }
+
+    .django-form-wrapper input[type="file"]::-webkit-file-upload-button:hover {
+        background: rgba(0, 229, 255, 0.2);
+    }
+
+    /* استایل اختصاصی برای متون راهنما (Hints) فرم */
+    .django-form-wrapper .helptext {
+        font-size: 0.75rem;
+        color: var(--text-muted);
+        margin-top: 5px;
+        padding-right: 4px;
+        text-align: right;
+        opacity: 0.8;
+    }
+
+    /* مدیریت لیست خطاهای فیلدها و خطاهای کلی فرم */
+    .django-form-wrapper .errorlist, .form-non-field-errors {
+        list-style: none;
+        padding-right: 0;
+        margin-bottom: 12px;
+        font-size: 0.8rem;
+        color: #ff5252;
+        background: rgba(255, 82, 82, 0.08);
+        padding: 8px 12px;
+        border-radius: 10px;
+        border: 1px solid rgba(255, 82, 82, 0.15);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container d-flex align-items-center justify-content-center my-4">
+    
+    <div class="glass-card p-4 w-100 position-relative overflow-hidden" style="max-width: 400px;">
+        
+        <div class="position-absolute top-0 start-50 translate-middle-x" style="width: 120px; height: 2px; background: linear-gradient(90deg, transparent, var(--accent-green), transparent);"></div>
+        
+        <div class="text-center mb-4">
+            <div class="register-icon-box d-inline-flex align-items-center justify-content-center mb-3" style="width: 60px; height: 60px; background: rgba(0, 230, 118, 0.05); border: 1px solid rgba(0, 230, 118, 0.15); border-radius: 18px;">
+                <i class="fa-solid fa-user-plus h3 mb-0 text-neon-green"></i>
+            </div>
+            <h5 class="fw-bold text-white mb-1">ایجاد حساب کاربری</h5>
+            <p class="text-custom-muted small mb-0">به پلتفرم معاملاتی tronlnd خوش آمدید</p>
+        </div>
+
+        {% if messages %}
+            <div class="messages-container mb-3">
+                {% for message in messages %}
+                    <div class="alert {% if message.tags == 'error' %}alert-danger bg-danger-subtle text-danger{% else %}alert-success bg-success-subtle text-success{% endif %} border-0 small p-2.5 rounded-3 d-flex align-items-center gap-2" role="alert">
+                        <i class="fa-solid {% if message.tags == 'error' %}fa-circle-exclamation{% else %}fa-circle-check{% endif %}"></i>
+                        <span>{{ message }}</span>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        <form method="post" enctype="multipart/form-data" class="django-form-wrapper">
+            {% csrf_token %}
+            
+            {% if form.non_field_errors %}
+                <div class="form-non-field-errors">
+                    {% for error in form.non_field_errors %}
+                        <p class="mb-0 small"><i class="fa-solid fa-triangle-exclamation me-1"></i> {{ error }}</p>
+                    {% endfor %}
+                </div>
+            {% endif %}
+            
+            {{ form.as_p }}
+
+            <button type="submit" class="btn btn-modern btn-modern-primary w-100 py-3 mt-3 fw-bold text-dark">
+                <i class="fa-solid fa-user-check me-1"></i> تکمیل ثبت‌نام و ورود
+            </button>
+        </form>
+
+        <div class="text-center mt-4 pt-3" style="border-top: 1px solid var(--border-glass);">
+            <span class="text-custom-muted small">قبلاً ثبت نام کرده‌اید؟</span>
+            <a href="{% url 'login' %}" class="text-cyan small ms-1 fw-bold text-decoration-none">وارد شوید</a>
+        </div>
+
+    </div>
+</div>
+{% endblock %}

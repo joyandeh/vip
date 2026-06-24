@@ -1,0 +1,296 @@
+{% extends 'core/base.html' %}
+{% load humanize %} 
+
+{% block title %}tronlnd | داشبورد مدیریت پلتفرم{% endblock %}
+
+{% block content %}
+<div class="container my-4 pt-2">
+    
+    {% if messages %}
+        <div class="messages-wrapper mb-4">
+            {% for message in messages %}
+                <div class="alert alert-{% if message.tags == 'error' %}danger{% else %}{{ message.tags }}{% endif %} bg-dark border-glass text-white small rounded-3 p-3 mb-2 d-flex align-items-center gap-2">
+                    <i class="fa-solid fa-circle-info text-cyan"></i>
+                    <span>{{ message }}</span>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+    
+    <div class="d-flex align-items-center gap-2 mb-4">
+        <div class="admin-icon-glow d-flex align-items-center justify-content-center" style="width: 45px; height: 45px; background: rgba(0, 229, 255, 0.1); border: 1px solid rgba(0, 229, 255, 0.2); border-radius: 14px;">
+            <i class="fa-solid fa-user-gear text-cyan h5 mb-0"></i>
+        </div>
+        <div>
+            <h5 class="fw-black text-white mb-0" style="font-weight: 800;">پنل نظارت و مدیریت</h5>
+            <p class="text-custom-muted small mb-0">خلاصه وضعیت و آمارهای حیاتی پلتفرم tronlnd</p>
+        </div>
+    </div>
+
+    <div class="row g-3 mb-2">
+        <div class="col-6 col-md-4">
+            <div class="glass-card p-3 text-center position-relative overflow-hidden h-100 d-flex flex-column justify-content-center">
+                <div class="stat-icon-bg opacity-10 position-absolute">
+                    <i class="fa-solid fa-users"></i>
+                </div>
+                <span class="text-custom-muted d-block small mb-2">کل کاربران</span>
+                <h3 class="fw-bold text-white mb-0 text-ltr">{{ total_users|default:"0"|intcomma }}</h3>
+                <div class="mt-2" style="font-size: 0.7rem; color: var(--accent-cyan);">
+                    <i class="fa-solid fa-circle-check me-1"></i>حساب‌های فعال
+                </div>
+            </div>
+        </div>
+
+        <div class="col-6 col-md-4">
+            <div class="glass-card p-3 text-center position-relative overflow-hidden h-100 d-flex flex-column justify-content-center">
+                <div class="stat-icon-bg opacity-10 position-absolute">
+                    <i class="fa-solid fa-receipt"></i>
+                </div>
+                <span class="text-custom-muted d-block small mb-2">کل درخواست‌ها</span>
+                <h3 class="fw-bold text-white mb-0 text-ltr">{{ total_transactions|default:"0"|intcomma }}</h3>
+                <div class="mt-2 text-custom-muted" style="font-size: 0.7rem;">
+                    <i class="fa-solid fa-database me-1"></i>ثبت شده در دیتابیس
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12 col-md-4">
+            <div class="glass-card p-3 text-center position-relative overflow-hidden h-100 d-flex flex-column justify-content-center" style="border-color: rgba(255, 229, 0, 0.15); background: rgba(255, 193, 7, 0.03);">
+                <div class="stat-icon-bg opacity-10 position-absolute text-warning">
+                    <i class="fa-solid fa-clock"></i>
+                </div>
+                <span class="text-custom-muted d-block small mb-2">در انتظار بررسی</span>
+                <h3 class="fw-bold text-warning mb-0 text-ltr">{{ pending_transactions|default:"0"|intcomma }}</h3>
+                <div class="mt-2 text-warning" style="font-size: 0.7rem; font-weight: 500;">
+                    <i class="fa-solid fa-bell-exclamation animate-pulse me-1"></i>نیازمند اقدام فوری
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-3 mt-1 mb-4">
+        <div class="col-6">
+            <div class="glass-card p-4 text-center position-relative overflow-hidden" style="border-color: rgba(0, 230, 118, 0.15); background: linear-gradient(180deg, rgba(0, 230, 118, 0.02) 0%, transparent 100%);">
+                <div class="stat-icon-bg opacity-10 position-absolute text-success" style="left: 15px; bottom: 5px;">
+                    <i class="fa-solid fa-circle-arrow-down"></i>
+                </div>
+                <div class="d-inline-flex p-2 rounded-3 mb-2" style="background: rgba(0, 230, 118, 0.08);">
+                    <i class="fa-solid fa-arrow-down-long text-neon-green"></i>
+                </div>
+                <span class="text-custom-muted d-block small mb-1">تعداد خرید</span>
+                <h3 class="fw-black text-neon-green mb-0 text-ltr" style="font-weight: 800;">{{ buy_count|default:"0"|intcomma }}</h3>
+            </div>
+        </div>
+
+        <div class="col-6">
+            <div class="glass-card p-4 text-center position-relative overflow-hidden" style="border-color: rgba(255, 82, 82, 0.15); background: linear-gradient(180deg, rgba(255, 82, 82, 0.02) 0%, transparent 100%);">
+                <div class="stat-icon-bg opacity-10 position-absolute text-danger" style="left: 15px; bottom: 5px;">
+                    <i class="fa-solid fa-circle-arrow-up"></i>
+                </div>
+                <div class="d-inline-flex p-2 rounded-3 mb-2" style="background: rgba(255, 82, 82, 0.08);">
+                    <i class="fa-solid fa-arrow-up-long text-coral"></i>
+                </div>
+                <span class="text-custom-muted d-block small mb-1">تعداد فروش</span>
+                <h3 class="fw-black text-coral mb-0 text-ltr" style="font-weight: 800;">{{ sell_count|default:"0"|intcomma }}</h3>
+            </div>
+        </div>
+    </div>
+
+    <hr class="border-glass my-4">
+
+    <div class="mb-5">
+        <div class="d-flex align-items-center gap-2 mb-3">
+            <i class="fa-solid fa-receipt text-warning fs-5"></i>
+            <h6 class="text-white fw-bold mb-0">درخواست‌های معامله در انتظار بررسی</h6>
+        </div>
+
+        <div class="table-responsive glass-card p-2">
+            <table class="table text-white align-middle mb-0 text-center small">
+                <thead>
+                    <tr class="text-custom-muted border-bottom border-glass">
+                        <th class="py-3">کاربر</th>
+                        <th>نوع درخواست</th>
+                        <th>نام ارز</th>
+                        <th>مقدار ارز</th>
+                        <th>قیمت کل</th>
+                        <th>عملیات وضعیت</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for tx in pending_transactions_list %}
+                        <tr class="border-bottom border-glass-subtle">
+                            <td class="py-3 fw-medium text-cyan">{{ tx.user.username }}</td>
+                            <td>
+                                {% if tx.request_type == 'BUY' %}
+                                    <span class="badge bg-success-subtle text-neon-green rounded-2 px-2 py-1">خرید</span>
+                                {% else %}
+                                    <span class="badge bg-danger-subtle text-coral rounded-2 px-2 py-1">فروش</span>
+                                {% endif %}
+                            </td>
+                            <td class="fw-bold text-white">{{ tx.crypto_name }}</td>
+                            <td class="text-ltr font-monospace">{{ tx.amount }}</td>
+                            <td class="text-ltr text-cyan fw-bold">
+                                {{ tx.total_price|intcomma }} <span class="small opacity-50" style="font-size: 0.65rem;">تومان</span>
+                            </td>
+                            <td>
+                                <form action="{% url 'change_transaction_status' tx.id %}" method="post" class="d-inline-flex gap-1">
+                                    {% csrf_token %}
+                                    <button type="submit" name="status" value="done" class="btn btn-action-success btn-sm text-dark rounded-2 fw-bold px-3 py-1">
+                                        <i class="fa-solid fa-check me-1"></i> تکمیل شد
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                    {% empty %}
+                        <tr>
+                            <td colspan="6" class="py-4 text-custom-muted text-center">هیچ درخواست معامله‌ای در انتظار بررسی نیست.</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="mb-5">
+        <div class="d-flex align-items-center gap-2 mb-3">
+            <i class="fa-solid fa-id-card text-cyan fs-5"></i>
+            <h6 class="text-white fw-bold mb-0">بررسی حساب‌ها و احراز هویت کاربران جدید</h6>
+        </div>
+
+        <div class="table-responsive glass-card p-2">
+            <table class="table text-white align-middle mb-0 text-center small">
+                <thead>
+                    <tr class="text-custom-muted border-bottom border-glass">
+                        <th class="py-3">نام کاربری</th>
+                        <th>نام کامل</th>
+                        <th>شماره موبایل</th>
+                        <th>شماره کارت بانکی</th>
+                        <th>مدارک ارسالی</th>
+                        <th>عملیات ثبت‌نام</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for u in unverified_users_list %}
+                        <tr class="border-bottom border-glass-subtle">
+                            <td class="py-3 text-cyan fw-medium">{{ u.username }}</td>
+                            <td>{{ u.full_name|default:"-" }}</td>
+                            <td class="text-ltr">{{ u.mobile }}</td>
+                            <td class="text-ltr font-monospace text-custom-muted">{{ u.card_number|default:"-" }}</td>
+                            <td>
+                                <div class="d-flex justify-content-center gap-1">
+                                    {% if u.national_card_image %}
+                                        <a href="{{ u.national_card_image.url }}" target="_blank" class="btn btn-outline-light btn-xs py-1 px-2 border-glass" style="font-size: 0.65rem;">
+                                            <i class="fa-solid fa-image me-1"></i>کارت ملی
+                                        </a>
+                                    {% endif %}
+                                    {% if u.selfie_image %}
+                                        <a href="{{ u.selfie_image.url }}" target="_blank" class="btn btn-outline-light btn-xs py-1 px-2 border-glass" style="font-size: 0.65rem;">
+                                            <i class="fa-solid fa-portrait me-1"></i>تصویر سلفی
+                                        </a>
+                                    {% endif %}
+                                    {% if not u.national_card_image and not u.selfie_image %}
+                                        <span class="text-custom-muted small">بدون مدرک</span>
+                                    {% endif %}
+                                </div>
+                            </td>
+                            <td>
+                                <form action="{% url 'change_user_verification' u.id %}" method="post" class="d-inline-flex gap-1">
+                                    {% csrf_token %}
+                                    <button type="submit" name="action" value="verify" class="btn btn-action-cyan btn-sm text-dark rounded-2 fw-bold px-3 py-1">
+                                        تایید احراز هویت
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                    {% empty %}
+                        <tr>
+                            <td colspan="6" class="py-4 text-custom-muted text-center">کاربر جدیدی در انتظار تایید احراز هویت وجود ندارد.</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="mt-4 pt-2">
+        <a href="{% url 'admin:index' %}" class="btn btn-modern btn-modern-outline w-100 py-3 text-center text-cyan d-flex align-items-center justify-content-center gap-2" style="border-color: rgba(0, 229, 255, 0.2); background: rgba(0, 229, 255, 0.02);">
+            <i class="fa-solid fa-sliders"></i>
+            <span>ورود به پنل مدیریت پیشرفته (جنگو)</span>
+        </a>
+    </div>
+
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* استایل‌های پایه گلس‌مورفیک پلتفرم */
+    .border-glass { border-color: rgba(255, 255, 255, 0.07) !important; }
+    .border-glass-subtle { border-color: rgba(255, 255, 255, 0.03) !important; }
+    
+    .stat-icon-box {
+        position: relative;
+    }
+    
+    .stat-icon-bg {
+        font-size: 2.8rem;
+        bottom: -5px;
+        left: 12px;
+        pointer-events: none;
+        transition: all 0.3s ease;
+    }
+    
+    .glass-card:hover .stat-icon-bg {
+        transform: scale(1.1) rotate(-5deg);
+        opacity: 0.18 !important;
+    }
+
+    .text-ltr {
+        direction: ltr;
+        display: inline-block;
+    }
+
+    @keyframes pulse-warning {
+        0% { opacity: 0.6; }
+        50% { opacity: 1; transform: scale(1.05); }
+        100% { opacity: 0.6; }
+    }
+    
+    .animate-pulse {
+        animation: pulse-warning 2s infinite ease-in-out;
+        display: inline-block;
+    }
+
+    /* استایل‌های اختصاصی جداول کاستوم پنل نظارت */
+    .table { background: transparent !important; }
+    .table th { font-weight: 700; font-size: 0.75rem; color: #a1a1a6; border-bottom: none !important; }
+    .table td { border-bottom: none !important; }
+    
+    /* دکمه‌های اکشن درون‌برنامه‌ای ادمین */
+    .btn-action-success {
+        background: #00e676 !important;
+        border: none;
+        font-size: 0.75rem;
+        transition: all 0.2s ease-in-out;
+    }
+    .btn-action-success:hover {
+        background: #00c853 !important;
+        box-shadow: 0 0 10px rgba(0, 230, 118, 0.3);
+    }
+
+    .btn-action-cyan {
+        background: #00e5ff !important;
+        border: none;
+        font-size: 0.75rem;
+        transition: all 0.2s ease-in-out;
+    }
+    .btn-action-cyan:hover {
+        background: #00b8d4 !important;
+        box-shadow: 0 0 10px rgba(0, 229, 255, 0.3);
+    }
+    
+    .btn-xs { padding: 4px 8px; border-radius: 6px; }
+    .bg-success-subtle { background: rgba(0, 230, 118, 0.08) !important; }
+    .bg-danger-subtle { background: rgba(255, 82, 82, 0.08) !important; }
+</style>
+{% endblock %}
