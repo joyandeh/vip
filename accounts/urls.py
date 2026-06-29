@@ -8,7 +8,7 @@ urlpatterns = [
     path('profile/', views.profile, name='profile'),
     path('dashboard/admin/', views.admin_dashboard, name='admin_dashboard'),
     
-    # حتماً مطمئن شوید این دو خط در این فایل وجود دارند:
     path('dashboard/admin/transaction/<int:tx_id>/update/', views.change_transaction_status, name='change_transaction_status'),
     path('dashboard/admin/user/<int:user_id>/verify/', views.change_user_verification, name='change_user_verification'),
+    path('dashboard/admin/user/<int:user_id>/delete/', views.delete_user, name='delete_user'),
 ]

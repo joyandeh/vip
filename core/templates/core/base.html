@@ -17,6 +17,13 @@
             --accent-cyan: #00E5FF; /* Sleek Cyan for UI Accents */
             --border-glass: rgba(255, 255, 255, 0.05);
             --text-muted: #8F9CAE;
+
+            /* Light Mode */
+            --light-bg-main: #FFFFFF;
+            --light-bg-card: rgba(240, 242, 245, 0.8);
+            --light-text-color: #1a1a1a;
+            --light-border-glass: rgba(0, 0, 0, 0.1);
+            --light-shadow-color: rgba(0, 0, 0, 0.1);
         }
 
         body {
@@ -26,6 +33,68 @@
                 radial-gradient(circle at 90% 80%, rgba(0, 229, 255, 0.04) 0%, transparent 40%);
             color: #FFFFFF;
             font-family: 'Vazirmatn', sans-serif;
+
+            &.light-mode {
+                background-color: var(--light-bg-main);
+                background-image: none;
+                color: var(--light-text-color);
+
+                .glass-card {
+                    background: var(--light-bg-card);
+                    border: 1px solid var(--light-border-glass);
+                    box-shadow: 0 4px 12px 0 var(--light-shadow-color);
+                }
+                .navbar-custom {
+                    background: rgba(255, 255, 255, 0.9) !important;
+                    border-bottom-color: var(--light-border-glass);
+                }
+                .brand-logo {
+                    color: var(--light-text-color) !important;
+                }
+                .btn-modern-outline {
+                    color: var(--light-text-color);
+                    border-color: rgba(0, 0, 0, 0.15);
+                }
+                .btn-modern-outline:hover {
+                    background: rgba(0, 0, 0, 0.05);
+                    border-color: rgba(0, 0, 0, 0.3);
+                }
+                .bottom-nav {
+                    background: rgba(255, 255, 255, 0.92);
+                    border-top-color: var(--light-border-glass);
+                }
+                .bottom-nav-item {
+                    color: #555;
+                }
+                .bottom-nav-item:hover, .bottom-nav-item.active {
+                    color: var(--accent-cyan);
+                }
+                .action-btn-verify {
+                    background: var(--accent-green) !important;
+                    color: #fff !important;
+                }
+                .form-control,
+                .form-select {
+                    background-color: #f0f2f5 !important;
+                    color: var(--light-text-color) !important;
+                    border-color: rgba(0, 0, 0, 0.1) !important;
+                }
+                .form-control::placeholder {
+                    color: #888 !important;
+                }
+                .modal-content {
+                    background: var(--light-bg-main) !important;
+                }
+                .modal-header,
+                .modal-footer {
+                    border-color: var(--light-border-glass) !important;
+                }
+                .modal-title,
+                .text-white,
+                .btn-close-white {
+                    color: var(--light-text-color) !important;
+                }
+            }
             min-height: 100vh;
             margin-bottom: 85px; /* Spacing for bottom navbar on mobile */
             overflow-x: hidden;
@@ -107,6 +176,7 @@
             bottom: 0;
             left: 0;
             right: 0;
+            width: 100%;
             height: 70px;
             background: rgba(15, 21, 32, 0.92);
             backdrop-filter: blur(15px);
@@ -185,6 +255,9 @@
             }
             .bottom-nav {
                 position: absolute;
+                width: 100%;
+                left: 0;
+                right: 0;
             }
             .navbar-custom {
                 border-top-left-radius: 32px;
@@ -205,6 +278,9 @@
                 </a>
                 
                 <div class="d-flex align-items-center gap-2">
+                    <button id="theme-toggle" class="btn btn-modern btn-modern-outline py-1 px-2 d-flex align-items-center justify-content-center" style="width:40px;height:40px;">
+                        <i class="fa-solid fa-moon" style="font-size:1rem;"></i>
+                    </button>
                     {% if user.is_authenticated %}
                         <div class="dropdown">
                             <a class="btn btn-modern btn-modern-outline py-1 px-2" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -327,6 +403,33 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const themeToggle = document.getElementById("theme-toggle");
+            const body = document.body;
+
+            // Check for saved theme preference
+            const savedTheme = localStorage.getItem("theme");
+            if (savedTheme) {
+                body.classList.add(savedTheme);
+                if (savedTheme === "light-mode") {
+                    themeToggle.querySelector("i").classList.replace("fa-moon", "fa-sun");
+                }
+            }
+
+            themeToggle.addEventListener("click", function() {
+                if (body.classList.contains("light-mode")) {
+                    body.classList.remove("light-mode");
+                    localStorage.setItem("theme", "");
+                    themeToggle.querySelector("i").classList.replace("fa-sun", "fa-moon");
+                } else {
+                    body.classList.add("light-mode");
+                    localStorage.setItem("theme", "light-mode");
+                    themeToggle.querySelector("i").classList.replace("fa-moon", "fa-sun");
+                }
+            });
+        });
+    </script>
     {% block extra_js %}{% endblock %}
 </body>
 </html>

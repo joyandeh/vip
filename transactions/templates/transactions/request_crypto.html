@@ -99,64 +99,123 @@
             <i class="fa-solid fa-file-invoice-dollar text-neon-green h5 mb-0"></i>
         </div>
         <div>
-            <h5 class="fw-black text-white mb-0" style="font-weight: 800;">ثبت درخواست معامله</h5>
-            <p class="text-custom-muted small mb-0">تنظیم سفارش خرید یا فروش رمزارز</p>
-        </div>
-    </div>
-
-    <div class="bank-card-preview p-3 mb-4 overflow-hidden">
-        <div class="position-absolute bottom-0 end-0 p-2 opacity-10" style="font-size: 4rem; transform: rotate(-15deg);">
-            <i class="fa-solid fa-building-columns text-white"></i>
-        </div>
-
-        <div class="d-flex justify-content-between align-items-center mb-3">
-            <span class="small text-custom-muted" style="font-size: 0.75rem;">حساب بانکی تایید شده متصل</span>
-            <div class="card-chip"></div>
-        </div>
-
-        <div class="mb-3">
-            <span class="text-custom-muted d-block small mb-1" style="font-size: 0.7rem;">شماره کارت جهت تسویه:</span>
-            <div class="card-number-style text-ltr w-100">{{ request.user.card_number|default:"---- ---- ---- ----" }}</div>
-        </div>
-
-        <div class="d-flex justify-content-between align-items-center pt-2" style="border-top: 1px solid rgba(255,255,255,0.05);">
-            <div>
-                <span class="text-custom-muted d-block small" style="font-size: 0.65rem;">صاحب حساب</span>
-                <span class="small fw-bold text-white">{{ request.user.full_name|default:"تکمیل نشده" }}</span>
-            </div>
-            <div>
-                {% if request.user.is_verified %}
-                    <span class="badge bg-success-subtle text-neon-green small rounded-pill px-2 py-1" style="font-size: 0.65rem;">
-                        <i class="fa-solid fa-shield-check me-1"></i>حساب تایید شده
-                    </span>
-                {% else %}
-                    <span class="badge bg-warning-subtle text-warning small rounded-pill px-2 py-1" style="font-size: 0.65rem;">
-                        <i class="fa-solid fa-triangle-exclamation me-1"></i>احراز نشده
-                    </span>
-                {% endif %}
+                <h5 class="fw-black text-white mb-0" style="font-weight: 800;">ثبت درخواست معامله</h5>
+                <p class="text-custom-muted small mb-0">تنظیم سفارش خرید یا فروش رمزارز</p>
             </div>
         </div>
-    </div>
 
-    <div class="glass-card p-4">
-        <form method="post" class="django-form-wrapper">
-            {% csrf_token %}
-            
-            {% if form.non_field_errors %}
-                <div class="form-non-field-errors">
-                    {% for error in form.non_field_errors %}
-                        <p class="mb-0 small"><i class="fa-solid fa-triangle-exclamation me-1"></i> {{ error }}</p>
-                    {% endfor %}
+        <!-- New Section for Rial Deposit -->
+        <div class="glass-card p-4 mb-4">
+            <h6 class="fw-bold mb-3 text-cyan d-flex align-items-center gap-2">
+                <i class="fa-solid fa-money-bill-transfer"></i>
+                <span>واریز ریالی (خرید از سایت)</span>
+            </h6>
+            <p class="text-custom-muted small mb-3 p-3 glass-card" style="border-radius:12px; font-size:0.75rem;">
+                <i class="fa-solid fa-circle-info text-cyan me-2"></i>
+                توجه کنید که از طریق همان کارت که ثبت کرده اید انتقال دهید.
+            </p>
+            <div class="d-flex flex-column gap-3">
+                <button class="btn btn-modern btn-modern-outline w-100 py-3 d-flex align-items-center justify-content-center gap-2" disabled>
+                    <i class="fa-solid fa-credit-card"></i> درگاه بانکی (در دست ساخت)
+                </button>
+                <form method="post" class="django-form-wrapper w-100">
+                    {% csrf_token %}
+                    <input type="hidden" name="form_type" value="fiat_deposit">
+                    <input type="hidden" name="fiat_deposit_type" value="CARD_TO_CARD">
+                    <button type="submit" class="btn btn-modern btn-modern-outline w-100 py-3 d-flex align-items-center justify-content-center gap-2">
+                        <i class="fa-solid fa-money-check-dollar"></i> کارت به کارت
+                    </button>
+                </form>
+                <form method="post" class="django-form-wrapper w-100">
+                    {% csrf_token %}
+                    <input type="hidden" name="form_type" value="fiat_deposit">
+                    <input type="hidden" name="fiat_deposit_type" value="SHABA">
+                    <button type="submit" class="btn btn-modern btn-modern-outline w-100 py-3 d-flex align-items-center justify-content-center gap-2">
+                        <i class="fa-solid fa-building-columns"></i> واریز از طریق شبا
+                    </button>
+                </form>
+            </div>
+
+            <!-- Example Forms for Card-to-Card and Shaba - These should be hidden/shown with JS -->
+            <div id="cardToCardForm" class="mt-3" style="display:none;">
+                <h6>فرم کارت به کارت</h6>
+                {{ fiat_deposit_form.as_p }}
+                <button type="submit" form="fiatDepositCardForm" class="btn btn-modern btn-modern-primary w-100 py-3 mt-2 fw-bold text-dark">ثبت واریز کارت به کارت</button>
+            </div>
+            <div id="shabaForm" class="mt-3" style="display:none;">
+                <h6>فرم واریز شبا</h6>
+                {{ fiat_deposit_form.as_p }}
+                <button type="submit" form="fiatDepositShabaForm" class="btn btn-modern btn-modern-primary w-100 py-3 mt-2 fw-bold text-dark">ثبت واریز شبا</button>
+            </div>
+
+            <script>
+                document.querySelectorAll(".glass-card button").forEach(button => {
+                    button.addEventListener("click", function() {
+                        document.querySelectorAll("#cardToCardForm, #shabaForm").forEach(form => form.style.display = "none");
+                        if (this.textContent.includes("کارت به کارت")) {
+                            document.getElementById("cardToCardForm").style.display = "block";
+                        } else if (this.textContent.includes("شبا")) {
+                            document.getElementById("shabaForm").style.display = "block";
+                        }
+                    });
+                });
+            </script>
+        </div>
+
+        <!-- New Section for Crypto to Rial Conversion -->
+        <div class="glass-card p-4 mb-4">
+                <h6 class="fw-bold mb-3 text-cyan d-flex align-items-center gap-2">
+                    <i class="fa-solid fa-bitcoin"></i>
+                    <span>تبدیل دارایی به ریال (فروش به سایت)</span>
+                </h6>
+                <p class="text-custom-muted small mb-3 p-3 glass-card" style="border-radius:12px; font-size:0.75rem;">
+                    <i class="fa-solid fa-circle-info text-cyan me-2"></i>
+                    برای تبدیل کردن دارایی خود به تومان ارز مورد نظر را به کیف پول مربوط انتقال دهید و سپس هش تراکنش را ارسال کنید و منتظر بمانید.
+                </p>
+                <div class="mb-3">
+                    <label class="form-label text-custom-muted small" style="font-size:0.7rem;">آدرس کیف پول تتر (TRC20)</label>
+                    <input type="text" class="form-control form-control-sm bg-dark text-white border-secondary-subtle" value="{{ site_settings.usdt_wallet_address|default:">در پنل مدیریت تنظیم نشده است<" }}" readonly>
                 </div>
-            {% endif %}
-            
-            {{ form.as_p }}
+                <div class="mb-3">
+                    <label class="form-label text-custom-muted small" style="font-size:0.7rem;">آدرس کیف پول تزون (TRX)</label>
+                    <input type="text" class="form-control form-control-sm bg-dark text-white border-secondary-subtle" value="{{ site_settings.trx_wallet_address|default:">در پنل مدیریت تنظیم نشده است<" }}" readonly>
+                </div>
+                <form method="post" class="django-form-wrapper">
+                    {% csrf_token %}
+                    <input type="hidden" name="form_type" value="crypto_to_rial_conversion">
+                    {{ crypto_to_rial_form.as_p }}
+                    <button type="submit" class="btn btn-modern btn-modern-primary w-100 py-3 mt-2 fw-bold text-dark">
+                        <i class="fa-solid fa-paper-plane me-1"></i> ثبت درخواست تبدیل
+                    </button>
+                </form>
+        </div>
 
-            <button type="submit" class="btn btn-modern btn-modern-primary w-100 py-3 mt-2 fw-bold text-dark">
-                <i class="fa-solid fa-paper-plane me-1"></i> ارسال و ثبت درخواست سفارش
-            </button>
-        </form>
-    </div>
+        <!-- Original Request Crypto Form (now for direct buy/sell if needed, or repurposed) -->
+        <!-- Original Request Crypto Form (now for direct buy/sell if needed, or repurposed) -->
+        <div class="glass-card p-4">
+            <h6 class="fw-bold mb-3 text-cyan d-flex align-items-center gap-2">
+                <i class="fa-solid fa-arrow-right-arrow-left"></i>
+                <span>ثبت سفارش خرید یا فروش رمزارز</span>
+            </h6>
+            <form method="post" class="django-form-wrapper">
+                {% csrf_token %}
+                <input type="hidden" name="form_type" value="crypto_buy_sell">
+                
+                {% if form.non_field_errors %}
+                    <div class="form-non-field-errors">
+                        {% for error in form.non_field_errors %}
+                            <p class="mb-0 small"><i class="fa-solid fa-triangle-exclamation me-1"></i> {{ error }}</p>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+                
+                {{ form.as_p }}
+
+                <button type="submit" class="btn btn-modern btn-modern-primary w-100 py-3 mt-2 fw-bold text-dark">
+                    <i class="fa-solid fa-paper-plane me-1"></i> ارسال و ثبت درخواست سفارش
+                </button>
+            </form>
+        </div>
 
 </div>
 {% endblock %}

@@ -68,7 +68,7 @@
             <i class="fa-solid fa-folder-open text-cyan"></i>
             <span>مدارک ارسالی هویت</span>
         </h6>
-        
+
         <div class="row g-3">
             {% if request.user.national_card_image %}
             <div class="col-6">
@@ -92,6 +92,17 @@
             </div>
             {% endif %}
         </div>
+    </div>
+    {% endif %}
+
+    {% if not request.user.is_verified %}
+    <div class="glass-card p-3 mb-3 text-center" style="border-radius:12px; font-size:0.75rem;">
+        <i class="fa-solid fa-circle-info text-cyan me-2"></i>
+        لطفا در سلفی خود، این متن را بنویسید و در کنار صورت خود بگیرید و سپس آن را ارسال کنید:
+        <br><br>
+        "اینجانب [نام و نام خانوادگی] فرزند [نام پدر] به شماره ملی [شماره ملی] از صحت مدارک ارسالی خود آگاه هستم و همچنین متعهد میشوم فقط برای خرید و فروش برای شخص خودم انجام دهم و اکانت را در اختیار کسی نگذارم در غیر این صورت تمام عواقب حقوقی و کیفری این کار به عهده خودم می باشد."
+        <br><br>
+        امضا و نام تاریخ
     </div>
     {% endif %}
 

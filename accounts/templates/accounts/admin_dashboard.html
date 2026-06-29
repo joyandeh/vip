@@ -1,296 +1,729 @@
 {% extends 'core/base.html' %}
-{% load humanize %} 
+{% load humanize %}
 
-{% block title %}tronlnd | داشبورد مدیریت پلتفرم{% endblock %}
+{% block title %}tronlnd | داشبورد مدیریت{% endblock %}
 
 {% block content %}
-<div class="container my-4 pt-2">
-    
+<div class="container-fluid px-0 my-3 pt-1">
+
     {% if messages %}
-        <div class="messages-wrapper mb-4">
-            {% for message in messages %}
-                <div class="alert alert-{% if message.tags == 'error' %}danger{% else %}{{ message.tags }}{% endif %} bg-dark border-glass text-white small rounded-3 p-3 mb-2 d-flex align-items-center gap-2">
+        {% for message in messages %}
+            <div class="px-3 mb-3">
+                <div class="alert alert-{% if message.tags == 'error' %}danger{% else %}{{ message.tags }}{% endif %} bg-dark border-glass text-white small rounded-3 p-3 mb-0 d-flex align-items-center gap-2">
                     <i class="fa-solid fa-circle-info text-cyan"></i>
                     <span>{{ message }}</span>
                 </div>
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    <div class="px-3 mb-3">
+        <div class="d-flex align-items-center gap-2">
+            <div class="d-flex align-items-center justify-content-center flex-shrink-0" style="width:40px;height:40px;background:rgba(0,229,255,0.1);border:1px solid rgba(0,229,255,0.2);border-radius:12px;">
+                <i class="fa-solid fa-user-gear text-cyan" style="font-size:1rem;"></i>
+            </div>
+            <div class="min-w-0">
+                <h6 class="fw-bold text-white mb-0" style="font-size:1rem;">پنل نظارت و مدیریت</h6>
+                <small class="text-custom-muted">خلاصه وضعیت و آمار پلتفرم</small>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tabs -->
+    <div class="px-3 mb-3 overflow-auto" style="-webkit-overflow-scrolling:touch;">
+        <div class="d-flex gap-2" style="min-width:max-content;" id="adminTabs" role="tablist">
+            <button class="admin-tab-btn active px-3 py-2 rounded-3 small fw-bold border-0" id="ov-tab" data-bs-toggle="pill" data-bs-target="#ov" type="button" role="tab"><i class="fa-solid fa-chart-pie me-1"></i> نمای کلی</button>
+            <button class="admin-tab-btn px-3 py-2 rounded-3 small fw-bold border-0" id="tx-tab" data-bs-toggle="pill" data-bs-target="#tx" type="button" role="tab"><i class="fa-solid fa-receipt me-1"></i> تراکنش‌ها</button>
+            <button class="admin-tab-btn px-3 py-2 rounded-3 small fw-bold border-0" id="us-tab" data-bs-toggle="pill" data-bs-target="#us" type="button" role="tab"><i class="fa-solid fa-users me-1"></i> کاربران</button>
+            <button class="admin-tab-btn px-3 py-2 rounded-3 small fw-bold border-0" id="hp-tab" data-bs-toggle="pill" data-bs-target="#hp" type="button" role="tab"><i class="fa-solid fa-house me-1"></i> صفحه اصلی</button>
+            <button class="admin-tab-btn px-3 py-2 rounded-3 small fw-bold border-0" id="st-tab" data-bs-toggle="pill" data-bs-target="#st" type="button" role="tab"><i class="fa-solid fa-sliders me-1"></i> تنظیمات</button>
+        </div>
+    </div>
+
+    <div class="tab-content px-3" id="adminTabsContent">
+
+        <!-- ===== نمای کلی ===== -->
+        <div class="tab-pane fade show active" id="ov" role="tabpanel">
+            <div class="row g-2 mb-2">
+                <div class="col-6 col-md-4 mb-2">
+                    <div class="glass-card p-2 text-center h-100 d-flex flex-column justify-content-center" style="border-radius:16px;min-height:85px;">
+                        <small class="text-custom-muted d-block" style="font-size:0.6rem;">کاربران</small>
+                        <strong class="text-white d-block" style="font-size:1.1rem;">{{ total_users|default:"0"|intcomma }}</strong>
+                        <small style="font-size:0.55rem;color:var(--accent-cyan);">{{ verified_users }} تایید</small>
+                    </div>
+                </div>
+                <div class="col-6 col-md-4 mb-2">
+                    <div class="glass-card p-2 text-center h-100 d-flex flex-column justify-content-center" style="border-radius:16px;min-height:85px;">
+                        <small class="text-custom-muted d-block" style="font-size:0.6rem;">درخواست‌ها</small>
+                        <strong class="text-white d-block" style="font-size:1.1rem;">{{ total_transactions|default:"0"|intcomma }}</strong>
+                        <small style="font-size:0.55rem;color:var(--text-muted);">کل ثبت</small>
+                    </div>
+                </div>
+                <div class="col-6 col-md-4 mb-2">
+                    <div class="glass-card p-2 text-center h-100 d-flex flex-column justify-content-center" style="border-radius:16px;min-height:85px;border-color:rgba(255,193,7,0.2);">
+                        <small class="text-custom-muted d-block" style="font-size:0.6rem;">در انتظار</small>
+                        <strong class="text-warning d-block" style="font-size:1.1rem;">{{ pending_transactions|default:"0"|intcomma }}</strong>
+                        <small style="font-size:0.55rem;color:var(--accent-coral);">نیاز به بررسی</small>
+                    </div>
+                </div>
+            </div>
+            <div class="row g-2 mb-2">
+                <div class="col-12 col-md-6 mb-2">
+                    <div class="glass-card p-2 text-center h-100 d-flex flex-column justify-content-center" style="border-radius:16px;min-height:75px;">
+                        <small class="text-custom-muted d-block" style="font-size:0.6rem;">کل حجم</small>
+                        <strong class="text-neon-green d-block" style="font-size:0.95rem;">{{ total_volume|intcomma }}</strong>
+                        <small style="font-size:0.55rem;color:var(--text-muted);">تومان</small>
+                    </div>
+                </div>
+                <div class="col-12 col-md-6 mb-2">
+                    <div class="glass-card p-2 text-center h-100 d-flex flex-column justify-content-center" style="border-radius:16px;min-height:75px;">
+                        <small class="text-custom-muted d-block" style="font-size:0.6rem;">خرید / فروش</small>
+                        <strong class="d-block" style="font-size:0.9rem;">
+                            <span class="text-neon-green">{{ buy_volume|intcomma }}</span>
+                            <span class="text-custom-muted" style="font-size:0.6rem;">|</span>
+                            <span class="text-coral">{{ sell_volume|intcomma }}</span>
+                        </strong>
+                        <small style="font-size:0.55rem;color:var(--text-muted);">تومان</small>
+                    </div>
+                </div>
+            </div>
+            <div class="row g-2 mb-3">
+                <div class="col-6 col-md-4 mb-2">
+                    <div class="glass-card p-2 text-center" style="border-radius:16px;min-height:70px;">
+                        <small class="text-custom-muted d-block" style="font-size:0.6rem;">خرید</small>
+                        <strong class="text-neon-green d-block" style="font-size:1rem;">{{ buy_count|default:"0"|intcomma }}</strong>
+                    </div>
+                </div>
+                <div class="col-6 col-md-4 mb-2">
+                    <div class="glass-card p-2 text-center" style="border-radius:16px;min-height:70px;">
+                        <small class="text-custom-muted d-block" style="font-size:0.6rem;">فروش</small>
+                        <strong class="text-coral d-block" style="font-size:1rem;">{{ sell_count|default:"0"|intcomma }}</strong>
+                    </div>
+                </div>
+                <div class="col-6 col-md-4 mb-2">
+                    <div class="glass-card p-2 text-center" style="border-radius:16px;min-height:70px;">
+                        <small class="text-custom-muted d-block" style="font-size:0.6rem;">رد شده</small>
+                        <strong class="text-coral d-block" style="font-size:1rem;">{{ rejected_transactions|default:"0"|intcomma }}</strong>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pending Transactions -->
+            <div class="mb-3">
+                <div class="d-flex align-items-center gap-2 mb-2">
+                    <i class="fa-solid fa-receipt text-warning" style="font-size:0.85rem;"></i>
+                    <span class="text-white fw-bold small">درخواست‌های در انتظار</span>
+                    <span class="badge bg-warning-subtle text-warning rounded-pill" style="font-size:0.6rem;">{{ pending_transactions_list|length }}</span>
+                </div>
+                {% for tx in pending_transactions_list %}
+                <div class="glass-card p-3 mb-2 pending-item" style="border-radius:14px;">
+                    <div class="d-flex align-items-center justify-content-between mb-2">
+                        <div class="d-flex align-items-center gap-2">
+                            <span class="fw-bold text-cyan small">{{ tx.user.username }}</span>
+                            {% if tx.request_type == 'BUY' %}
+                            <span class="badge bg-success-subtle text-neon-green rounded-2" style="font-size:0.6rem;">خرید</span>
+                            {% else %}
+                            <span class="badge bg-danger-subtle text-coral rounded-2" style="font-size:0.6rem;">فروش</span>
+                            {% endif %}
+                        </div>
+                        <div class="d-flex gap-1">
+                            <form action="{% url 'change_transaction_status' tx.id %}" method="post" class="d-inline">
+                                {% csrf_token %}
+                                <button type="submit" name="status" value="done" class="btn btn-sm p-1 border-0 action-btn-done" style="border-radius:8px;width:32px;height:32px;">
+                                    <i class="fa-solid fa-check"></i>
+                                </button>
+                            </form>
+                            <form action="{% url 'change_transaction_status' tx.id %}" method="post" class="d-inline">
+                                {% csrf_token %}
+                                <button type="submit" name="status" value="rejected" class="btn btn-sm p-1 border-0 action-btn-reject" style="border-radius:8px;width:32px;height:32px;">
+                                    <i class="fa-solid fa-xmark"></i>
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <span class="fw-bold text-white" style="font-size:0.8rem;">{{ tx.crypto_name }}</span>
+                            <span class="text-custom-muted me-2" style="font-size:0.7rem;">{{ tx.amount }}</span>
+                        </div>
+                        <span class="text-ltr text-cyan fw-bold" style="font-size:0.75rem;">{{ tx.total_price|intcomma }} <span class="text-custom-muted" style="font-size:0.55rem;">تومان</span></span>
+                    </div>
+                </div>
+                {% empty %}
+                <div class="glass-card p-3 text-center" style="border-radius:14px;">
+                    <small class="text-custom-muted">هیچ درخواستی در انتظار نیست.</small>
+                </div>
+                {% endfor %}
+            </div>
+
+            <!-- Unverified Users -->
+            <div class="mb-3">
+                <div class="d-flex align-items-center gap-2 mb-2">
+                    <i class="fa-solid fa-id-card text-cyan" style="font-size:0.85rem;"></i>
+                    <span class="text-white fw-bold small">در انتظار احراز هویت</span>
+                    <span class="badge bg-cyan-subtle text-cyan rounded-pill" style="font-size:0.6rem;">{{ unverified_users_list|length }}</span>
+                </div>
+                {% for u in unverified_users_list %}
+                <div class="glass-card p-3 mb-2" style="border-radius:14px;">
+                    <div class="d-flex align-items-center justify-content-between mb-2">
+                        <div class="min-w-0" style="flex:1;">
+                            <span class="fw-bold text-cyan small">{{ u.username }}</span>
+                            <small class="text-custom-muted d-block" style="font-size:0.65rem;">{{ u.full_name|default:"-" }}</small>
+                        </div>
+                        <div class="d-flex gap-1 flex-shrink-0">
+                            <button class="btn btn-sm p-1 border-0 btn-docs" style="border-radius:8px;width:32px;height:32px;" data-bs-toggle="modal" data-bs-target="#userModal{{ u.id }}">
+                                <i class="fa-solid fa-eye" style="font-size:0.75rem;"></i>
+                            </button>
+                            <form action="{% url 'change_user_verification' u.id %}" method="post" class="d-inline">
+                                {% csrf_token %}
+                                <button type="submit" name="action" value="verify" class="btn btn-sm p-1 border-0 action-btn-done" style="border-radius:8px;width:32px;height:32px;">
+                                    <i class="fa-solid fa-check"></i>
+                                </button>
+                            </form>
+                            <form action="{% url 'change_user_verification' u.id %}" method="post" class="d-inline">
+                                {% csrf_token %}
+                                <button type="submit" name="action" value="reject" class="btn btn-sm p-1 border-0 action-btn-reject" style="border-radius:8px;width:32px;height:32px;">
+                                    <i class="fa-solid fa-xmark"></i>
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                    <div class="d-flex align-items-center gap-2" style="font-size:0.65rem;">
+                        <span class="text-custom-muted text-ltr">{{ u.mobile }}</span>
+                        {% if u.national_card_image or u.selfie_image %}
+                        <span class="badge bg-cyan-subtle text-cyan rounded-pill" style="font-size:0.55rem;">مدارک</span>
+                        {% endif %}
+                    </div>
+                    {% if u.national_card_image or u.selfie_image %}
+                    <div class="d-flex gap-2 mt-2">
+                        {% if u.national_card_image %}
+                        <a href="{{ u.national_card_image.url }}" target="_blank">
+                            <img src="{{ u.national_card_image.url }}" alt="کارت ملی" class="rounded-2" style="width:60px;height:45px;object-fit:cover;border:1px solid rgba(255,255,255,0.1);cursor:pointer;">
+                        </a>
+                        {% endif %}
+                        {% if u.selfie_image %}
+                        <a href="{{ u.selfie_image.url }}" target="_blank">
+                            <img src="{{ u.selfie_image.url }}" alt="سلفی" class="rounded-2" style="width:45px;height:45px;object-fit:cover;border:1px solid rgba(255,255,255,0.1);cursor:pointer;">
+                        </a>
+                        {% endif %}
+                    </div>
+                    {% endif %}
+                </div>
+
+                <!-- User Modal -->
+                <div class="modal fade" id="userModal{{ u.id }}" tabindex="-1" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content glass-card border-glass" style="background:#141a26;">
+                            <div class="modal-header border-glass">
+                                <h6 class="modal-title text-white fw-bold small">جزئیات: {{ u.username }}</h6>
+                                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="d-flex flex-column gap-2" style="font-size:0.75rem;">
+                                    <div class="d-flex justify-content-between"><span class="text-custom-muted">نام کامل:</span><span class="text-white fw-bold">{{ u.full_name|default:"-" }}</span></div>
+                                    <div class="d-flex justify-content-between"><span class="text-custom-muted">موبایل:</span><span class="text-white fw-bold text-ltr">{{ u.mobile }}</span></div>
+                                    <div class="d-flex justify-content-between"><span class="text-custom-muted">ایمیل:</span><span class="text-white fw-bold text-ltr" style="font-size:0.7rem;">{{ u.email|default:"-" }}</span></div>
+                                    <div class="d-flex justify-content-between"><span class="text-custom-muted">شماره کارت:</span><span class="text-white fw-bold text-ltr font-monospace" style="font-size:0.65rem;">{{ u.card_number|default:"-" }}</span></div>
+                                    <div class="d-flex justify-content-between"><span class="text-custom-muted">شبا:</span><span class="text-white fw-bold text-ltr font-monospace" style="font-size:0.65rem;">{{ u.iban|default:"-" }}</span></div>
+                                    <div class="d-flex justify-content-between"><span class="text-custom-muted">وضعیت احراز:</span>{% if u.is_verified %}<span class="badge bg-success-subtle text-neon-green rounded-2">تایید شده</span>{% else %}<span class="badge bg-warning-subtle text-warning rounded-2">در انتظار</span>{% endif %}</div>
+                                    <div class="d-flex justify-content-between"><span class="text-custom-muted">تاریخ عضویت:</span><span class="text-white fw-bold small">{{ u.date_joined|date:"Y/m/d H:i" }}</span></div>
+                                    <div class="d-flex justify-content-between"><span class="text-custom-muted">تعداد تراکنش‌ها:</span><span class="text-cyan fw-bold">{{ u.transactions.count }}</span></div>
+{% if u.national_card_image or u.selfie_image %}
+<div><span class="text-custom-muted d-block mb-1">مدارک:</span>
+    <div class="d-flex gap-3 flex-wrap">
+        {% if u.national_card_image %}
+        <div>
+            <small class="text-custom-muted d-block mb-1" style="font-size:0.6rem;">کارت ملی</small>
+            <a href="{{ u.national_card_image.url }}" target="_blank">
+                <img src="{{ u.national_card_image.url }}" alt="کارت ملی" class="rounded-2 border-glass" style="width:120px;height:80px;object-fit:cover;cursor:pointer;">
+            </a>
+        </div>
+        {% endif %}
+        {% if u.selfie_image %}
+        <div>
+            <small class="text-custom-muted d-block mb-1" style="font-size:0.6rem;">سلفی</small>
+            <a href="{{ u.selfie_image.url }}" target="_blank">
+                <img src="{{ u.selfie_image.url }}" alt="سلفی" class="rounded-2 border-glass" style="width:80px;height:80px;object-fit:cover;cursor:pointer;">
+            </a>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endif %}
+                                </div>
+                            </div>
+                            <div class="modal-footer border-glass">
+                                <button type="button" class="btn btn-sm btn-outline-light border-glass" data-bs-dismiss="modal" style="font-size:0.7rem;">بستن</button>
+                                <form action="{% url 'change_user_verification' u.id %}" method="post" class="d-inline">
+                                    {% csrf_token %}
+                                    {% if u.is_verified %}
+                                    <button type="submit" name="action" value="reject" class="btn btn-sm action-btn-reject text-white fw-bold px-3" style="font-size:0.7rem;border-radius:10px;">رد تایید</button>
+                                    {% else %}
+                                    <button type="submit" name="action" value="verify" class="btn btn-sm action-btn-verify fw-bold px-3" style="font-size:0.7rem;border-radius:10px;">تایید هویت</button>
+                                    {% endif %}
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% empty %}
+                <div class="glass-card p-3 text-center" style="border-radius:14px;">
+                    <small class="text-custom-muted">کاربر جدیدی در انتظار تایید نیست.</small>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- ===== تراکنش‌ها ===== -->
+        <div class="tab-pane fade" id="tx" role="tabpanel">
+            <div class="d-flex align-items-center justify-content-between mb-2 flex-wrap">
+                <span class="text-white fw-bold small"><i class="fa-solid fa-receipt text-cyan me-1"></i>لیست تراکنش‌ها</span>
+                <span class="badge bg-dark border-glass text-custom-muted rounded-pill" style="font-size:0.6rem;">{{ all_transactions_list|length }} مورد</span>
+            </div>
+
+            <div class="mb-2">
+                <button class="btn btn-sm w-100 text-start py-2 px-3 rounded-3 d-flex align-items-center justify-content-between filter-toggle" type="button" data-bs-toggle="collapse" data-bs-target="#userFilters" aria-expanded="false">
+                    <span class="small text-custom-muted"><i class="fa-solid fa-sliders me-1"></i> فیلترها</span>
+                    <i class="fa-solid fa-chevron-down text-custom-muted" style="font-size:0.7rem;"></i>
+                </button>
+                <div class="collapse mt-2" id="userFilters">
+                    <div class="glass-card p-3" style="border-radius:14px;">
+                        <form method="get" action="">
+                            <div class="mb-2">
+                                <input type="text" name="user_search" class="form-control form-control-sm bg-dark text-white border-secondary-subtle" placeholder="جستجو نام کاربری، ایمیل یا شماره موبایل..." value="{{ user_search }}" style="font-size:0.75rem;">
+                            </div>
+                            <div class="mb-2">
+                                <input type="text" name="national_id_search" class="form-control form-control-sm bg-dark text-white border-secondary-subtle" placeholder="جستجو با شماره ملی..." value="{{ national_id_search }}" style="font-size:0.75rem;">
+                            </div>
+                            <div class="row g-2">
+                                <div class="col-8">
+                                    <select name="user_status" class="form-select form-select-sm bg-dark text-white border-secondary-subtle" style="font-size:0.7rem;">
+                                        <option value="">همه کاربران</option>
+                                        <option value="verified" {% if user_status_filter == 'verified' %}selected{% endif %}>تایید شده</option>
+                                        <option value="unverified" {% if user_status_filter == 'unverified' %}selected{% endif %}>در انتظار</option>
+                                    </select>
+                                </div>
+                                <div class="col-4">
+                                    <button type="submit" class="btn btn-sm action-btn-verify text-dark fw-bold w-100" style="border-radius:10px;"><i class="fa-solid fa-search"></i></button>
+                                </div>
+                            </div>
+                            <a href="{% url 'admin_dashboard' %}#us-tab" class="btn btn-sm btn-outline-light border-glass w-100 mt-2" style="border-radius:10px;">پاک کردن فیلترها</a>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            {% for tx in all_transactions_list %}
+            <div class="glass-card p-3 mb-2 tx-card" style="border-radius:14px;">
+                <div class="d-flex align-items-center justify-content-between mb-1">
+                    <div class="d-flex align-items-center gap-2">
+                        <span class="text-custom-muted font-monospace" style="font-size:0.6rem;">#{{ tx.id }}</span>
+                        <span class="fw-bold text-cyan" style="font-size:0.75rem;">{{ tx.user.username }}</span>
+                        {% if tx.request_type == 'BUY' %}
+                        <span class="badge bg-success-subtle text-neon-green rounded-2" style="font-size:0.55rem;">خرید</span>
+                        {% else %}
+                        <span class="badge bg-danger-subtle text-coral rounded-2" style="font-size:0.55rem;">فروش</span>
+                        {% endif %}
+                    </div>
+                    <span class="text-custom-muted" style="font-size:0.6rem;">{{ tx.created_at|date:"Y/m/d H:i" }}</span>
+                </div>
+                <div class="d-flex align-items-center justify-content-between mt-2">
+                    <div>
+                        <span class="fw-bold text-white" style="font-size:0.8rem;">{{ tx.crypto_name }}</span>
+                        <span class="text-custom-muted me-2" style="font-size:0.65rem;">{{ tx.amount }}</span>
+                    </div>
+                    <span class="text-ltr text-cyan fw-bold" style="font-size:0.7rem;">{{ tx.total_price|intcomma }} <span class="text-custom-muted" style="font-size:0.5rem;">تومان</span></span>
+                </div>
+                <div class="d-flex align-items-center justify-content-between mt-2 pt-1" style="border-top:1px solid rgba(255,255,255,0.04);">
+                    <div>
+                        {% if tx.status == 'done' %}
+                        <span class="badge bg-success-subtle text-neon-green rounded-2" style="font-size:0.55rem;">{{ tx.get_status_display }}</span>
+                        {% elif tx.status == 'rejected' %}
+                        <span class="badge bg-danger-subtle text-coral rounded-2" style="font-size:0.55rem;">{{ tx.get_status_display }}</span>
+                        {% else %}
+                        <span class="badge bg-warning-subtle text-warning rounded-2" style="font-size:0.55rem;">{{ tx.get_status_display }}</span>
+                        {% endif %}
+                    </div>
+                    <form action="{% url 'change_transaction_status' tx.id %}" method="post" class="d-inline-flex gap-1 align-items-center">
+                        {% csrf_token %}
+                        <select name="status" class="form-select form-select-sm bg-dark text-white border-secondary-subtle" style="font-size:0.65rem;width:auto;min-width:80px;">
+                            {% for key, label in tx.STATUS_CHOICES %}
+                            <option value="{{ key }}" {% if tx.status == key %}selected{% endif %}>{{ label }}</option>
+                            {% endfor %}
+                        </select>
+                        <button type="submit" class="btn btn-sm px-2 py-1 border-0 action-btn-verify fw-bold text-dark" style="border-radius:8px;font-size:0.65rem;">
+                            <i class="fa-solid fa-rotate"></i>
+                        </button>
+                    </form>
+                </div>
+            </div>
+            {% empty %}
+            <div class="glass-card p-4 text-center" style="border-radius:14px;">
+                <small class="text-custom-muted">تراکنشی یافت نشد.</small>
+            </div>
             {% endfor %}
         </div>
-    {% endif %}
-    
-    <div class="d-flex align-items-center gap-2 mb-4">
-        <div class="admin-icon-glow d-flex align-items-center justify-content-center" style="width: 45px; height: 45px; background: rgba(0, 229, 255, 0.1); border: 1px solid rgba(0, 229, 255, 0.2); border-radius: 14px;">
-            <i class="fa-solid fa-user-gear text-cyan h5 mb-0"></i>
-        </div>
-        <div>
-            <h5 class="fw-black text-white mb-0" style="font-weight: 800;">پنل نظارت و مدیریت</h5>
-            <p class="text-custom-muted small mb-0">خلاصه وضعیت و آمارهای حیاتی پلتفرم tronlnd</p>
-        </div>
-    </div>
 
-    <div class="row g-3 mb-2">
-        <div class="col-6 col-md-4">
-            <div class="glass-card p-3 text-center position-relative overflow-hidden h-100 d-flex flex-column justify-content-center">
-                <div class="stat-icon-bg opacity-10 position-absolute">
-                    <i class="fa-solid fa-users"></i>
-                </div>
-                <span class="text-custom-muted d-block small mb-2">کل کاربران</span>
-                <h3 class="fw-bold text-white mb-0 text-ltr">{{ total_users|default:"0"|intcomma }}</h3>
-                <div class="mt-2" style="font-size: 0.7rem; color: var(--accent-cyan);">
-                    <i class="fa-solid fa-circle-check me-1"></i>حساب‌های فعال
-                </div>
+        <!-- ===== کاربران ===== -->
+        <div class="tab-pane fade" id="us" role="tabpanel">
+            <div class="d-flex align-items-center justify-content-between mb-2 flex-wrap">
+                <span class="text-white fw-bold small"><i class="fa-solid fa-users text-cyan me-1"></i>لیست کاربران</span>
+                <span class="badge bg-dark border-glass text-custom-muted rounded-pill" style="font-size:0.6rem;">{{ all_users_list|length }} کاربر</span>
             </div>
-        </div>
 
-        <div class="col-6 col-md-4">
-            <div class="glass-card p-3 text-center position-relative overflow-hidden h-100 d-flex flex-column justify-content-center">
-                <div class="stat-icon-bg opacity-10 position-absolute">
-                    <i class="fa-solid fa-receipt"></i>
-                </div>
-                <span class="text-custom-muted d-block small mb-2">کل درخواست‌ها</span>
-                <h3 class="fw-bold text-white mb-0 text-ltr">{{ total_transactions|default:"0"|intcomma }}</h3>
-                <div class="mt-2 text-custom-muted" style="font-size: 0.7rem;">
-                    <i class="fa-solid fa-database me-1"></i>ثبت شده در دیتابیس
-                </div>
-            </div>
-        </div>
-
-        <div class="col-12 col-md-4">
-            <div class="glass-card p-3 text-center position-relative overflow-hidden h-100 d-flex flex-column justify-content-center" style="border-color: rgba(255, 229, 0, 0.15); background: rgba(255, 193, 7, 0.03);">
-                <div class="stat-icon-bg opacity-10 position-absolute text-warning">
-                    <i class="fa-solid fa-clock"></i>
-                </div>
-                <span class="text-custom-muted d-block small mb-2">در انتظار بررسی</span>
-                <h3 class="fw-bold text-warning mb-0 text-ltr">{{ pending_transactions|default:"0"|intcomma }}</h3>
-                <div class="mt-2 text-warning" style="font-size: 0.7rem; font-weight: 500;">
-                    <i class="fa-solid fa-bell-exclamation animate-pulse me-1"></i>نیازمند اقدام فوری
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="row g-3 mt-1 mb-4">
-        <div class="col-6">
-            <div class="glass-card p-4 text-center position-relative overflow-hidden" style="border-color: rgba(0, 230, 118, 0.15); background: linear-gradient(180deg, rgba(0, 230, 118, 0.02) 0%, transparent 100%);">
-                <div class="stat-icon-bg opacity-10 position-absolute text-success" style="left: 15px; bottom: 5px;">
-                    <i class="fa-solid fa-circle-arrow-down"></i>
-                </div>
-                <div class="d-inline-flex p-2 rounded-3 mb-2" style="background: rgba(0, 230, 118, 0.08);">
-                    <i class="fa-solid fa-arrow-down-long text-neon-green"></i>
-                </div>
-                <span class="text-custom-muted d-block small mb-1">تعداد خرید</span>
-                <h3 class="fw-black text-neon-green mb-0 text-ltr" style="font-weight: 800;">{{ buy_count|default:"0"|intcomma }}</h3>
-            </div>
-        </div>
-
-        <div class="col-6">
-            <div class="glass-card p-4 text-center position-relative overflow-hidden" style="border-color: rgba(255, 82, 82, 0.15); background: linear-gradient(180deg, rgba(255, 82, 82, 0.02) 0%, transparent 100%);">
-                <div class="stat-icon-bg opacity-10 position-absolute text-danger" style="left: 15px; bottom: 5px;">
-                    <i class="fa-solid fa-circle-arrow-up"></i>
-                </div>
-                <div class="d-inline-flex p-2 rounded-3 mb-2" style="background: rgba(255, 82, 82, 0.08);">
-                    <i class="fa-solid fa-arrow-up-long text-coral"></i>
-                </div>
-                <span class="text-custom-muted d-block small mb-1">تعداد فروش</span>
-                <h3 class="fw-black text-coral mb-0 text-ltr" style="font-weight: 800;">{{ sell_count|default:"0"|intcomma }}</h3>
-            </div>
-        </div>
-    </div>
-
-    <hr class="border-glass my-4">
-
-    <div class="mb-5">
-        <div class="d-flex align-items-center gap-2 mb-3">
-            <i class="fa-solid fa-receipt text-warning fs-5"></i>
-            <h6 class="text-white fw-bold mb-0">درخواست‌های معامله در انتظار بررسی</h6>
-        </div>
-
-        <div class="table-responsive glass-card p-2">
-            <table class="table text-white align-middle mb-0 text-center small">
-                <thead>
-                    <tr class="text-custom-muted border-bottom border-glass">
-                        <th class="py-3">کاربر</th>
-                        <th>نوع درخواست</th>
-                        <th>نام ارز</th>
-                        <th>مقدار ارز</th>
-                        <th>قیمت کل</th>
-                        <th>عملیات وضعیت</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for tx in pending_transactions_list %}
-                        <tr class="border-bottom border-glass-subtle">
-                            <td class="py-3 fw-medium text-cyan">{{ tx.user.username }}</td>
-                            <td>
-                                {% if tx.request_type == 'BUY' %}
-                                    <span class="badge bg-success-subtle text-neon-green rounded-2 px-2 py-1">خرید</span>
-                                {% else %}
-                                    <span class="badge bg-danger-subtle text-coral rounded-2 px-2 py-1">فروش</span>
-                                {% endif %}
-                            </td>
-                            <td class="fw-bold text-white">{{ tx.crypto_name }}</td>
-                            <td class="text-ltr font-monospace">{{ tx.amount }}</td>
-                            <td class="text-ltr text-cyan fw-bold">
-                                {{ tx.total_price|intcomma }} <span class="small opacity-50" style="font-size: 0.65rem;">تومان</span>
-                            </td>
-                            <td>
-                                <form action="{% url 'change_transaction_status' tx.id %}" method="post" class="d-inline-flex gap-1">
-                                    {% csrf_token %}
-                                    <button type="submit" name="status" value="done" class="btn btn-action-success btn-sm text-dark rounded-2 fw-bold px-3 py-1">
-                                        <i class="fa-solid fa-check me-1"></i> تکمیل شد
-                                    </button>
-                                </form>
-                            </td>
-                        </tr>
-                    {% empty %}
-                        <tr>
-                            <td colspan="6" class="py-4 text-custom-muted text-center">هیچ درخواست معامله‌ای در انتظار بررسی نیست.</td>
-                        </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
-    </div>
-
-    <div class="mb-5">
-        <div class="d-flex align-items-center gap-2 mb-3">
-            <i class="fa-solid fa-id-card text-cyan fs-5"></i>
-            <h6 class="text-white fw-bold mb-0">بررسی حساب‌ها و احراز هویت کاربران جدید</h6>
-        </div>
-
-        <div class="table-responsive glass-card p-2">
-            <table class="table text-white align-middle mb-0 text-center small">
-                <thead>
-                    <tr class="text-custom-muted border-bottom border-glass">
-                        <th class="py-3">نام کاربری</th>
-                        <th>نام کامل</th>
-                        <th>شماره موبایل</th>
-                        <th>شماره کارت بانکی</th>
-                        <th>مدارک ارسالی</th>
-                        <th>عملیات ثبت‌نام</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for u in unverified_users_list %}
-                        <tr class="border-bottom border-glass-subtle">
-                            <td class="py-3 text-cyan fw-medium">{{ u.username }}</td>
-                            <td>{{ u.full_name|default:"-" }}</td>
-                            <td class="text-ltr">{{ u.mobile }}</td>
-                            <td class="text-ltr font-monospace text-custom-muted">{{ u.card_number|default:"-" }}</td>
-                            <td>
-                                <div class="d-flex justify-content-center gap-1">
-                                    {% if u.national_card_image %}
-                                        <a href="{{ u.national_card_image.url }}" target="_blank" class="btn btn-outline-light btn-xs py-1 px-2 border-glass" style="font-size: 0.65rem;">
-                                            <i class="fa-solid fa-image me-1"></i>کارت ملی
-                                        </a>
-                                    {% endif %}
-                                    {% if u.selfie_image %}
-                                        <a href="{{ u.selfie_image.url }}" target="_blank" class="btn btn-outline-light btn-xs py-1 px-2 border-glass" style="font-size: 0.65rem;">
-                                            <i class="fa-solid fa-portrait me-1"></i>تصویر سلفی
-                                        </a>
-                                    {% endif %}
-                                    {% if not u.national_card_image and not u.selfie_image %}
-                                        <span class="text-custom-muted small">بدون مدرک</span>
-                                    {% endif %}
+            <div class="mb-2">
+                <button class="btn btn-sm w-100 text-start py-2 px-3 rounded-3 d-flex align-items-center justify-content-between filter-toggle" type="button" data-bs-toggle="collapse" data-bs-target="#userFilters" aria-expanded="false">
+                    <span class="small text-custom-muted"><i class="fa-solid fa-sliders me-1"></i> فیلترها</span>
+                    <i class="fa-solid fa-chevron-down text-custom-muted" style="font-size:0.7rem;"></i>
+                </button>
+                <div class="collapse mt-2" id="userFilters">
+                    <div class="glass-card p-3" style="border-radius:14px;">
+                        <form method="get" action="">
+                            <div class="mb-2">
+                                <input type="text" name="user_search" class="form-control form-control-sm bg-dark text-white border-secondary-subtle" placeholder="جستجو نام کاربری، ایمیل یا شماره موبایل..." value="{{ user_search }}" style="font-size:0.75rem;">
+                            </div>
+                            <div class="mb-2">
+                                <input type="text" name="national_id_search" class="form-control form-control-sm bg-dark text-white border-secondary-subtle" placeholder="جستجو با شماره ملی..." value="{{ national_id_search }}" style="font-size:0.75rem;">
+                            </div>
+                            <div class="row g-2">
+                                <div class="col-8">
+                                    <select name="user_status" class="form-select form-select-sm bg-dark text-white border-secondary-subtle" style="font-size:0.7rem;">
+                                        <option value="">همه کاربران</option>
+                                        <option value="verified" {% if user_status_filter == 'verified' %}selected{% endif %}>تایید شده</option>
+                                        <option value="unverified" {% if user_status_filter == 'unverified' %}selected{% endif %}>در انتظار</option>
+                                    </select>
                                 </div>
-                            </td>
-                            <td>
-                                <form action="{% url 'change_user_verification' u.id %}" method="post" class="d-inline-flex gap-1">
-                                    {% csrf_token %}
-                                    <button type="submit" name="action" value="verify" class="btn btn-action-cyan btn-sm text-dark rounded-2 fw-bold px-3 py-1">
-                                        تایید احراز هویت
-                                    </button>
-                                </form>
-                            </td>
-                        </tr>
-                    {% empty %}
-                        <tr>
-                            <td colspan="6" class="py-4 text-custom-muted text-center">کاربر جدیدی در انتظار تایید احراز هویت وجود ندارد.</td>
-                        </tr>
+                                <div class="col-4">
+                                    <button type="submit" class="btn btn-sm action-btn-verify text-dark fw-bold w-100" style="border-radius:10px;"><i class="fa-solid fa-search"></i></button>
+                                </div>
+                            </div>
+                            <a href="{% url 'admin_dashboard' %}#us-tab" class="btn btn-sm btn-outline-light border-glass w-100 mt-2" style="border-radius:10px;">پاک کردن فیلترها</a>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            {% for u in all_users_list %}
+            <div class="glass-card p-3 mb-2" style="border-radius:14px;">
+                <div class="d-flex align-items-center justify-content-between mb-1">
+                    <div class="min-w-0" style="flex:1;">
+                        <div class="d-flex align-items-center gap-2">
+                            <span class="fw-bold text-cyan" style="font-size:0.8rem;">{{ u.username }}</span>
+                            {% if u.is_verified %}
+                            <span class="badge bg-success-subtle text-neon-green rounded-2" style="font-size:0.5rem;">تایید شده</span>
+                            {% else %}
+                            <span class="badge bg-warning-subtle text-warning rounded-2" style="font-size:0.5rem;">در انتظار</span>
+                            {% endif %}
+                        </div>
+                        <small class="text-custom-muted" style="font-size:0.65rem;">{{ u.full_name|default:"-" }}</small>
+                    </div>
+                    <div class="d-flex gap-1 flex-shrink-0">
+                        <button class="btn btn-sm p-1 border-0 btn-docs" style="border-radius:8px;width:30px;height:30px;" data-bs-toggle="modal" data-bs-target="#userFullModal{{ u.id }}">
+                            <i class="fa-solid fa-eye" style="font-size:0.7rem;"></i>
+                        </button>
+                        <form action="{% url 'delete_user' u.id %}" method="post" class="d-inline" onsubmit="return confirm('آیا از حذف کاربر {{ u.username }} اطمینان دارید؟');">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-sm p-1 border-0" style="border-radius:8px;width:30px;height:30px;background:rgba(255,82,82,0.1);color:var(--accent-coral);">
+                                <i class="fa-solid fa-trash" style="font-size:0.7rem;"></i>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+                <div class="d-flex align-items-center justify-content-between mt-1">
+                    <div style="font-size:0.6rem;"><span class="text-custom-muted text-ltr">{{ u.mobile }}</span></div>
+                    <form action="{% url 'change_user_verification' u.id %}" method="post" class="d-inline">
+                        {% csrf_token %}
+                        {% if u.is_verified %}
+                        <button type="submit" name="action" value="reject" class="btn btn-sm px-2 py-1 border-0" style="border-radius:8px;font-size:0.6rem;background:rgba(255,82,82,0.15);color:var(--accent-coral);">رد تایید</button>
+                        {% else %}
+                        <button type="submit" name="action" value="verify" class="btn btn-sm px-2 py-1 border-0 action-btn-verify text-dark fw-bold" style="border-radius:8px;font-size:0.6rem;">تایید</button>
+                        {% endif %}
+                    </form>
+                </div>
+                {% if u.national_card_image or u.selfie_image %}
+                <div class="d-flex gap-2 mt-2">
+                    {% if u.national_card_image %}
+                    <a href="{{ u.national_card_image.url }}" target="_blank">
+                        <img src="{{ u.national_card_image.url }}" alt="کارت ملی" class="rounded-2" style="width:60px;height:45px;object-fit:cover;border:1px solid rgba(255,255,255,0.1);cursor:pointer;">
+                    </a>
+                    {% endif %}
+                    {% if u.selfie_image %}
+                    <a href="{{ u.selfie_image.url }}" target="_blank">
+                        <img src="{{ u.selfie_image.url }}" alt="سلفی" class="rounded-2" style="width:45px;height:45px;object-fit:cover;border:1px solid rgba(255,255,255,0.1);cursor:pointer;">
+                    </a>
+                    {% endif %}
+                </div>
+                {% endif %}
+            </div>
+
+            <!-- User Full Modal -->
+            <div class="modal fade" id="userFullModal{{ u.id }}" tabindex="-1" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content glass-card border-glass" style="background:#141a26;">
+                        <div class="modal-header border-glass">
+                            <h6 class="modal-title text-white fw-bold small">جزئیات: {{ u.username }}</h6>
+                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="d-flex flex-column gap-2" style="font-size:0.75rem;">
+                                <div class="d-flex justify-content-between"><span class="text-custom-muted">نام کاربری:</span><span class="text-white fw-bold">{{ u.username }}</span></div>
+                                <div class="d-flex justify-content-between"><span class="text-custom-muted">نام کامل:</span><span class="text-white fw-bold">{{ u.full_name|default:"-" }}</span></div>
+                                <div class="d-flex justify-content-between"><span class="text-custom-muted">موبایل:</span><span class="text-white fw-bold text-ltr">{{ u.mobile }}</span></div>
+                                <div class="d-flex justify-content-between"><span class="text-custom-muted">ایمیل:</span><span class="text-white fw-bold text-ltr" style="font-size:0.7rem;">{{ u.email|default:"-" }}</span></div>
+                                <div class="d-flex justify-content-between"><span class="text-custom-muted">شماره کارت:</span><span class="text-white fw-bold text-ltr font-monospace" style="font-size:0.65rem;">{{ u.card_number|default:"-" }}</span></div>
+                                <div class="d-flex justify-content-between"><span class="text-custom-muted">شماره شبا:</span><span class="text-white fw-bold text-ltr font-monospace" style="font-size:0.65rem;">{{ u.iban|default:"-" }}</span></div>
+                                <div class="d-flex justify-content-between"><span class="text-custom-muted">تاریخ عضویت:</span><span class="text-white small">{{ u.date_joined|date:"Y/m/d H:i" }}</span></div>
+                                <div class="d-flex justify-content-between"><span class="text-custom-muted">تعداد تراکنش‌ها:</span><span class="text-cyan fw-bold">{{ u.transactions.count }}</span></div>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <span class="text-custom-muted">وضعیت احراز:</span>
+                                    {% if u.is_verified %}<span class="badge bg-success-subtle text-neon-green rounded-2" style="font-size:0.65rem;">تایید شده</span>{% else %}<span class="badge bg-warning-subtle text-warning rounded-2" style="font-size:0.65rem;">در انتظار</span>{% endif %}
+                                </div>
+{% if u.national_card_image or u.selfie_image %}
+<div class="mt-1">
+    <span class="text-custom-muted d-block mb-1" style="font-size:0.7rem;">مدارک ارسالی:</span>
+    <div class="d-flex gap-3 flex-wrap">
+        {% if u.national_card_image %}
+        <div>
+            <small class="text-custom-muted d-block mb-1" style="font-size:0.6rem;">کارت ملی</small>
+            <a href="{{ u.national_card_image.url }}" target="_blank">
+                <img src="{{ u.national_card_image.url }}" alt="کارت ملی" class="rounded-2 border-glass" style="width:120px;height:80px;object-fit:cover;cursor:pointer;">
+            </a>
+        </div>
+        {% endif %}
+        {% if u.selfie_image %}
+        <div>
+            <small class="text-custom-muted d-block mb-1" style="font-size:0.6rem;">سلفی</small>
+            <a href="{{ u.selfie_image.url }}" target="_blank">
+                <img src="{{ u.selfie_image.url }}" alt="سلفی" class="rounded-2 border-glass" style="width:80px;height:80px;object-fit:cover;cursor:pointer;">
+            </a>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endif %}
+                            </div>
+                        </div>
+                        <div class="modal-footer border-glass">
+                            <button type="button" class="btn btn-sm btn-outline-light border-glass" data-bs-dismiss="modal" style="font-size:0.7rem;">بستن</button>
+                            <form action="{% url 'change_user_verification' u.id %}" method="post" class="d-inline">
+                                {% csrf_token %}
+                                {% if u.is_verified %}
+                                <button type="submit" name="action" value="reject" class="btn btn-sm action-btn-reject text-white fw-bold px-3" style="font-size:0.7rem;border-radius:10px;">رد تایید</button>
+                                {% else %}
+                                <button type="submit" name="action" value="verify" class="btn btn-sm action-btn-verify text-dark fw-bold px-3" style="font-size:0.7rem;border-radius:10px;">تایید هویت</button>
+                                {% endif %}
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <div class="glass-card p-4 text-center" style="border-radius:14px;">
+                <small class="text-custom-muted">کاربری یافت نشد.</small>
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- ===== صفحه اصلی ===== -->
+        <div class="tab-pane fade" id="hp" role="tabpanel">
+            <div class="d-flex align-items-center justify-content-between mb-2 flex-wrap">
+                <span class="text-white fw-bold small"><i class="fa-solid fa-house text-cyan me-1"></i>مدیریت صفحه اصلی</span>
+                <button class="btn btn-sm action-btn-verify text-dark fw-bold px-3" style="border-radius:10px;" data-bs-toggle="modal" data-bs-target="#addSectionModal">
+                    <i class="fa-solid fa-plus me-1"></i> افزودن
+                </button>
+            </div>
+            {% for section in homepage_sections %}
+            <div class="glass-card p-3 mb-2" style="border-radius:14px;">
+                <div class="d-flex align-items-start justify-content-between">
+                    <div class="min-w-0" style="flex:1;">
+                        <div class="d-flex align-items-center gap-2">
+                            {% if section.icon %}<i class="{{ section.icon }} text-cyan" style="font-size:0.8rem;"></i>{% endif %}
+                            <span class="fw-bold text-white" style="font-size:0.8rem;">{{ section.title|default:"بدون عنوان" }}</span>
+                            <span class="badge bg-dark border-glass text-custom-muted rounded-pill" style="font-size:0.55rem;">{{ section.get_section_key_display }}</span>
+                        </div>
+                        {% if section.subtitle %}<small class="text-custom-muted d-block" style="font-size:0.65rem;">{{ section.subtitle }}</small>{% endif %}
+                    </div>
+                    <div class="d-flex gap-1 flex-shrink-0">
+                        <button class="btn btn-sm p-1 border-0 btn-docs" style="border-radius:8px;width:30px;height:30px;" data-bs-toggle="modal" data-bs-target="#editSectionModal{{ section.id }}">
+                            <i class="fa-solid fa-pen" style="font-size:0.7rem;"></i>
+                        </button>
+                        <form action="{% url 'admin_dashboard' %}" method="post" class="d-inline" onsubmit="return confirm('آیا از حذف این بخش اطمینان دارید؟');">
+                            {% csrf_token %}
+                            <input type="hidden" name="form_type" value="delete_section">
+                            <input type="hidden" name="section_id" value="{{ section.id }}">
+                            <button type="submit" class="btn btn-sm p-1 border-0" style="border-radius:8px;width:30px;height:30px;background:rgba(255,82,82,0.1);color:var(--accent-coral);">
+                                <i class="fa-solid fa-trash" style="font-size:0.7rem;"></i>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+                {% if section.content %}
+                <p class="text-white mt-1 mb-0" style="font-size:0.7rem;white-space:pre-line;">{{ section.content|truncatewords:20 }}</p>
+                {% endif %}
+                <div class="d-flex gap-2 mt-1">
+                    <span class="badge bg-dark border-glass text-custom-muted rounded-pill" style="font-size:0.55rem;">ترتیب: {{ section.order }}</span>
+                    {% if section.is_active %}
+                    <span class="badge bg-success-subtle text-neon-green rounded-pill" style="font-size:0.55rem;">فعال</span>
+                    {% else %}
+                    <span class="badge bg-danger-subtle text-coral rounded-pill" style="font-size:0.55rem;">غیرفعال</span>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Edit Section Modal -->
+            <div class="modal fade" id="editSectionModal{{ section.id }}" tabindex="-1" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content glass-card border-glass" style="background:#141a26;">
+                        <div class="modal-header border-glass">
+                            <h6 class="modal-title text-white fw-bold small">ویرایش بخش</h6>
+                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <form action="{% url 'admin_dashboard' %}" method="post" enctype="multipart/form-data">
+                            {% csrf_token %}
+                            <input type="hidden" name="form_type" value="edit_section">
+                            <input type="hidden" name="section_id" value="{{ section.id }}">
+                            <div class="modal-body">
+                                {% for field in section_form %}
+                                <div class="mb-3">
+                                    <label class="form-label text-custom-muted small" style="font-size:0.7rem;">{{ field.label }}</label>
+                                    {{ field }}
+                                    {% if field.errors %}<div class="text-danger small mt-1" style="font-size:0.65rem;">{{ field.errors }}</div>{% endif %}
+                                </div>
+                                {% endfor %}
+                            </div>
+                            <div class="modal-footer border-glass">
+                                <button type="button" class="btn btn-sm btn-outline-light border-glass" data-bs-dismiss="modal" style="font-size:0.7rem;">انصراف</button>
+                                <button type="submit" class="btn btn-sm action-btn-verify text-dark fw-bold px-4" style="border-radius:10px;">ذخیره</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <div class="glass-card p-4 text-center" style="border-radius:14px;">
+                <small class="text-custom-muted">هنوز بخشی تعریف نشده است.</small>
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- ===== تنظیمات ===== -->
+        <div class="tab-pane fade" id="st" role="tabpanel">
+            <div class="glass-card p-3 mb-3" style="border-radius:14px;">
+                <h6 class="text-white fw-bold mb-3 small"><i class="fa-solid fa-globe text-cyan me-2"></i>تنظیمات عمومی سایت</h6>
+                <form action="{% url 'admin_dashboard' %}" method="post">
+                    {% csrf_token %}
+                    <input type="hidden" name="form_type" value="site_setting">
+                    {% for field in site_form %}
+                    <div class="mb-3">
+                        <label class="form-label text-custom-muted small" style="font-size:0.7rem;">{{ field.label }}</label>
+                        {{ field }}
+                        {% if field.errors %}<div class="text-danger small mt-1" style="font-size:0.65rem;">{{ field.errors }}</div>{% endif %}
+                    </div>
                     {% endfor %}
-                </tbody>
-            </table>
+                    <button type="submit" class="btn btn-sm action-btn-verify text-dark fw-bold w-100 py-2" style="border-radius:10px;">ذخیره تنظیمات سایت</button>
+                </form>
+            </div>
+            <div class="glass-card p-3 mb-3" style="border-radius:14px;">
+                <h6 class="text-white fw-bold mb-3 small"><i class="fa-solid fa-coins text-warning me-2"></i>تنظیمات قیمت‌گذاری</h6>
+                <form action="{% url 'admin_dashboard' %}" method="post">
+                    {% csrf_token %}
+                    <input type="hidden" name="form_type" value="crypto_setting">
+                    {% for field in crypto_form %}
+                    <div class="mb-3">
+                        <label class="form-label text-custom-muted small" style="font-size:0.7rem;">{{ field.label }}</label>
+                        {{ field }}
+                        {% if field.errors %}<div class="text-danger small mt-1" style="font-size:0.65rem;">{{ field.errors }}</div>{% endif %}
+                    </div>
+                    {% endfor %}
+                    <button type="submit" class="btn btn-sm w-100 py-2" style="border-radius:10px;background:rgba(0,230,118,0.15);color:var(--accent-green);border:none;">ذخیره تنظیمات قیمت</button>
+                </form>
+            </div>
+            <div class="mt-3">
+                <a href="{% url 'admin:index' %}" class="btn btn-modern btn-modern-outline w-100 py-3 text-center text-cyan d-flex align-items-center justify-content-center gap-2" style="border-color:rgba(0,229,255,0.2);background:rgba(0,229,255,0.02);border-radius:14px;">
+                    <i class="fa-solid fa-sliders"></i>
+                    <span class="small">ورود به پنل مدیریت پیشرفته (جنگو)</span>
+                </a>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<!-- Add Section Modal -->
+<div class="modal fade" id="addSectionModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content glass-card border-glass" style="background:#141a26;">
+            <div class="modal-header border-glass">
+                <h6 class="modal-title text-white fw-bold small">افزودن بخش جدید</h6>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form action="{% url 'admin_dashboard' %}" method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                <input type="hidden" name="form_type" value="add_section">
+                <div class="modal-body">
+                    {% for field in section_form %}
+                    <div class="mb-3">
+                        <label class="form-label text-custom-muted small" style="font-size:0.7rem;">{{ field.label }}</label>
+                        {{ field }}
+                        {% if field.help_text %}<div class="form-text text-custom-muted" style="font-size:0.65rem;">{{ field.help_text }}</div>{% endif %}
+                        {% if field.errors %}<div class="text-danger small mt-1" style="font-size:0.65rem;">{{ field.errors }}</div>{% endif %}
+                    </div>
+                    {% endfor %}
+                </div>
+                <div class="modal-footer border-glass">
+                    <button type="button" class="btn btn-sm btn-outline-light border-glass" data-bs-dismiss="modal" style="font-size:0.7rem;">انصراف</button>
+                    <button type="submit" class="btn btn-sm action-btn-verify text-dark fw-bold px-4" style="border-radius:10px;">افزودن</button>
+                </div>
+            </form>
         </div>
     </div>
-
-    <div class="mt-4 pt-2">
-        <a href="{% url 'admin:index' %}" class="btn btn-modern btn-modern-outline w-100 py-3 text-center text-cyan d-flex align-items-center justify-content-center gap-2" style="border-color: rgba(0, 229, 255, 0.2); background: rgba(0, 229, 255, 0.02);">
-            <i class="fa-solid fa-sliders"></i>
-            <span>ورود به پنل مدیریت پیشرفته (جنگو)</span>
-        </a>
-    </div>
-
 </div>
 {% endblock %}
 
 {% block extra_css %}
 <style>
-    /* استایل‌های پایه گلس‌مورفیک پلتفرم */
-    .border-glass { border-color: rgba(255, 255, 255, 0.07) !important; }
-    .border-glass-subtle { border-color: rgba(255, 255, 255, 0.03) !important; }
-    
-    .stat-icon-box {
-        position: relative;
-    }
-    
-    .stat-icon-bg {
-        font-size: 2.8rem;
-        bottom: -5px;
-        left: 12px;
-        pointer-events: none;
-        transition: all 0.3s ease;
-    }
-    
-    .glass-card:hover .stat-icon-bg {
-        transform: scale(1.1) rotate(-5deg);
-        opacity: 0.18 !important;
-    }
-
-    .text-ltr {
-        direction: ltr;
-        display: inline-block;
-    }
-
-    @keyframes pulse-warning {
-        0% { opacity: 0.6; }
-        50% { opacity: 1; transform: scale(1.05); }
-        100% { opacity: 0.6; }
-    }
-    
-    .animate-pulse {
-        animation: pulse-warning 2s infinite ease-in-out;
-        display: inline-block;
-    }
-
-    /* استایل‌های اختصاصی جداول کاستوم پنل نظارت */
-    .table { background: transparent !important; }
-    .table th { font-weight: 700; font-size: 0.75rem; color: #a1a1a6; border-bottom: none !important; }
-    .table td { border-bottom: none !important; }
-    
-    /* دکمه‌های اکشن درون‌برنامه‌ای ادمین */
-    .btn-action-success {
-        background: #00e676 !important;
-        border: none;
-        font-size: 0.75rem;
-        transition: all 0.2s ease-in-out;
-    }
-    .btn-action-success:hover {
-        background: #00c853 !important;
-        box-shadow: 0 0 10px rgba(0, 230, 118, 0.3);
-    }
-
-    .btn-action-cyan {
-        background: #00e5ff !important;
-        border: none;
-        font-size: 0.75rem;
-        transition: all 0.2s ease-in-out;
-    }
-    .btn-action-cyan:hover {
-        background: #00b8d4 !important;
-        box-shadow: 0 0 10px rgba(0, 229, 255, 0.3);
-    }
-    
-    .btn-xs { padding: 4px 8px; border-radius: 6px; }
-    .bg-success-subtle { background: rgba(0, 230, 118, 0.08) !important; }
-    .bg-danger-subtle { background: rgba(255, 82, 82, 0.08) !important; }
+    .admin-tab-btn { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.07); color: var(--text-muted); border-radius: 12px; font-size: 0.75rem; font-weight: 600; white-space: nowrap; transition: all 0.2s; }
+    .admin-tab-btn:hover { background: rgba(255,255,255,0.06); color: #fff; }
+    .admin-tab-btn.active { background: rgba(0,229,255,0.12); border-color: rgba(0,229,255,0.25); color: var(--accent-cyan); }
+    .filter-toggle { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.07); color: var(--text-muted); }
+    .filter-toggle:hover { background: rgba(255,255,255,0.06); }
+    .action-btn-done { background: rgba(0,230,118,0.15); color: var(--accent-green); }
+    .action-btn-done:hover { background: rgba(0,230,118,0.25); }
+    .action-btn-reject { background: rgba(255,82,82,0.15); color: var(--accent-coral); }
+    .action-btn-reject:hover { background: rgba(255,82,82,0.25); }
+    .action-btn-verify { background: var(--accent-cyan); border: none; color: #000 !important; }
+    .action-btn-verify:hover { background: #00b8d4; }
+    .btn-docs { background: rgba(255,255,255,0.05); color: var(--text-muted); }
+    .btn-docs:hover { background: rgba(255,255,255,0.1); color: #fff; }
+    .pending-item { border-right: 3px solid rgba(255,193,7,0.3); }
+    select option { background: #141a26; color: #fff; }
+    .min-w-0 { min-width: 0; overflow-wrap: break-word; word-break: break-word; }
+    .text-ltr { direction: ltr; display: inline-block; }
+    .modal-content .form-control:focus, .modal-content .form-select:focus { box-shadow: 0 0 0 0.25rem rgba(0,229,255,0.15) !important; border-color: var(--accent-cyan) !important; }
+    .form-check-input:checked { background-color: var(--accent-cyan); border-color: var(--accent-cyan); }
 </style>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    var triggerTabList = [].slice.call(document.querySelectorAll('#adminTabs button[data-bs-toggle="pill"]'));
+    triggerTabList.forEach(function(triggerEl) {
+        triggerEl.addEventListener('shown.bs.tab', function(event) {
+            var targetId = event.target.getAttribute('data-bs-target');
+            if (targetId && targetId.startsWith('#')) {
+                history.replaceState(null, '', window.location.pathname + targetId + '-tab');
+            }
+        });
+    });
+    var hash = window.location.hash;
+    if (hash) {
+        var tab = document.querySelector('#adminTabs button[data-bs-target="' + hash.replace('-tab', '') + '"]');
+        if (tab) {
+            var bsTab = new bootstrap.Tab(tab);
+            bsTab.show();
+        }
+    }
+});
+</script>
 {% endblock %}
