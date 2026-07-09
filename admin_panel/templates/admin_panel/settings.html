@@ -1,0 +1,126 @@
+{% extends 'core/base.html' %}
+
+{% block title %}پنل مدیریت | تنظیمات{% endblock %}
+
+{% block extra_css %}
+<style>
+    .django-form-wrapper p {
+        margin-bottom: 1.25rem;
+        display: flex;
+        flex-direction: column;
+    }
+    .django-form-wrapper label {
+        font-size: 0.85rem;
+        color: var(--text-muted);
+        margin-bottom: 6px;
+        font-weight: 500;
+        text-align: right;
+    }
+    .django-form-wrapper input,
+    .django-form-wrapper select,
+    .django-form-wrapper textarea {
+        width: 100%;
+        padding: 10px 14px;
+        background-color: rgba(11, 14, 20, 0.8) !important;
+        border: 1px solid rgba(255, 255, 255, 0.1) !important;
+        border-radius: 12px;
+        color: #ffffff !important;
+        font-size: 0.9rem;
+    }
+    .django-form-wrapper .errorlist {
+        list-style: none;
+        padding: 0;
+        margin: 4px 0 0 0;
+        font-size: 0.8rem;
+        color: #ff5252;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container my-3 px-2">
+    <!-- هدر و منوی ناوبری پنل مخصوص موبایل -->
+    <div class="glass-card p-3 mb-3">
+        <div class="text-center mb-3">
+            <h5 class="text-white fw-bold mb-1">
+                <i class="fa-solid fa-gears text-cyan me-1"></i>
+                تنظیمات سیستم
+            </h5>
+            <p class="text-custom-muted small mb-0" style="font-size: 0.75rem;">پیکربندی هویت سایت و نرخ ارزها</p>
+        </div>
+        
+        <!-- نویگیشن بار جدید با ۴ بخش -->
+        <div class="row g-1 text-center">
+            <div class="col-3">
+                <a href="{% url 'panel_dashboard' %}" class="btn btn-sm btn-modern btn-modern-outline w-100 py-2 px-1" style="font-size: 0.7rem; border-radius: 10px;">
+                    <i class="fa-solid fa-chart-line d-block mb-1 fs-6"></i>
+                    داشبورد
+                </a>
+            </div>
+            <div class="col-3">
+                <a href="{% url 'panel_users' %}" class="btn btn-sm btn-modern btn-modern-outline w-100 py-2 px-1" style="font-size: 0.7rem; border-radius: 10px;">
+                    <i class="fa-solid fa-users d-block mb-1 fs-6"></i>
+                    کاربران
+                </a>
+            </div>
+            <div class="col-3">
+                <a href="{% url 'panel_transactions' %}" class="btn btn-sm btn-modern btn-modern-outline w-100 py-2 px-1" style="font-size: 0.7rem; border-radius: 10px;">
+                    <i class="fa-solid fa-list-check d-block mb-1 fs-6"></i>
+                    درخواست‌ها
+                </a>
+            </div>
+            <div class="col-3">
+                <a href="{% url 'panel_settings' %}" class="btn btn-sm btn-modern btn-modern-primary w-100 py-2 px-1" style="font-size: 0.7rem; border-radius: 10px;">
+                    <i class="fa-solid fa-gears d-block mb-1 fs-6"></i>
+                    تنظیمات
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- بخش پیام‌ها -->
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-{% if message.tags == 'error' %}danger{% else %}{{ message.tags }}{% endif %} alert-dismissible fade show rounded-4 bg-dark border-secondary-subtle mb-3 p-3" role="alert">
+                <span class="text-white small">{{ message }}</span>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    <!-- تنظیمات به صورت stacked (زیر هم) -->
+    <div class="d-flex flex-column gap-3">
+        <!-- تنظیمات سایت -->
+        <div class="glass-card p-4">
+            <h5 class="text-cyan fw-bold mb-4" style="font-size: 1rem;">
+                <i class="fa-solid fa-globe me-2"></i> اطلاعات سایت
+            </h5>
+            
+            <form method="post" class="django-form-wrapper">
+                {% csrf_token %}
+                <input type="hidden" name="form_type" value="site_setting">
+                {{ site_form.as_p }}
+                <button type="submit" class="btn btn-modern btn-modern-primary w-100 py-2.5 fw-bold text-dark mt-3">
+                    <i class="fa-solid fa-save me-1"></i> ذخیره تنظیمات سایت
+                </button>
+            </form>
+        </div>
+
+        <!-- تنظیمات قیمت‌گذاری -->
+        <div class="glass-card p-4">
+            <h5 class="text-cyan fw-bold mb-4" style="font-size: 1rem;">
+                <i class="fa-solid fa-coins me-2"></i> تنظیمات قیمت‌گذاری
+            </h5>
+            
+            <form method="post" class="django-form-wrapper">
+                {% csrf_token %}
+                <input type="hidden" name="form_type" value="crypto_setting">
+                {{ crypto_form.as_p }}
+                <button type="submit" class="btn btn-modern btn-modern-primary w-100 py-2.5 fw-bold text-dark mt-3">
+                    <i class="fa-solid fa-save me-1"></i> ذخیره تنظیمات قیمت
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

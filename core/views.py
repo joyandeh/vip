@@ -9,7 +9,6 @@ CRYPTO_NAMES = {
     'ETH': 'اتریوم',
     'USDT': 'تتر',
     'BNB': 'بایننس کوین',
-    'SOL': 'سولانا',
     'TRX': 'ترون',
 }
 
@@ -21,9 +20,11 @@ def index(request):
     ).first()
 
     toman_rate = 85000
+    sell_buy_rate = 500  # اختلاف قیمت خرید و فروش به تومان
 
     if setting:
         toman_rate = setting.toman_rate
+        sell_buy_rate = getattr(setting, 'sell_buy_rate', 500)
 
     prices = get_crypto_prices()
 
@@ -52,7 +53,10 @@ def index(request):
         {
             "cryptos": cryptos,
             "toman_rate": toman_rate,
+            "sell_buy_rate": sell_buy_rate,
             "site_setting": site_setting,
             "homepage_sections": homepage_sections,
+            "unreads_count": 0,
+            "telegram_url": "https://t.me/tronlnd_support",
         }
     )

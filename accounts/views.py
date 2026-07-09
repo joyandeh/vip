@@ -269,9 +269,10 @@ def register(request):
     if request.method == 'POST':
         form = RegisterForm(request.POST, request.FILES)
         if form.is_valid():
-            form.save()
-            messages.success(request, 'ثبت نام شما با موفقیت انجام شد.')
-            return redirect('register')
+            user = form.save()
+            login(request, user)
+            messages.success(request, 'ثبت نام شما با موفقیت انجام شد و وارد حساب کاربری خود شدید.')
+            return redirect('/')
     else:
         form = RegisterForm()
 

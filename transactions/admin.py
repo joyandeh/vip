@@ -31,9 +31,9 @@ class TransactionAdmin(admin.ModelAdmin):
     actions = ['mark_as_done']
 
     def mark_as_done(self, request, queryset):
-        queryset.update(status='done')
-        self.message_user(request, "Selected transactions marked as done.")
-    mark_as_done.short_description = "Mark selected transactions as done"
+        queryset.update(status='completed')
+        self.message_user(request, "Selected transactions marked as completed.")
+    mark_as_done.short_description = "Mark selected transactions as completed"
 
     def action_buttons(self, obj):
         if obj.status == 'pending':
@@ -50,7 +50,7 @@ class TransactionAdmin(admin.ModelAdmin):
             return format_html(
                 '<form action="{}" method="post" style="display:inline;">' 
                 + '<input type="hidden" name="csrfmiddlewaretoken" value="{}">' 
-                + '<button type="submit" name="status" value="done" class="button">Mark as Done</button>'
+                + '<button type="submit" name="status" value="completed" class="button">Mark as Completed</button>'
                 + '</form>',
                 reverse('admin:transactions_transaction_change', args=[obj.pk]),
                 csrf_token

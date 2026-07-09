@@ -1,0 +1,183 @@
+{% extends 'core/base.html' %}
+{% load humanize %}
+
+{% block title %}پنل مدیریت | درخواست‌ها{% endblock %}
+
+{% block content %}
+<div class="container my-3 px-2">
+    <!-- منوی ناوبری پنل مخصوص موبایل -->
+    <div class="glass-card p-3 mb-3">
+        <div class="text-center mb-3">
+            <h5 class="text-white fw-bold mb-1">
+                <i class="fa-solid fa-list-check text-cyan me-1"></i>
+                مدیریت درخواست‌ها
+            </h5>
+            <p class="text-custom-muted small mb-0" style="font-size: 0.75rem;">بررسی و مدیریت سفارشات و تراکنش‌ها</p>
+        </div>
+        
+        <!-- نویگیشن بار جدید -->
+        <div class="row g-1 text-center">
+            <div class="col-3">
+                <a href="{% url 'panel_dashboard' %}" class="btn btn-sm btn-modern btn-modern-outline w-100 py-2 px-1" style="font-size: 0.7rem; border-radius: 10px;">
+                    <i class="fa-solid fa-chart-line d-block mb-1 fs-6"></i>
+                    داشبورد
+                </a>
+            </div>
+            <div class="col-3">
+                <a href="{% url 'panel_users' %}" class="btn btn-sm btn-modern btn-modern-outline w-100 py-2 px-1" style="font-size: 0.7rem; border-radius: 10px;">
+                    <i class="fa-solid fa-users d-block mb-1 fs-6"></i>
+                    کاربران
+                </a>
+            </div>
+            <div class="col-3">
+                <a href="{% url 'panel_transactions' %}" class="btn btn-sm btn-modern btn-modern-primary w-100 py-2 px-1" style="font-size: 0.7rem; border-radius: 10px;">
+                    <i class="fa-solid fa-list-check d-block mb-1 fs-6"></i>
+                    درخواست‌ها
+                </a>
+            </div>
+            <div class="col-3">
+                <a href="{% url 'panel_settings' %}" class="btn btn-sm btn-modern btn-modern-outline w-100 py-2 px-1" style="font-size: 0.7rem; border-radius: 10px;">
+                    <i class="fa-solid fa-gears d-block mb-1 fs-6"></i>
+                    تنظیمات
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- بخش پیام‌ها -->
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-{% if message.tags == 'error' %}danger{% else %}{{ message.tags }}{% endif %} alert-dismissible fade show rounded-4 bg-dark border-secondary-subtle mb-3 p-3" role="alert">
+                <span class="text-white small">{{ message }}</span>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    <!-- لیست درخواست‌ها کاملاً یکپارچه با بخش جستجو مخصوص موبایل (بدون جدول و بدون اسکرول افقی) -->
+    <div class="glass-card p-3">
+        <!-- فرم جستجوی یکپارچه درون خود لیست -->
+        <form method="get" class="mb-3">
+            <div class="row g-1">
+                <div class="col-5">
+                    <input type="text" name="tx_search" class="form-control form-control-sm bg-dark text-white border-secondary-subtle py-2" 
+                           placeholder="کاربر، ارز..." value="{{ tx_search }}" style="border-radius: 10px; font-size: 0.7rem;">
+                </div>
+                <div class="col-3">
+                    <select name="tx_type" class="form-select form-select-sm bg-dark text-white border-secondary-subtle py-2" style="border-radius: 10px; font-size: 0.7rem; padding-left: 5px; padding-right: 5px;">
+                        <option value="">همه نوع</option>
+                        <option value="BUY" {% if tx_type_filter == 'BUY' %}selected{% endif %}>خرید</option>
+                        <option value="SELL" {% if tx_type_filter == 'SELL' %}selected{% endif %}>فروش</option>
+                    </select>
+                </div>
+                <div class="col-3">
+                    <select name="tx_status" class="form-select form-select-sm bg-dark text-white border-secondary-subtle py-2" style="border-radius: 10px; font-size: 0.7rem; padding-left: 5px; padding-right: 5px;">
+                        <option value="">همه وضعیت</option>
+                        <option value="pending_review" {% if tx_status_filter == 'pending_review' %}selected{% endif %}>بررسی</option>
+                        <option value="pending_transfer" {% if tx_status_filter == 'pending_transfer' %}selected{% endif %}>انتقال</option>
+                        <option value="completed" {% if tx_status_filter == 'completed' %}selected{% endif %}>تکمیل</option>
+                        <option value="rejected" {% if tx_status_filter == 'rejected' %}selected{% endif %}>رد شده</option>
+                    </select>
+                </div>
+                <div class="col-1">
+                    <button type="submit" class="btn btn-sm btn-modern btn-modern-primary w-100 h-100 py-1.5" style="border-radius: 10px;">
+                        <i class="fa-solid fa-search"></i>
+                    </button>
+                </div>
+            </div>
+        </form>
+
+        <!-- لیست کارت‌های درخواست‌ها بدون جدول و مجهز به مکانیزم بازشوی آکاردئونی روان بدون تداخل اسکرول -->
+        <div class="d-flex flex-column gap-2">
+            {% for tx in transactions %}
+            <div class="p-3 rounded-4" style="background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); cursor: pointer;" 
+                 data-bs-toggle="collapse" data-bs-target="#txCollapse{{ tx.id }}" aria-expanded="false" aria-controls="txCollapse{{ tx.id }}">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="text-white mb-1 fw-bold" style="font-size: 0.85rem;">{{ tx.user.full_name|default:tx.user.username }}</h6>
+                        {% if tx.crypto_name %}
+                            <small class="text-cyan d-block fw-bold" style="font-size: 0.75rem;">{{ tx.amount }} {{ tx.crypto_name }}</small>
+                        {% else %}
+                            <small class="text-white d-block fw-bold" style="font-size: 0.75rem;">{{ tx.fiat_amount|intcomma }} تومان (ریالی)</small>
+                        {% endif %}
+                    </div>
+                    <div class="text-end d-flex flex-column align-items-end">
+                        {% if tx.request_type == 'BUY' %}
+                            <span class="badge bg-success-subtle text-neon-green px-2 py-1" style="font-size: 0.65rem;">خرید</span>
+                        {% else %}
+                            <span class="badge bg-danger-subtle text-coral px-2 py-1" style="font-size: 0.65rem;">فروش</span>
+                        {% endif %}
+                        <small class="text-custom-muted d-block mt-1" style="font-size: 0.65rem;"><i class="fa-solid fa-chevron-down ms-1" style="font-size: 0.6rem;"></i>جزئیات</small>
+                    </div>
+                </div>
+            </div>
+
+            <!-- پنل تاشو جزییات درخواست - روان و بدون تداخل با بدنه اسکرول سایت -->
+            <div class="collapse mb-2" id="txCollapse{{ tx.id }}">
+                <div class="p-3 rounded-4 border-secondary-subtle text-white" style="background: rgba(15, 21, 32, 0.95); border: 1px solid rgba(0, 229, 255, 0.15); font-size: 0.85rem;">
+                    <div class="d-flex flex-column gap-2.5">
+                        <div class="d-flex justify-content-between border-bottom border-secondary-subtle pb-2">
+                            <span class="text-custom-muted">کاربر:</span>
+                            <span class="fw-bold">{{ tx.user.full_name|default:tx.user.username }} ({{ tx.user.mobile }})</span>
+                        </div>
+                        <div class="d-flex justify-content-between border-bottom border-secondary-subtle pb-2">
+                            <span class="text-custom-muted">نوع درخواست:</span>
+                            <span class="fw-bold">{{ tx.get_request_type_display }}</span>
+                        </div>
+                        <div class="d-flex justify-content-between border-bottom border-secondary-subtle pb-2">
+                            <span class="text-custom-muted">جزئیات ارز:</span>
+                            <span class="fw-bold">{% if tx.crypto_name %}{{ tx.amount }} {{ tx.crypto_name }}{% else %}واریز ریالی{% endif %}</span>
+                        </div>
+                        <div class="d-flex justify-content-between border-bottom border-secondary-subtle pb-2">
+                            <span class="text-custom-muted">مبلغ کل (تومان):</span>
+                            <span class="fw-bold">{{ tx.total_price|default:tx.fiat_amount|intcomma }} تومان</span>
+                        </div>
+                        <div class="d-flex justify-content-between border-bottom border-secondary-subtle pb-2">
+                            <span class="text-custom-muted">تاریخ درخواست:</span>
+                            <span>{{ tx.created_at|date:"Y/m/d H:i" }}</span>
+                        </div>
+                        <div class="d-flex justify-content-between border-bottom border-secondary-subtle pb-2">
+                            <span class="text-custom-muted">وضعیت تراکنش:</span>
+                            <span class="fw-bold text-cyan">{{ tx.get_status_display }}</span>
+                        </div>
+                        {% if tx.tx_hash %}
+                        <div class="border-bottom border-secondary-subtle pb-2">
+                            <span class="text-custom-muted d-block mb-1">هش تراکنش:</span>
+                            <code class="text-cyan d-block p-2 rounded bg-dark" style="font-size: 0.75rem; word-break: break-all;">{{ tx.tx_hash }}</code>
+                        </div>
+                        {% endif %}
+
+                        <!-- یادداشت ادمین -->
+                        <form action="{% url 'panel_transaction_note' tx.id %}" method="post" class="mt-2 border-bottom border-secondary-subtle pb-3">
+                            {% csrf_token %}
+                            <label class="form-label text-custom-muted small mb-1">یادداشت مدیریت:</label>
+                            <div class="input-group">
+                                <input type="text" name="admin_note" class="form-control form-control-sm bg-dark text-white border-secondary-subtle" 
+                                       placeholder="توضیحات یا یادداشت..." value="{{ tx.admin_note|default:'' }}" style="font-size:0.75rem;">
+                                <button type="submit" class="btn btn-sm btn-modern btn-modern-primary text-dark"><i class="fa-solid fa-save"></i></button>
+                            </div>
+                        </form>
+
+                        <!-- اقدامات تراکنش -->
+                        <div class="d-flex gap-2 mt-2">
+                            <form action="{% url 'panel_transaction_update' tx.id %}" method="post" class="flex-grow-1">
+                                {% csrf_token %}
+                                <input type="hidden" name="status" value="completed">
+                                <button type="submit" class="btn btn-sm btn-modern btn-modern-primary w-100 py-2.5 fw-bold text-dark" style="font-size:0.75rem;">تکمیل و تایید</button>
+                            </form>
+                            <form action="{% url 'panel_transaction_update' tx.id %}" method="post" class="flex-grow-1">
+                                {% csrf_token %}
+                                <input type="hidden" name="status" value="rejected">
+                                <button type="submit" class="btn btn-sm btn-modern btn-modern-outline w-100 py-2.5 text-coral" style="font-size:0.75rem; border-color: rgba(255,82,82,0.2);">رد تراکنش</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <p class="text-center text-custom-muted py-4 mb-0 small">درخواستی یافت نشد.</p>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}

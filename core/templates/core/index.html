@@ -1,103 +1,215 @@
 {% extends 'core/base.html' %}
+{% load humanize %}
 
-{% block title %}tronlnd | بازار کریپتو و محاسبه‌گر سریع{% endblock %}
+{% block title %}tronlnd | بازار کریپتو{% endblock %}
 
 {% block content %}
-<div class="welcome-section text-center my-4 pt-2">
-    <h1 class="fw-black text-white mb-1" style="font-size: 1.8rem; font-weight: 900; letter-spacing: -0.5px;">
-        بازار معاملاتی <span class="text-neon-green">tronlnd</span>
-    </h1>
-    <p class="text-custom-muted small mb-0">خرید و فروش سریع و امن ارزهای دیجیتال</p>
+<!-- هدر با عنوان و دکمه‌های خرید و فروش -->
+<div class="welcome-section text-center mb-3 pt-1">
+    <h2 class="fw-black text-white mb-2" style="font-size: 1.3rem; font-weight: 900; letter-spacing: -0.3px;">
+        tron<span style="color: var(--accent-coral);">lnd</span>
+    </h2>
+    <p class="text-custom-muted mb-3" style="font-size: 0.8rem;">بازار معاملاتی ارزهای دیجیتال</p>
+    
+    <!-- دکمه‌های خرید و فروش -->
+    <div class="d-flex gap-2 justify-content-center mb-2">
+        <a href="{% url 'request_crypto' %}?type=buy" class="btn btn-modern btn-modern-primary py-2 px-4 flex-grow-1 fw-bold" style="font-size: 0.85rem;">
+            <i class="fa-solid fa-cart-shopping me-1"></i> خرید از سایت
+        </a>
+        <a href="{% url 'request_crypto' %}?type=sell" class="btn btn-modern py-2 px-4 flex-grow-1 fw-bold" style="font-size: 0.85rem; background: rgba(255,82,82,0.15); border: 1px solid rgba(255,82,82,0.3); color: var(--accent-coral);">
+            <i class="fa-solid fa-hand-holding-dollar me-1"></i> فروش به سایت
+        </a>
+    </div>
 </div>
 
-<div class="crypto-list-section mb-4">
-    <div class="d-flex justify-content-between align-items-center mb-3">
-        <h6 class="fw-bold mb-0 text-cyan"><i class="fa-solid fa-fire me-1"></i> ارزهای برتر</h6>
-        <span class="text-custom-muted dropdown-toggle" style="font-size: 0.75rem; cursor: pointer;">بر حسب USDT</span>
+<!-- ارزهای برتر - کادرهای جمع‌وجورتر -->
+<div class="crypto-list-section mb-3">
+    <div class="d-flex justify-content-between align-items-center mb-2">
+        <h6 class="fw-bold mb-0 text-cyan" style="font-size: 0.85rem;"><i class="fa-solid fa-fire me-1"></i> ارزهای برتر</h6>
     </div>
 
-    <div class="row g-3">
+    <div class="row g-2">
         {% for crypto in cryptos %}
-        <div class="col-12">
-            <div class="glass-card p-3 d-flex align-items-center justify-content-between asset-row">
-                <div class="d-flex align-items-center gap-3">
-                    <div class="crypto-icon-wrap d-flex align-items-center justify-content-center bg-dark rounded-circle" style="width: 44px; height: 44px; border: 1px solid rgba(255,255,255,0.05);">
-                        {% if crypto.symbol|lower == 'trx' %}
-                            <i class="fa-solid fa-t h5 mb-0 text-neon-green"></i>
-                        {% elif crypto.symbol|lower == 'btc' %}
-                            <i class="fa-brands fa-bitcoin h5 mb-0" style="color: #f7931a;"></i>
-                        {% elif crypto.symbol|lower == 'eth' %}
-                            <i class="fa-brands fa-ethereum h5 mb-0 text-cyan"></i>
+        <div class="col-6">
+            <div class="glass-card p-2 d-flex align-items-center justify-content-between" style="border-radius: 14px;">
+                <div class="d-flex align-items-center gap-2">
+                    <div class="d-flex align-items-center justify-content-center rounded-circle" style="width: 32px; height: 32px; background: rgba(255,255,255,0.05);">
+                        {% if crypto.symbol == 'TRX' %}
+                            <i class="fa-solid fa-t text-coral" style="font-size: 0.85rem;"></i>
+                        {% elif crypto.symbol == 'BTC' %}
+                            <i class="fa-brands fa-bitcoin" style="color: #f7931a; font-size: 0.85rem;"></i>
+                        {% elif crypto.symbol == 'ETH' %}
+                            <i class="fa-brands fa-ethereum text-cyan" style="font-size: 0.85rem;"></i>
+                        {% elif crypto.symbol == 'USDT' %}
+                            <i class="fa-solid fa-coins" style="color: #26a17b; font-size: 0.85rem;"></i>
+                        {% elif crypto.symbol == 'BNB' %}
+                            <i class="fa-solid fa-coins" style="color: #f3ba2f; font-size: 0.85rem;"></i>
                         {% else %}
-                            <i class="fa-solid fa-coins h5 mb-0 text-custom-muted"></i>
+                            <i class="fa-solid fa-coins text-custom-muted" style="font-size: 0.85rem;"></i>
                         {% endif %}
                     </div>
                     <div>
-                        <h6 class="mb-0 fw-bold text-white">{{ crypto.symbol }}</h6>
-                        <small class="text-custom-muted" style="font-size: 0.75rem;">{{ crypto.name }}</small>
+                        <h6 class="mb-0 fw-bold text-white" style="font-size: 0.8rem;">{{ crypto.symbol }}</h6>
+                        <small class="text-custom-muted" style="font-size: 0.65rem;">{{ crypto.name }}</small>
                     </div>
                 </div>
-                
                 <div class="text-end">
-                    <div class="fw-bold text-white text-ltr">{{ crypto.price_usd }} $</div>
-                    <div class="text-neon-green small" style="font-size: 0.8rem; font-weight: 500;">
-                        {{ crypto.price_toman }} <span style="font-size: 0.7rem; color: var(--text-muted);">تومان</span>
-                    </div>
+                    <div class="fw-bold text-white text-ltr" style="font-size: 0.8rem;">{{ crypto.price_usd }} $</div>
+                    <div class="text-neon-green" style="font-size: 0.7rem; font-weight: 600;">{{ crypto.price_toman|intcomma }}</div>
                 </div>
             </div>
         </div>
         {% empty %}
-        <div class="col-12 text-center py-4">
-            <p class="text-custom-muted small">ارزی برای نمایش یافت نشد.</p>
+        <div class="col-12 text-center py-3">
+            <p class="text-custom-muted small">ارزی یافت نشد.</p>
         </div>
         {% endfor %}
+        
+        <!-- Perfect Money -->
+        <div class="col-6">
+            <div class="glass-card p-2 d-flex align-items-center justify-content-between" style="border-radius: 14px;">
+                <div class="d-flex align-items-center gap-2">
+                    <div class="d-flex align-items-center justify-content-center rounded-circle" style="width: 32px; height: 32px; background: rgba(255,255,255,0.05);">
+                        <i class="fa-solid fa-dollar-sign text-neon-green" style="font-size: 0.85rem;"></i>
+                    </div>
+                    <div>
+                        <h6 class="mb-0 fw-bold text-white" style="font-size: 0.8rem;">PM</h6>
+                        <small class="text-custom-muted" style="font-size: 0.65rem;">Perfect Money</small>
+                    </div>
+                </div>
+                <div class="text-end">
+                    <div class="fw-bold text-white text-ltr" style="font-size: 0.8rem;">1 $</div>
+                    <div class="text-neon-green" style="font-size: 0.7rem; font-weight: 600;">{{ toman_rate|intcomma }}</div>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 
-<div class="glass-card p-4 mb-4 position-relative overflow-hidden" style="border-color: rgba(0, 229, 255, 0.15);">
-    <div class="position-absolute top-0 end-0 p-3 opacity-10">
-        <i class="fa-solid fa-calculator h1 text-cyan"></i>
-    </div>
-    
-    <h6 class="fw-bold mb-3 text-white d-flex align-items-center gap-2">
-        <i class="fa-solid fa-calculator text-cyan"></i>
-        <span>محاسبه‌گر سریع قیمت</span>
+<!-- محاسبه‌گر قیمت - جمع‌وجورتر -->
+<div class="glass-card p-3 mb-3 position-relative" style="border-radius: 18px;">
+    <h6 class="fw-bold mb-3 text-white d-flex align-items-center gap-2" style="font-size: 0.9rem;">
+        <i class="fa-solid fa-calculator text-cyan"></i> محاسبه‌گر سریع
     </h6>
     
     <div class="calculator-box">
-        <div class="mb-3">
-            <label for="cryptoSelect" class="form-label text-custom-muted small">انتخاب رمزارز</label>
-            <div class="input-group">
-                <span class="input-group-text bg-transparent border-secondary-subtle text-cyan" style="border-radius: 0 14px 14px 0;"><i class="fa-solid fa-coins"></i></span>
-                <select id="cryptoSelect" class="form-select bg-dark text-white border-secondary-subtle py-2.5" style="border-radius: 14px 0 0 14px; font-size: 0.9rem;">
-                    {% for crypto in cryptos %}
-                        <option value="{{ crypto.price_toman }}" data-symbol="{{ crypto.symbol }}">
-                            {{ crypto.name }} ({{ crypto.symbol }})
-                        </option>
-                    {% endfor %}
-                </select>
+        <!-- ردیف ۱: انتخاب نوع ارز -->
+        <div class="mb-2">
+            <select id="cryptoSelect" class="form-select form-select-sm bg-dark text-white border-secondary-subtle py-2 fw-bold" style="font-size: 0.85rem; border-radius: 10px;">
+                {% for crypto in cryptos %}
+                <option value="{{ crypto.price_toman }}" data-symbol="{{ crypto.symbol }}">
+                    {{ crypto.name }} ({{ crypto.symbol }})
+                </option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <!-- ردیف ۲: انتخاب نوع قیمت (خرید یا فروش) -->
+        <div class="mb-2">
+            <div class="btn-group w-100" role="group">
+                <input type="radio" class="btn-check" name="priceType" id="buyPrice" value="buy" checked>
+                <label class="btn btn-sm py-2 fw-bold" for="buyPrice" style="font-size: 0.8rem; background: rgba(0,230,118,0.15); border: 1px solid rgba(0,230,118,0.3); color: var(--accent-green); border-radius: 10px 0 0 10px;">
+                    <i class="fa-solid fa-cart-shopping me-1"></i> قیمت خرید
+                </label>
+                <input type="radio" class="btn-check" name="priceType" id="sellPrice" value="sell">
+                <label class="btn btn-sm py-2 fw-bold" for="sellPrice" style="font-size: 0.8rem; background: rgba(255,82,82,0.1); border: 1px solid rgba(255,82,82,0.2); color: var(--accent-coral); border-radius: 0 10px 10px 0;">
+                    <i class="fa-solid fa-hand-holding-dollar me-1"></i> قیمت فروش
+                </label>
             </div>
         </div>
 
-        <div class="mb-4">
-            <label for="amount" class="form-label text-custom-muted small">مقدار / تعداد خرید</label>
-            <div class="input-group">
-                <span class="input-group-text bg-transparent border-secondary-subtle text-cyan" style="border-radius: 0 14px 14px 0;"><i class="fa-solid fa-arrow-input-to-bracket"></i></span>
-                <input type="number" id="amount" class="form-control bg-dark text-white border-secondary-subtle py-2.5 text-center fw-bold" value="1" min="0" step="any" style="border-radius: 14px 0 0 14px; font-size: 1rem;">
-            </div>
+        <!-- ردیف ۳: مقدار -->
+        <div class="mb-2">
+            <input type="number" id="amount" class="form-control form-control-sm bg-dark text-white border-secondary-subtle py-2 text-center fw-bold" value="1" min="0" step="any" style="font-size: 1rem; border-radius: 10px;">
         </div>
 
-        <div class="total-display-box p-3 rounded-3 text-center" style="background: rgba(11, 14, 20, 0.6); border: 1px dashed var(--border-glass);">
-            <span class="text-custom-muted d-block small mb-1">مبلغ کل تقریبی:</span>
-            <h4 id="total" class="fw-black text-neon-green mb-0" style="font-weight: 800;">۰ تومان</h4>
+        <!-- ردیف ۴: نمایش قیمت واحد -->
+        <div class="mb-2 text-center py-2 rounded-3" style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05);">
+            <span class="text-custom-muted d-block" style="font-size: 0.75rem;">قیمت هر واحد:</span>
+            <span id="unitPrice" class="fw-black text-neon-green" style="font-size: 1.1rem; font-weight: 900;">۰ تومان</span>
+        </div>
+
+        <!-- ردیف ۵: مبلغ کل -->
+        <div class="text-center py-2 rounded-3" style="background: rgba(0,229,255,0.05); border: 1px solid rgba(0,229,255,0.15);">
+            <span class="text-custom-muted d-block" style="font-size: 0.75rem;">مبلغ کل:</span>
+            <h4 id="total" class="fw-black text-cyan mb-0" style="font-size: 1.3rem; font-weight: 900;">۰ تومان</h4>
         </div>
     </div>
 </div>
 
+<!-- بنرهای چرخشی -->
+<div class="mb-3">
+    <div id="bannerCarousel" class="carousel slide glass-card p-3" data-bs-ride="carousel" data-bs-interval="4000" style="border-radius: 18px;">
+        <div class="carousel-inner">
+            <!-- بنر ۱: پشتیبانی 24/7 -->
+            <div class="carousel-item active">
+                <a href="{{ telegram_url|default:'https://t.me/tronlnd_support' }}" target="_blank" class="text-decoration-none">
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="d-flex align-items-center justify-content-center rounded-circle flex-shrink-0" style="width: 50px; height: 50px; background: rgba(0,229,255,0.1); border: 1px solid rgba(0,229,255,0.2);">
+                            <i class="fa-solid fa-headset text-cyan h5 mb-0"></i>
+                        </div>
+                        <div>
+                            <h6 class="text-white fw-bold mb-1" style="font-size: 0.9rem;">پشتیبانی 24/7</h6>
+                            <p class="text-custom-muted mb-0 small">پاسخگویی در هر ساعت از شبانه‌روز</p>
+                        </div>
+                    </div>
+                </a>
+            </div>
+            
+            <!-- بنر ۲: معرفی به دوستان -->
+            <div class="carousel-item">
+                <div class="d-flex align-items-center gap-3">
+                    <div class="d-flex align-items-center justify-content-center rounded-circle flex-shrink-0" style="width: 50px; height: 50px; background: rgba(0,230,118,0.1); border: 1px solid rgba(0,230,118,0.2);">
+                        <i class="fa-solid fa-user-plus text-neon-green h5 mb-0"></i>
+                    </div>
+                    <div>
+                        <h6 class="text-white fw-bold mb-1" style="font-size: 0.9rem;">ترون لند را معرفی کنید</h6>
+                        <p class="text-custom-muted mb-0 small">با معرفی سایت به دوستان، همکاری کنید</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- بنر ۳: دسترسی به ادمین -->
+            <div class="carousel-item">
+                <div class="d-flex align-items-center gap-3">
+                    <div class="d-flex align-items-center justify-content-center rounded-circle flex-shrink-0" style="width: 50px; height: 50px; background: rgba(255,82,82,0.1); border: 1px solid rgba(255,82,82,0.2);">
+                        <i class="fa-solid fa-user-shield text-coral h5 mb-0"></i>
+                    </div>
+                    <div>
+                        <h6 class="text-white fw-bold mb-1" style="font-size: 0.9rem;">ارتباط با مدیر سایت</h6>
+                        <p class="text-custom-muted mb-0 small">در صورت بروز مشکل با پشتیبانی در ارتباط باشید</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- بنر ۴: واسطه را حذف کنید -->
+            <div class="carousel-item">
+                <div class="d-flex align-items-center gap-3">
+                    <div class="d-flex align-items-center justify-content-center rounded-circle flex-shrink-0" style="width: 50px; height: 50px; background: rgba(251,191,36,0.1); border: 1px solid rgba(251,191,36,0.2);">
+                        <i class="fa-solid fa-bolt text-warning h5 mb-0"></i>
+                    </div>
+                    <div>
+                        <h6 class="text-white fw-bold mb-1" style="font-size: 0.9rem;">واسطه را حذف کنید</h6>
+                        <p class="text-custom-muted mb-0 small">ارزان و سریع معامله کنید</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- فوتر -->
+<div class="text-center py-3 mb-2">
+    <small class="text-custom-muted" style="font-size: 0.7rem;">
+        تمام حقوق انحصاری برای <strong class="text-coral">ترون لند</strong> است
+        <br>کپی‌برداری پیگرد قانونی دارد
+    </small>
+</div>
+
 {% if not user.is_authenticated %}
-<div class="text-center py-3 mb-4">
-    <a href="{% url 'register' %}" class="btn btn-modern btn-modern-primary w-100 py-3 fw-bold shadow-lg">
-        <i class="fa-solid fa-user-plus me-2"></i> همین حالا شروع کنید
+<div class="text-center pb-3">
+    <a href="{% url 'register' %}" class="btn btn-modern btn-modern-primary w-100 py-2.5 fw-bold">
+        <i class="fa-solid fa-user-plus me-1"></i> ثبت‌نام در سایت
     </a>
 </div>
 {% endif %}
@@ -110,52 +222,65 @@
         const cryptoSelect = document.getElementById('cryptoSelect');
         const amountInput = document.getElementById('amount');
         const totalDisplay = document.getElementById('total');
-
+        const unitPriceDisplay = document.getElementById('unitPrice');
+        const priceTypeBuy = document.getElementById('buyPrice');
+        
         if (!cryptoSelect || !amountInput || !totalDisplay) return;
 
-        let price = cryptoSelect.value;
-        let amount = amountInput.value;
+        let basePrice = parseFloat(cryptoSelect.value);
+        let amount = parseFloat(amountInput.value) || 0;
+        
+        // اعمال اختلاف قیمت خرید و فروش
+        let sellBuyDiff = {{ sell_buy_rate|default:500 }};
+        let finalPrice = basePrice;
+        
+        if (priceTypeBuy.checked) {
+            // قیمت خرید = قیمت اصلی + اختلاف
+            finalPrice = basePrice;
+        } else {
+            // قیمت فروش = قیمت اصلی - اختلاف
+            finalPrice = Math.max(basePrice - sellBuyDiff, 0);
+        }
+        
+        let total = finalPrice * amount;
 
-        if (!price || amount < 0 || amount === '') {
-            totalDisplay.innerHTML = '۰ تومان';
+        if (isNaN(total) || amount <= 0) {
+            totalDisplay.innerHTML = '۰ <span style="font-size:0.7rem; font-weight:normal;">تومان</span>';
+            unitPriceDisplay.innerHTML = '۰ <span style="font-size:0.7rem; font-weight:normal;">تومان</span>';
             return;
         }
 
-        // تبدیل و پاکسازی رشته عددی برای جلوگیری از تداخل متون فارسی/انگلیسی در دیتابیس
-        let cleanPrice = String(price).replace(/[٠-٩]/g, d => '٠١٢٣٤٥٦٧٨٩'.indexOf(d)).replace(/[۰-۹]/g, d => '۰۱۲۳۴۵۶۷۸۹'.indexOf(d));
-        let total = Number(cleanPrice) * Number(amount);
-
-        if (isNaN(total)) {
-            totalDisplay.innerHTML = '۰ تومان';
-            return;
-        }
-
-        totalDisplay.innerHTML = total.toLocaleString('fa-IR') + ' <span style="font-size: 0.85rem; font-weight: normal; color: #fff;">تومان</span>';
+        unitPriceDisplay.innerHTML = finalPrice.toLocaleString('fa-IR') + ' <span style="font-size:0.7rem; font-weight:normal;">تومان</span>';
+        totalDisplay.innerHTML = total.toLocaleString('fa-IR') + ' <span style="font-size:0.7rem; font-weight:normal;">تومان</span>';
     }
 
     document.addEventListener('DOMContentLoaded', function() {
         const cryptoSelect = document.getElementById('cryptoSelect');
         const amountInput = document.getElementById('amount');
+        const priceTypeInputs = document.querySelectorAll('input[name="priceType"]');
 
         if (cryptoSelect && amountInput) {
             cryptoSelect.addEventListener('change', updateCalculator);
-            cryptoSelect.addEventListener('input', updateCalculator);
             amountInput.addEventListener('input', updateCalculator);
+            priceTypeInputs.forEach(function(input) {
+                input.addEventListener('change', updateCalculator);
+            });
             
             updateCalculator();
+        }
+        
+        // شروع خودکار کاروسل
+        const carousel = document.getElementById('bannerCarousel');
+        if (carousel) {
+            new bootstrap.Carousel(carousel, {
+                interval: 4000,
+                ride: 'carousel'
+            });
         }
     });
 </script>
 
 <style>
-    .asset-row {
-        transition: transform 0.2s ease, background-color 0.2s ease;
-        cursor: pointer;
-    }
-    .asset-row:hover {
-        transform: scale(1.01);
-        background: rgba(255, 255, 255, 0.08) !important;
-    }
     .form-select, .form-control {
         border-color: rgba(255, 255, 255, 0.1) !important;
     }
@@ -170,6 +295,13 @@
     .text-ltr {
         direction: ltr;
         display: inline-block;
+    }
+    .glass-card {
+        background: var(--bg-card);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border: 1px solid var(--border-glass);
+        transition: all 0.3s ease;
     }
 </style>
 {% endblock %}

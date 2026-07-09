@@ -10,6 +10,7 @@ urlpatterns = [
     path('', include('core.urls')),
     path('accounts/', include('accounts.urls')),
     path('transactions/', include('transactions.urls')),
+    path('panel/', include('admin_panel.urls')),  # مسیر جدید پنل مدیریت جداگانه
 ]
 
 if settings.DEBUG:

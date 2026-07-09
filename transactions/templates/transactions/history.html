@@ -1,112 +1,249 @@
 {% extends 'core/base.html' %}
-{% load humanize %} {% block title %}tronlnd | تاریخچه و سوابق درخواست‌ها{% endblock %}
+{% load humanize %}
+
+{% block title %}سوابق درخواست‌ها{% endblock %}
 
 {% block content %}
-<div class="container my-4 pt-2">
-    
-    <div class="d-flex align-items-center justify-content-between mb-4">
-        <div class="d-flex align-items-center gap-2">
-            <div class="history-icon-box d-flex align-items-center justify-content-center" style="width: 42px; height: 42px; background: rgba(0, 229, 255, 0.08); border: 1px solid rgba(0, 229, 255, 0.15); border-radius: 12px;">
-                <i class="fa-solid fa-clock-rotate-left text-cyan h5 mb-0"></i>
-            </div>
+<div class="container my-3 px-2 history-page">
+
+    <!-- هدر صفحه -->
+    <div class="glass-card p-3 mb-3">
+        <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
             <div>
-                <h5 class="fw-black text-white mb-0" style="font-weight: 800;">سوابق درخواست‌ها</h5>
-                <p class="text-custom-muted small mb-0">تاریخچه کامل معاملات شما</p>
+                <h5 class="text-white fw-bold mb-1" style="font-size: 1.05rem;">
+                    <i class="fa-solid fa-wallet text-cyan me-1"></i>
+                    سوابق درخواست‌ها
+                </h5>
+                <p class="text-custom-muted small mb-0" style="font-size: 0.75rem;">
+                    سفارش‌های فعال و تکمیل شده شما
+                </p>
+            </div>
+
+            <div class="d-flex gap-1">
+                <span class="badge bg-warning text-dark px-2 py-1.5" style="font-size: 0.65rem;">
+                    فعال: {{ active_transactions.count }}
+                </span>
+                <span class="badge bg-success-subtle text-neon-green px-2 py-1.5" style="font-size: 0.65rem;">
+                    تکمیل شده: {{ completed_transactions.count }}
+                </span>
             </div>
         </div>
-        <span class="badge bg-dark border border-glass text-custom-muted rounded-pill px-2.5 py-1.5 small text-ltr">
-            {{ transactions|length }} Tx
+    </div>
+
+    <!-- بخش منوی بسته در بالای لیست درخواست‌ها -->
+    <div class="glass-card p-2 mb-3">
+        <div class="d-flex justify-content-between align-items-center" data-bs-toggle="collapse" data-bs-target="#sideMenuCollapse" role="button" style="cursor: pointer;">
+            <div class="d-flex align-items-center gap-2">
+                <i class="fa-solid fa-bars text-cyan"></i>
+                <span class="text-white fw-bold" style="font-size: 0.8rem;">قوانین و پشتیبانی</span>
+            </div>
+            <i class="fa-solid fa-chevron-down text-custom-muted" id="menuChevron"></i>
+        </div>
+    </div>
+
+    <!-- منوی بسته -->
+    <div class="collapse mb-3" id="sideMenuCollapse">
+        <div class="row g-3">
+            <div class="col-12 col-lg-6">
+                <div class="glass-card p-3 h-100">
+                    <h6 class="text-white fw-bold mb-2" style="font-size: 0.85rem;">
+                        <i class="fa-solid fa-scale-balanced text-warning me-1"></i>
+                        قوانین و کارمزدها
+                    </h6>
+                    <ul class="text-custom-muted mb-0 ps-3 small" style="font-size: 0.75rem; line-height: 1.8;">
+                        <li>کارمزد فروش ارز به سایت: ۷٪</li>
+                        <li>کارمزد خرید ارز از سایت: ۱۰٪</li>
+                        <li>پردازش سفارش‌ها به صورت ۲۴ ساعته</li>
+                        <li>تمامی تراکنش‌ها پس از بررسی نهایی تایید می‌شوند</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="col-12 col-lg-6">
+                <div class="glass-card p-3 h-100">
+                    <h6 class="text-white fw-bold mb-2" style="font-size: 0.85rem;">
+                        <i class="fa-solid fa-headset text-success me-1"></i>
+                        پشتیبانی آنلاین
+                    </h6>
+                    <p class="text-custom-muted small mb-2" style="font-size: 0.75rem;">
+                        کارشناسان پشتیبانی در تمام ساعات شبانه‌روز پاسخگوی شما خواهند بود.
+                    </p>
+                    <a href="{{ telegram_url|default:'https://t.me/tronlnd_support' }}" target="_blank" class="btn btn-sm btn-modern btn-modern-primary py-2 fw-bold text-dark" style="font-size: 0.75rem;">
+                        <i class="fa-brands fa-telegram me-1"></i>
+                        شروع گفت‌وگو با پشتیبانی
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- هینت توجه سفارشات فعال -->
+    <div class="alert alert-warning rounded-4 bg-dark mb-3 p-2 text-center" role="alert" style="border: 1px solid rgba(255,193,7,0.15);">
+        <span class="text-warning fw-bold small" style="font-size: 0.72rem;">
+            <i class="fa-solid fa-circle-exclamation me-1"></i>
+            *توجه: تا زمان تکمیل شدن درخواست، درخواست دیگری ارسال نکنید.*
         </span>
     </div>
 
-    <div class="transaction-feed d-flex flex-column gap-3">
-        {% for item in transactions %}
-            <div class="glass-card p-3 d-flex flex-column gap-2 position-relative overflow-hidden">
+    <!-- تراکنش‌های فعال -->
+    <div class="glass-card p-3 mb-3">
+        <h6 class="text-white fw-bold mb-3" style="font-size: 0.85rem;">
+            <i class="fa-solid fa-chart-line text-warning me-1"></i>
+            درخواست‌های فعال
+        </h6>
+
+        <div class="d-flex flex-column gap-2">
+            {% for item in active_transactions %}
+            <div class="p-3 rounded-4" style="background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); cursor: pointer;"
+                 data-bs-toggle="collapse" data-bs-target="#activeCollapse{{ item.id }}">
                 
-                <div class="position-absolute top-0 bottom-0 start-0" style="width: 4px; background: {% if item.request_type == 'buy' or 'خرید' in item.get_request_type_display %}var(--accent-green){% else %}var(--accent-coral){% endif %};"></div>
-
-                <div class="d-flex justify-content-between align-items-center ps-1">
-                    <div class="d-flex align-items-center gap-2">
-                        <span class="fw-bold text-white">{{ item.crypto_name }}</span>
-                        
-                        {% if item.request_type == 'buy' or 'خرید' in item.get_request_type_display %}
-                            <span class="badge bg-success-subtle text-neon-green rounded-2 px-2 py-0.5" style="font-size: 0.7rem; font-weight: 600;">خرید</span>
-                        {% else %}
-                            <span class="badge bg-danger-subtle text-coral rounded-2 px-2 py-0.5" style="font-size: 0.7rem; font-weight: 600;">فروش</span>
-                        {% endif %}
-                    </div>
-                    
-                    <div class="tx-status-wrap">
-                        {% if 'تایید' in item.get_status_display or 'موفق' in item.get_status_display %}
-                            <span class="status-dot status-success"><i class="fa-solid fa-circle me-1" style="font-size: 0.5rem;"></i> {{ item.get_status_display }}</span>
-                        {% elif 'انتظار' in item.get_status_display %}
-                            <span class="status-dot status-warning"><i class="fa-solid fa-circle me-1" style="font-size: 0.5rem;"></i> {{ item.get_status_display }}</span>
-                        {% else %}
-                            <span class="status-dot status-danger"><i class="fa-solid fa-circle me-1" style="font-size: 0.5rem;"></i> {{ item.get_status_display }}</span>
-                        {% endif %}
-                    </div>
-                </div>
-
-                <div class="d-flex justify-content-between align-items-center pt-2 border-top border-glass ps-1">
+                <!-- هدر کارت: بالا چپ = نوع ارز، بالا راست = وضعیت -->
+                <div class="d-flex justify-content-between align-items-start mb-2">
                     <div>
-                        <span class="text-custom-muted d-block" style="font-size: 0.75rem;">مقدار معامله</span>
-                        <span class="fw-medium text-white text-ltr">{{ item.amount }}</span>
+                        <span class="badge {% if item.request_type == 'BUY' %}bg-success-subtle text-neon-green{% else %}bg-danger-subtle text-coral{% endif %} px-2 py-1" style="font-size: 0.65rem;">
+                            {{ item.get_request_type_display }}
+                        </span>
+                        <span class="text-custom-muted ms-2" style="font-size: 0.7rem;">{{ item.created_at|date:"Y/m/d" }}</span>
                     </div>
-                    <div class="text-end">
-                        <span class="text-custom-muted d-block" style="font-size: 0.75rem;">قیمت کل</span>
-                        <span class="fw-bold text-cyan text-ltr">{{ item.total_price|default:"0"|intcomma }} <span class="small" style="font-size: 0.7rem; color: var(--text-muted);">تومان</span></span>
+                    <span class="badge bg-warning text-dark px-2 py-1" style="font-size: 0.65rem;">
+                        {{ item.get_status_display }}
+                    </span>
+                </div>
+
+                <!-- وسط کارت: مقدار معامله -->
+                <div class="text-center py-2" style="border-top: 1px solid rgba(255,255,255,0.05); border-bottom: 1px solid rgba(255,255,255,0.05);">
+                    <span class="text-custom-muted small d-block mb-1" style="font-size: 0.7rem;">مقدار معامله:</span>
+                    <span class="fw-bold text-white" style="font-size: 1.05rem;">
+                        {{ item.amount|default:"-" }} <span class="text-cyan small">{{ item.crypto_name|default:"ریالی" }}</span>
+                    </span>
+                </div>
+
+                <!-- پایین کارت: قیمت کل + فلش -->
+                <div class="d-flex justify-content-between align-items-center mt-2">
+                    <span class="text-custom-muted" style="font-size: 0.7rem;">
+                        <i class="fa-solid fa-chevron-down me-1" style="font-size: 0.6rem;"></i>جزئیات
+                    </span>
+                    <div>
+                        <span class="text-custom-muted" style="font-size: 0.7rem;">قیمت کل:</span>
+                        <span class="fw-bold text-neon-green" style="font-size: 0.85rem;">
+                            {{ item.total_price|default:item.fiat_amount|intcomma }} تومان
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- بخش تاشو جزییات -->
+            <div class="collapse mb-2" id="activeCollapse{{ item.id }}">
+                <div class="p-3 rounded-4 text-white" style="background: rgba(15, 21, 32, 0.95); border: 1px solid rgba(0, 229, 255, 0.15); font-size: 0.8rem;">
+                    <div class="d-flex flex-column gap-2">
+                        <div class="d-flex justify-content-between">
+                            <span class="text-custom-muted">کد درخواست:</span>
+                            <span>#{{ item.id }}</span>
+                        </div>
+                        <div class="d-flex justify-content-between">
+                            <span class="text-custom-muted">ارز:</span>
+                            <span class="fw-bold">{{ item.crypto_name|default:"واریز ریالی" }}</span>
+                        </div>
+                        {% if item.tx_hash %}
+                        <div style="border-top: 1px solid rgba(255,255,255,0.05); padding-top: 8px;">
+                            <span class="text-custom-muted d-block mb-1 small">هش تراکنش:</span>
+                            <code class="text-cyan d-block p-2 rounded bg-dark" style="font-size: 0.75rem; word-break: break-all;">{{ item.tx_hash }}</code>
+                        </div>
+                        {% endif %}
+                        {% if item.admin_note %}
+                        <div style="border-top: 1px solid rgba(255,255,255,0.05); padding-top: 8px;">
+                            <span class="text-coral d-block mb-1 small">پیام مدیریت:</span>
+                            <p class="text-white mb-0 bg-dark p-2 rounded" style="font-size: 0.75rem;">{{ item.admin_note }}</p>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <p class="text-center text-custom-muted py-3 mb-0 small">تراکنش فعالی ندارید.</p>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- تراکنش‌های تکمیل شده -->
+    <div class="glass-card p-3 mb-3">
+        <h6 class="text-white fw-bold mb-3" style="font-size: 0.85rem;">
+            <i class="fa-solid fa-circle-check text-success me-1"></i>
+            تراکنش‌های تکمیل شده
+        </h6>
+
+        <div class="d-flex flex-column gap-2">
+            {% for item in completed_transactions %}
+            <div class="p-3 rounded-4" style="background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); cursor: pointer;"
+                 data-bs-toggle="collapse" data-bs-target="#completedCollapse{{ item.id }}">
+                
+                <!-- هدر کارت: بالا چپ = نوع ارز، بالا راست = وضعیت با آیکون چشم -->
+                <div class="d-flex justify-content-between align-items-start mb-2">
+                    <div>
+                        <span class="badge bg-success-subtle text-neon-green px-2 py-1" style="font-size: 0.65rem;">
+                            {{ item.get_request_type_display }}
+                        </span>
+                        <span class="text-custom-muted ms-2" style="font-size: 0.7rem;">{{ item.created_at|date:"Y/m/d" }}</span>
+                    </div>
+                    <div class="d-flex align-items-center gap-1">
+                        <span class="badge bg-success px-2 py-1" style="font-size: 0.65rem;">تکمیل شده</span>
+                        <i class="fa-regular fa-eye text-cyan" style="font-size: 0.85rem;"></i>
                     </div>
                 </div>
 
+                <!-- وسط کارت: مقدار معامله -->
+                <div class="text-center py-2" style="border-top: 1px solid rgba(255,255,255,0.05); border-bottom: 1px solid rgba(255,255,255,0.05);">
+                    <span class="text-custom-muted small d-block mb-1" style="font-size: 0.7rem;">مقدار معامله:</span>
+                    <span class="fw-bold text-white" style="font-size: 1.05rem;">
+                        {{ item.amount|default:"-" }} <span class="text-cyan small">{{ item.crypto_name|default:"ریالی" }}</span>
+                    </span>
+                </div>
+
+                <!-- پایین کارت: قیمت کل + فلش -->
+                <div class="d-flex justify-content-between align-items-center mt-2">
+                    <span class="text-custom-muted" style="font-size: 0.7rem;">
+                        <i class="fa-solid fa-chevron-down me-1" style="font-size: 0.6rem;"></i>جزئیات
+                    </span>
+                    <div>
+                        <span class="text-custom-muted" style="font-size: 0.7rem;">قیمت کل:</span>
+                        <span class="fw-bold text-neon-green" style="font-size: 0.85rem;">
+                            {{ item.total_price|default:item.fiat_amount|intcomma }} تومان
+                        </span>
+                    </div>
+                </div>
             </div>
-        {% empty %}
-            <div class="glass-card p-5 text-center text-custom-muted">
-                <i class="fa-solid fa-folder-open h1 d-block mb-3 opacity-25"></i>
-                <p class="small mb-0">هنوز هیچ درخواستی در سیستم ثبت نکرده‌اید.</p>
+
+            <!-- بخش تاشو جزییات -->
+            <div class="collapse mb-2" id="completedCollapse{{ item.id }}">
+                <div class="p-3 rounded-4 text-white" style="background: rgba(15, 21, 32, 0.95); border: 1px solid rgba(0, 229, 255, 0.15); font-size: 0.8rem;">
+                    <div class="d-flex flex-column gap-2">
+                        <div class="d-flex justify-content-between">
+                            <span class="text-custom-muted">کد درخواست:</span>
+                            <span>#{{ item.id }}</span>
+                        </div>
+                        <div class="d-flex justify-content-between">
+                            <span class="text-custom-muted">ارز:</span>
+                            <span class="fw-bold">{{ item.crypto_name|default:"واریز ریالی" }}</span>
+                        </div>
+                        {% if item.tx_hash %}
+                        <div style="border-top: 1px solid rgba(255,255,255,0.05); padding-top: 8px;">
+                            <span class="text-custom-muted d-block mb-1 small">هش تراکنش:</span>
+                            <code class="text-cyan d-block p-2 rounded bg-dark" style="font-size: 0.75rem; word-break: break-all;">{{ item.tx_hash }}</code>
+                        </div>
+                        {% endif %}
+                        {% if item.admin_note %}
+                        <div style="border-top: 1px solid rgba(255,255,255,0.05); padding-top: 8px;">
+                            <span class="text-coral d-block mb-1 small">پیام مدیریت:</span>
+                            <p class="text-white mb-0 bg-dark p-2 rounded" style="font-size: 0.75rem;">{{ item.admin_note }}</p>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
             </div>
-        {% endfor %}
+            {% empty %}
+            <p class="text-center text-custom-muted py-3 mb-0 small">هنوز تراکنش تکمیل شده‌ای وجود ندارد.</p>
+            {% endfor %}
+        </div>
     </div>
 
 </div>
-{% endblock %}
-
-{% block extra_css %}
-<style>
-    /* خط جداکننده کم‌رنگ داخل کارت‌ها */
-    .border-glass {
-        border-color: rgba(255, 255, 255, 0.05) !important;
-    }
-
-    /* استایل دهی به وضعیت نقطه‌ای تراکنش‌ها */
-    .status-dot {
-        font-size: 0.75rem;
-        font-weight: 600;
-        padding: 4px 10px;
-        border-radius: 8px;
-        display: inline-flex;
-        align-items: center;
-    }
-    
-    .status-success {
-        background: rgba(0, 230, 118, 0.08);
-        color: var(--accent-green);
-    }
-    
-    .status-warning {
-        background: rgba(255, 193, 7, 0.08);
-        color: #ffca28;
-    }
-    
-    .status-danger {
-        background: rgba(255, 82, 82, 0.08);
-        color: var(--accent-coral);
-    }
-
-    /* تراز چپ برای فیلدهای عددی و قیمت‌ها */
-    .text-ltr {
-        direction: ltr;
-        display: inline-block;
-        text-align: left;
-    }
-</style>
 {% endblock %}

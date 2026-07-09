@@ -1,0 +1,177 @@
+{% extends 'core/base.html' %}
+
+{% load humanize %}
+
+{% block title %}جزئیات تراکنش{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+
+    <div class="glass-card p-4 mb-4">
+        <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+            <div>
+                <h4 class="text-white fw-bold mb-1">
+                    <i class="fa-solid fa-file-invoice-dollar text-cyan me-2"></i>
+                    جزئیات تراکنش
+                </h4>
+                <p class="text-custom-muted small mb-0">
+                    کد تراکنش: #{{ transaction.id }}
+                </p>
+            </div>
+
+            <span class="badge bg-dark border border-info px-3 py-2">
+                {{ transaction.get_status_display }}
+            </span>
+        </div>
+    </div>
+
+    <div class="row g-4">
+
+        <div class="col-lg-8">
+            <div class="glass-card p-4 h-100">
+
+                <div class="row g-3">
+
+                    <div class="col-md-6">
+                        <div class="info-box">
+                            <span class="label">نوع تراکنش</span>
+                            <strong>{{ transaction.get_request_type_display }}</strong>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="info-box">
+                            <span class="label">ارز</span>
+                            <strong>{{ transaction.crypto_name|default:"واریز ریالی" }}</strong>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="info-box">
+                            <span class="label">مقدار</span>
+                            <strong>{{ transaction.amount|default:"-" }}</strong>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="info-box">
+                            <span class="label">مبلغ نهایی</span>
+                            <strong>
+                                {{ transaction.total_price|default:"0"|intcomma }} تومان
+                            </strong>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="info-box">
+                            <span class="label">شناسه واریز</span>
+                            <strong>{{ transaction.transfer_reference|default:"ثبت نشده" }}</strong>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="info-box">
+                            <span class="label">تاریخ ثبت</span>
+                            <strong>{{ transaction.created_at|date:"Y/m/d - H:i" }}</strong>
+                        </div>
+                    </div>
+
+                </div>
+
+                {% if transaction.admin_note %}
+                <div class="alert alert-dark border border-warning mt-4">
+                    <strong class="d-block mb-2">
+                        <i class="fa-solid fa-headset text-warning me-2"></i>
+                        توضیحات مدیریت
+                    </strong>
+                    {{ transaction.admin_note }}
+                </div>
+                {% endif %}
+
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <div class="glass-card p-4">
+
+                <h6 class="text-cyan fw-bold mb-3">
+                    <i class="fa-solid fa-hashtag me-2"></i>
+                    مدیریت هش تراکنش
+                </h6>
+
+                {% if transaction.final_approval %}
+                    <div class="alert alert-success">
+                        این تراکنش توسط مدیریت نهایی شده و امکان ویرایش هش وجود ندارد.
+                    </div>
+                {% endif %}
+
+                <form method="post">
+                    {% csrf_token %}
+
+                    <div class="mb-3">
+                        <label class="form-label text-custom-muted">
+                            هش تراکنش
+                        </label>
+
+                        <input
+                            type="text"
+                            name="tx_hash"
+                            class="form-control bg-dark text-white border-secondary"
+                            value="{{ transaction.tx_hash|default:'' }}"
+                            {% if transaction.final_approval %}disabled{% endif %}
+                        >
+                    </div>
+
+                    <button
+                        type="submit"
+                        class="btn btn-modern btn-modern-primary w-100"
+                        {% if transaction.final_approval %}disabled{% endif %}
+                    >
+                        بروزرسانی هش تراکنش
+                    </button>
+                </form>
+
+                <div class="support-box mt-4">
+                    <h6 class="fw-bold text-white mb-3">
+                        <i class="fa-solid fa-headset me-2 text-success"></i>
+                        پشتیبانی ۲۴/۷
+                    </h6>
+
+                    <p class="text-custom-muted small mb-0">
+                        در صورت بروز مشکل در پردازش سفارش، از طریق پشتیبانی آنلاین با کارشناسان در ارتباط باشید.
+                    </p>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+.info-box{
+    background: rgba(255,255,255,0.03);
+    border:1px solid rgba(255,255,255,0.06);
+    border-radius:14px;
+    padding:16px;
+    display:flex;
+    flex-direction:column;
+    gap:8px;
+}
+
+.info-box .label{
+    color:var(--text-muted);
+    font-size:.8rem;
+}
+
+.support-box{
+    background: rgba(0, 230, 118, 0.08);
+    border:1px solid rgba(0, 230, 118, 0.1);
+    border-radius:14px;
+    padding:16px;
+}
+</style>
+{% endblock %}

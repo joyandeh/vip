@@ -14,4 +14,10 @@ urlpatterns = [
         views.request_history,
         name='request_history'
     ),
+
+    path(
+        'detail/<int:pk>/',
+        views.transaction_detail,
+        name='transaction_detail'
+    ),
 ]

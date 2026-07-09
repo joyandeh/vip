@@ -1,0 +1,174 @@
+{% extends 'core/base.html' %}
+
+{% block title %}پنل مدیریت | کاربران{% endblock %}
+
+{% block content %}
+<div class="container my-3 px-2">
+    <!-- منوی ناوبری پنل مخصوص موبایل -->
+    <div class="glass-card p-3 mb-3">
+        <div class="text-center mb-3">
+            <h5 class="text-white fw-bold mb-1">
+                <i class="fa-solid fa-users text-cyan me-1"></i>
+                مدیریت کاربران
+            </h5>
+            <p class="text-custom-muted small mb-0" style="font-size: 0.75rem;">مدیریت اعضا و وضعیت احراز هویت</p>
+        </div>
+        
+        <!-- نویگیشن بار جدید -->
+        <div class="row g-1 text-center">
+            <div class="col-3">
+                <a href="{% url 'panel_dashboard' %}" class="btn btn-sm btn-modern btn-modern-outline w-100 py-2 px-1" style="font-size: 0.7rem; border-radius: 10px;">
+                    <i class="fa-solid fa-chart-line d-block mb-1 fs-6"></i>
+                    داشبورد
+                </a>
+            </div>
+            <div class="col-3">
+                <a href="{% url 'panel_users' %}" class="btn btn-sm btn-modern btn-modern-primary w-100 py-2 px-1" style="font-size: 0.7rem; border-radius: 10px;">
+                    <i class="fa-solid fa-users d-block mb-1 fs-6"></i>
+                    کاربران
+                </a>
+            </div>
+            <div class="col-3">
+                <a href="{% url 'panel_transactions' %}" class="btn btn-sm btn-modern btn-modern-outline w-100 py-2 px-1" style="font-size: 0.7rem; border-radius: 10px;">
+                    <i class="fa-solid fa-list-check d-block mb-1 fs-6"></i>
+                    درخواست‌ها
+                </a>
+            </div>
+            <div class="col-3">
+                <a href="{% url 'panel_settings' %}" class="btn btn-sm btn-modern btn-modern-outline w-100 py-2 px-1" style="font-size: 0.7rem; border-radius: 10px;">
+                    <i class="fa-solid fa-gears d-block mb-1 fs-6"></i>
+                    تنظیمات
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- بخش پیام‌ها -->
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-{% if message.tags == 'error' %}danger{% else %}{{ message.tags }}{% endif %} alert-dismissible fade show rounded-4 bg-dark border-secondary-subtle mb-3 p-3" role="alert">
+                <span class="text-white small">{{ message }}</span>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    <!-- لیست کاربران کاملاً یکپارچه با بخش جستجو مخصوص موبایل (بدون جدول و بدون اسکرول افقی) -->
+    <div class="glass-card p-3">
+        <!-- فرم جستجوی یکپارچه درون خود لیست -->
+        <form method="get" class="mb-3">
+            <div class="row g-1">
+                <div class="col-7">
+                    <input type="text" name="user_search" class="form-control form-control-sm bg-dark text-white border-secondary-subtle py-2" 
+                           placeholder="نام، نام کاربری یا موبایل..." value="{{ user_search }}" style="border-radius: 10px; font-size: 0.75rem;">
+                </div>
+                <div class="col-3">
+                    <select name="user_status" class="form-select form-select-sm bg-dark text-white border-secondary-subtle py-2" style="border-radius: 10px; font-size: 0.75rem;">
+                        <option value="">همه</option>
+                        <option value="verified" {% if user_status_filter == 'verified' %}selected{% endif %}>تایید شده</option>
+                        <option value="unverified" {% if user_status_filter == 'unverified' %}selected{% endif %}>تایید نشده</option>
+                    </select>
+                </div>
+                <div class="col-2">
+                    <button type="submit" class="btn btn-sm btn-modern btn-modern-primary w-100 h-100 py-1.5" style="border-radius: 10px;">
+                        <i class="fa-solid fa-search"></i>
+                    </button>
+                </div>
+            </div>
+        </form>
+
+        <!-- لیست کارت‌های کاربران بدون جدول و با قابلیت بازشوی آکاردئونی بدون تداخل اسکرول -->
+        <div class="d-flex flex-column gap-2">
+            {% for u in users %}
+            <div class="p-3 rounded-4" style="background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); cursor: pointer;" 
+                 data-bs-toggle="collapse" data-bs-target="#userCollapse{{ u.id }}" aria-expanded="false" aria-controls="userCollapse{{ u.id }}">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="text-white mb-1 fw-bold" style="font-size: 0.85rem;">{{ u.full_name|default:u.username }}</h6>
+                        <small class="text-custom-muted d-block" style="font-size: 0.75rem;"><i class="fa-solid fa-phone me-1 text-cyan" style="font-size:0.65rem;"></i>{{ u.mobile }}</small>
+                    </div>
+                    <div class="text-end d-flex flex-column align-items-end">
+                        {% if u.is_verified %}
+                            <span class="badge bg-success-subtle text-neon-green px-2 py-1" style="font-size: 0.65rem;">تایید شده</span>
+                        {% else %}
+                            <span class="badge bg-warning text-dark px-2 py-1" style="font-size: 0.65rem;">تایید نشده</span>
+                        {% endif %}
+                        <small class="text-custom-muted d-block mt-1" style="font-size: 0.65rem;"><i class="fa-solid fa-chevron-down ms-1" style="font-size: 0.6rem;"></i>جزئیات</small>
+                    </div>
+                </div>
+            </div>
+
+            <!-- پنل بازشو اطلاعات کاربر بهینه‌سازی شده برای موبایل بدون مشکل اسکرول -->
+            <div class="collapse mb-2" id="userCollapse{{ u.id }}">
+                <div class="p-3 rounded-4 border-secondary-subtle text-white" style="background: rgba(15, 21, 32, 0.95); border: 1px solid rgba(0, 229, 255, 0.15); font-size: 0.85rem;">
+                    <div class="d-flex flex-column gap-2.5">
+                        <div class="d-flex justify-content-between border-bottom border-secondary-subtle pb-2">
+                            <span class="text-custom-muted">نام کاربری:</span>
+                            <span class="fw-bold">{{ u.username }}</span>
+                        </div>
+                        <div class="d-flex justify-content-between border-bottom border-secondary-subtle pb-2">
+                            <span class="text-custom-muted">نام کامل:</span>
+                            <span class="fw-bold">{{ u.full_name|default:"-" }}</span>
+                        </div>
+                        <div class="d-flex justify-content-between border-bottom border-secondary-subtle pb-2">
+                            <span class="text-custom-muted">شماره موبایل:</span>
+                            <span class="fw-bold" dir="ltr">{{ u.mobile }}</span>
+                        </div>
+                        <div class="d-flex justify-content-between border-bottom border-secondary-subtle pb-2">
+                            <span class="text-custom-muted">تاریخ عضویت:</span>
+                            <span>{{ u.date_joined|date:"Y/m/d H:i" }}</span>
+                        </div>
+                        <div class="d-flex justify-content-between border-bottom border-secondary-subtle pb-2">
+                            <span class="text-custom-muted">وضعیت احراز هویت:</span>
+                            {% if u.is_verified %}
+                                <span class="text-neon-green fw-bold">تایید شده</span>
+                            {% else %}
+                                <span class="text-warning fw-bold">تایید نشده</span>
+                            {% endif %}
+                        </div>
+
+                        <!-- تصاویر مدارک -->
+                        {% if u.national_card_image or u.selfie_image %}
+                        <div class="mt-2 border-bottom border-secondary-subtle pb-3">
+                            <span class="text-custom-muted d-block mb-2 small">مدارک ارسالی:</span>
+                            <div class="d-flex gap-2">
+                                {% if u.national_card_image %}
+                                <a href="{{ u.national_card_image.url }}" target="_blank" class="btn btn-sm btn-modern btn-modern-outline py-2 w-50" style="font-size:0.75rem;">کارت ملی</a>
+                                {% endif %}
+                                {% if u.selfie_image %}
+                                <a href="{{ u.selfie_image.url }}" target="_blank" class="btn btn-sm btn-modern btn-modern-outline py-2 w-50" style="font-size:0.75rem;">عکس سلفی</a>
+                                {% endif %}
+                            </div>
+                        </div>
+                        {% endif %}
+
+                        <!-- دکمه‌های عملیات سریع -->
+                        <div class="d-flex gap-2 mt-2">
+                            {% if not u.is_verified %}
+                            <form action="{% url 'panel_user_verify' u.id %}" method="post" class="flex-grow-1">
+                                {% csrf_token %}
+                                <input type="hidden" name="action" value="verify">
+                                <button type="submit" class="btn btn-sm btn-modern btn-modern-primary w-100 py-2.5 fw-bold text-dark" style="font-size: 0.75rem;">تایید هویت</button>
+                            </form>
+                            {% else %}
+                            <form action="{% url 'panel_user_verify' u.id %}" method="post" class="flex-grow-1">
+                                {% csrf_token %}
+                                <input type="hidden" name="action" value="reject">
+                                <button type="submit" class="btn btn-sm btn-modern btn-modern-outline w-100 py-2.5 text-coral" style="font-size: 0.75rem; border-color: rgba(255,82,82,0.2);">لغو تایید</button>
+                            </form>
+                            {% endif %}
+                            <form action="{% url 'panel_user_delete' u.id %}" method="post" class="flex-grow-1" onsubmit="return confirm('آیا از حذف این کاربر اطمینان دارید؟');">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-sm btn-modern w-100 py-2.5 text-coral" style="font-size: 0.75rem; border: 1px solid rgba(255,82,82,0.2);">حذف کاربر</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <p class="text-center text-custom-muted py-4 mb-0 small">کاربری یافت نشد.</p>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}

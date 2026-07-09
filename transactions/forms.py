@@ -11,7 +11,7 @@ class TransactionForm(forms.ModelForm):
             'request_type',
             'crypto_name',
             'amount',
-            'transaction_hash',
+            'tx_hash',
             'fiat_deposit_type',
             'fiat_amount',
             'depositor_card_number',
@@ -19,10 +19,10 @@ class TransactionForm(forms.ModelForm):
         ]
 
         widgets = {
-            'request_type': forms.HiddenInput(), # This field will be set by the view based on the context
+            'request_type': forms.HiddenInput(),
             'crypto_name': forms.Select(attrs={'class': 'form-control form-control-sm bg-dark text-white border-secondary-subtle'}),
             'amount': forms.NumberInput(attrs={'class': 'form-control form-control-sm bg-dark text-white border-secondary-subtle', 'placeholder': 'مقدار رمزارز', 'step': 'any'}),
-            'transaction_hash': forms.TextInput(attrs={'class': 'form-control form-control-sm bg-dark text-white border-secondary-subtle', 'placeholder': 'هش تراکنش'}),
+            'tx_hash': forms.TextInput(attrs={'class': 'form-control form-control-sm bg-dark text-white border-secondary-subtle', 'placeholder': 'هش تراکنش'}),
             'fiat_deposit_type': forms.HiddenInput(),
             'fiat_amount': forms.NumberInput(attrs={'class': 'form-control form-control-sm bg-dark text-white border-secondary-subtle', 'placeholder': 'مبلغ واریزی به ریال', 'step': 'any'}),
             'depositor_card_number': forms.TextInput(attrs={'class': 'form-control form-control-sm bg-dark text-white border-secondary-subtle', 'placeholder': 'شماره کارت شما'}),
@@ -66,7 +66,12 @@ class FiatDepositForm(forms.ModelForm):
 class CryptoToRialConversionForm(forms.ModelForm):
     class Meta:
         model = Transaction
-        fields = ["crypto_name", "amount", "transaction_hash"]
+        fields = [
+            "crypto_name",
+            "amount",
+            "wallet_address",
+            "tx_hash"
+        ]
         widgets = {
             "crypto_name": forms.Select(attrs={
                 "class": "form-select form-select-sm bg-dark text-white border-secondary-subtle",
@@ -77,7 +82,11 @@ class CryptoToRialConversionForm(forms.ModelForm):
                 "placeholder": "مقدار ارز",
                 "step": "any"
             }),
-            "transaction_hash": forms.TextInput(attrs={
+            "wallet_address": forms.TextInput(attrs={
+                "class": "form-control form-control-sm bg-dark text-white border-secondary-subtle",
+                "placeholder": "آدرس کیف پول شما"
+            }),
+            "tx_hash": forms.TextInput(attrs={
                 "class": "form-control form-control-sm bg-dark text-white border-secondary-subtle",
                 "placeholder": "هش تراکنش"
             }),

@@ -2,7 +2,7 @@ from decimal import Decimal
 
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponseForbidden
 from .forms import TransactionForm, FiatDepositForm, CryptoToRialConversionForm # Import new forms
 from .models import Transaction
@@ -36,7 +36,7 @@ def create_request(request):
                 transaction.amount = None
                 transaction.unit_price = None
                 transaction.total_price = transaction.fiat_amount # Total price is the fiat amount
-                transaction.status = "pending"
+                transaction.status = "pending_review"
                 transaction.save()
                 messages.success(
                     request,
@@ -55,7 +55,7 @@ def create_request(request):
                 # For now, set them to 0 or None, and let admin update
                 transaction.unit_price = Decimal(0)
                 transaction.total_price = Decimal(0)
-                transaction.status = "pending"
+                transaction.status = "pending_transfer"
                 transaction.save()
                 messages.success(
                     request,
@@ -90,7 +90,14 @@ def create_request(request):
                 transaction.save()
                 messages.success(
                     request,
-                    "درخواست شما ثبت شد. کارشناسان ما به زودی با شما تماس خواهند گرفت."
+                    "درخواست فروش ارز ثبت شد. پس از بررسی هش و تراکنش، تسویه انجام خواهد شد."
+                )
+                return redirect("request_history")
+                transaction.status = "pending_review"
+                transaction.save()
+                messages.success(
+                    request,
+                    "درخواست خرید یا فروش شما با موفقیت ثبت شد."
                 )
                 return redirect("request_history")
 
@@ -118,10 +125,47 @@ def request_history(request):
         user=request.user
     ).order_by('-created_at')
 
+    active_transactions = transactions.exclude(status='completed')
+    completed_transactions = transactions.filter(status='completed')
+
     return render(
         request,
         'transactions/history.html',
         {
-            'transactions': transactions
+            'transactions': transactions,
+            'active_transactions': active_transactions,
+            'completed_transactions': completed_transactions,
+            'telegram_url': 'https://t.me/tronlnd_support',
+        }
+    )
+
+
+@login_required
+def transaction_detail(request, pk):
+    transaction = get_object_or_404(
+        Transaction,
+        pk=pk,
+        user=request.user
+    )
+
+    if request.method == "POST" and not transaction.final_approval:
+        tx_hash = request.POST.get("tx_hash")
+
+        if tx_hash:
+            transaction.tx_hash = tx_hash
+            transaction.save()
+
+            messages.success(
+                request,
+                "هش تراکنش با موفقیت بروزرسانی شد."
+            )
+
+        return redirect("transaction_detail", pk=transaction.pk)
+
+    return render(
+        request,
+        "transactions/detail.html",
+        {
+            "transaction": transaction
         }
     )

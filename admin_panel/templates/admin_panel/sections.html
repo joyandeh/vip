@@ -1,0 +1,180 @@
+{% extends 'core/base.html' %}
+
+{% block title %}پنل مدیریت | بخش‌های سایت{% endblock %}
+
+{% block extra_css %}
+<style>
+    .django-form-wrapper p {
+        margin-bottom: 1.25rem;
+        display: flex;
+        flex-direction: column;
+    }
+    .django-form-wrapper label {
+        font-size: 0.85rem;
+        color: var(--text-muted);
+        margin-bottom: 6px;
+        font-weight: 500;
+    }
+    .django-form-wrapper input,
+    .django-form-wrapper select,
+    .django-form-wrapper textarea {
+        width: 100%;
+        padding: 10px 14px;
+        background-color: rgba(11, 14, 20, 0.8) !important;
+        border: 1px solid rgba(255, 255, 255, 0.1) !important;
+        border-radius: 12px;
+        color: #ffffff !important;
+        font-size: 0.9rem;
+    }
+    .django-form-wrapper .errorlist {
+        list-style: none;
+        padding: 0;
+        margin: 4px 0 0 0;
+        font-size: 0.8rem;
+        color: #ff5252;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container my-4 pt-2">
+    <!-- هدر و منوی ناوبری -->
+    <div class="glass-card p-4 mb-4">
+        <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+            <div>
+                <h4 class="text-white fw-bold mb-1">
+                    <i class="fa-solid fa-table-columns text-cyan me-2"></i>
+                    مدیریت بخش‌های صفحه اصلی
+                </h4>
+                <p class="text-custom-muted small mb-0">افزودن و ویرایش بخش‌های نمایشی سایت</p>
+            </div>
+            
+            <div class="d-flex gap-2">
+                <a href="{% url 'panel_dashboard' %}" class="btn btn-sm btn-modern btn-modern-outline px-3">
+                    <i class="fa-solid fa-chart-line me-1"></i> داشبورد
+                </a>
+                <a href="{% url 'panel_settings' %}" class="btn btn-sm btn-modern btn-modern-outline px-3">
+                    <i class="fa-solid fa-gears me-1"></i> تنظیمات
+                </a>
+                <a href="{% url 'panel_users' %}" class="btn btn-sm btn-modern btn-modern-outline px-3">
+                    <i class="fa-solid fa-users me-1"></i> کاربران
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-4">
+        <!-- فرم افزودن بخش جدید -->
+        <div class="col-lg-5">
+            <div class="glass-card p-4">
+                <h5 class="text-cyan fw-bold mb-4">
+                    <i class="fa-solid fa-plus me-2"></i> افزودن بخش جدید
+                </h5>
+                
+                <form method="post" class="django-form-wrapper" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <input type="hidden" name="form_type" value="add_section">
+                    {{ section_form.as_p }}
+                    <button type="submit" class="btn btn-modern btn-modern-primary w-100 py-2 fw-bold text-dark mt-2">
+                        <i class="fa-solid fa-plus me-1"></i> افزودن بخش
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- لیست بخش‌ها -->
+        <div class="col-lg-7">
+            <div class="glass-card p-4">
+                <h5 class="text-white fw-bold mb-4">
+                    <i class="fa-solid fa-list-ul text-cyan me-2"></i> بخش‌های موجود
+                </h5>
+
+                <div class="d-flex flex-column gap-3">
+                    {% for section in homepage_sections %}
+                    <div class="p-3 rounded-4" style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06);">
+                        <div class="d-flex justify-content-between align-items-start mb-2">
+                            <div>
+                                <span class="badge bg-cyan text-dark mb-1" style="font-size: 0.7rem;">
+                                    {{ section.get_section_key_display }}
+                                </span>
+                                <h6 class="text-white fw-bold mb-0">{{ section.title|default:"بدون عنوان" }}</h6>
+                                <small class="text-custom-muted">{{ section.subtitle|truncatechars:60 }}</small>
+                            </div>
+                            <div class="d-flex gap-1">
+                                {% if not section.is_active %}
+                                <span class="badge bg-secondary">غیرفعال</span>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <div class="d-flex gap-2 mt-3">
+                            <!-- ویرایش -->
+                            <form action="" method="post" class="flex-grow-1" enctype="multipart/form-data">
+                                {% csrf_token %}
+                                <input type="hidden" name="form_type" value="edit_section">
+                                <input type="hidden" name="section_id" value="{{ section.id }}">
+                                <div class="d-flex gap-2 mb-2">
+                                    <input type="text" name="title" class="form-control form-control-sm bg-dark text-white border-secondary-subtle" 
+                                           placeholder="عنوان" value="{{ section.title }}">
+                                    <input type="number" name="order" class="form-control form-control-sm bg-dark text-white border-secondary-subtle" 
+                                           placeholder="ترتیب" value="{{ section.order }}" style="width: 70px;">
+                                </div>
+                                <div class="d-flex gap-2">
+                                    <select name="is_active" class="form-select form-select-sm bg-dark text-white border-secondary-subtle" style="font-size: 0.8rem;">
+                                        <option value="1" {% if section.is_active %}selected{% endif %}>فعال</option>
+                                        <option value="0" {% if not section.is_active %}selected{% endif %}>غیرفعال</option>
+                                    </select>
+                                    <button type="submit" class="btn btn-sm btn-modern btn-modern-primary py-1 px-2" title="ذخیره تغییرات">
+                                        <i class="fa-solid fa-save"></i>
+                                    </button>
+                                </div>
+                            </form>
+                            
+                            <!-- حذف -->
+                            <form action="{% url 'panel_sections' %}" method="post" class="d-inline" 
+                                  onsubmit="return confirm('آیا از حذف این بخش اطمینان دارید؟');">
+                                {% csrf_token %}
+                                <input type="hidden" name="form_type" value="delete_section">
+                                <input type="hidden" name="section_id" value="{{ section.id }}">
+                                <button type="submit" class="btn btn-sm py-1 px-2 text-coral" title="حذف" style="border: 1px solid rgba(255,82,82,0.2);">
+                                    <i class="fa-solid fa-trash"></i>
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                    {% empty %}
+                    <p class="text-center text-custom-muted py-4">هیچ بخشی تعریف نشده است.</p>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- راهنما -->
+    <div class="glass-card p-4 mt-4">
+        <h5 class="text-cyan fw-bold mb-3">
+            <i class="fa-solid fa-circle-info me-2"></i> راهنمای بخش‌ها
+        </h5>
+        <div class="row g-3">
+            <div class="col-md-4">
+                <div class="p-3 rounded-4" style="background: rgba(0,229,255,0.05);">
+                    <h6 class="text-white fw-bold mb-1">Hero (تیتر اصلی)</h6>
+                    <small class="text-custom-muted">متن بزرگ و جذاب بالای صفحه</small>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="p-3 rounded-4" style="background: rgba(0,230,118,0.05);">
+                    <h6 class="text-white fw-bold mb-1">Features (ویژگی‌ها)</h6>
+                    <small class="text-custom-muted">معرفی مزایای سایت</small>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="p-3 rounded-4" style="background: rgba(255,82,82,0.05);">
+                    <h6 class="text-white fw-bold mb-1">CTA (دعوت به اقدام)</h6>
+                    <small class="text-custom-muted">دکمه ثبت نام یا خرید</small>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

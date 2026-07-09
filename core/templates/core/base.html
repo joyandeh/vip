@@ -19,82 +19,108 @@
             --text-muted: #8F9CAE;
 
             /* Light Mode */
-            --light-bg-main: #FFFFFF;
-            --light-bg-card: rgba(240, 242, 245, 0.8);
-            --light-text-color: #1a1a1a;
-            --light-border-glass: rgba(0, 0, 0, 0.1);
-            --light-shadow-color: rgba(0, 0, 0, 0.1);
-        }
+                        --light-bg-main: #F8FAFC;
+                        --light-bg-card: rgba(255, 255, 255, 0.9);
+                        --light-text-color: #1a1a1a;
+                        --light-border-glass: rgba(0, 0, 0, 0.08);
+                        --light-shadow-color: rgba(0, 0, 0, 0.08);
+                    }
 
-        body {
-            background-color: var(--bg-main);
-            background-image: 
-                radial-gradient(circle at 10% 20%, rgba(0, 230, 118, 0.04) 0%, transparent 40%),
-                radial-gradient(circle at 90% 80%, rgba(0, 229, 255, 0.04) 0%, transparent 40%);
-            color: #FFFFFF;
-            font-family: 'Vazirmatn', sans-serif;
+                    body {
+                        background-color: var(--bg-main);
+                        background-image: 
+                            radial-gradient(circle at 10% 20%, rgba(0, 230, 118, 0.04) 0%, transparent 40%),
+                            radial-gradient(circle at 90% 80%, rgba(0, 229, 255, 0.04) 0%, transparent 40%);
+                        color: #FFFFFF;
+                        font-family: 'Vazirmatn', sans-serif;
+                        font-weight: 500;
 
-            &.light-mode {
-                background-color: var(--light-bg-main);
-                background-image: none;
-                color: var(--light-text-color);
+                        &.light-mode {
+                            background-color: var(--light-bg-main);
+                            background-image: none;
+                            color: var(--light-text-color);
 
-                .glass-card {
-                    background: var(--light-bg-card);
-                    border: 1px solid var(--light-border-glass);
-                    box-shadow: 0 4px 12px 0 var(--light-shadow-color);
-                }
-                .navbar-custom {
-                    background: rgba(255, 255, 255, 0.9) !important;
-                    border-bottom-color: var(--light-border-glass);
-                }
-                .brand-logo {
-                    color: var(--light-text-color) !important;
-                }
-                .btn-modern-outline {
-                    color: var(--light-text-color);
-                    border-color: rgba(0, 0, 0, 0.15);
-                }
-                .btn-modern-outline:hover {
-                    background: rgba(0, 0, 0, 0.05);
-                    border-color: rgba(0, 0, 0, 0.3);
-                }
-                .bottom-nav {
-                    background: rgba(255, 255, 255, 0.92);
-                    border-top-color: var(--light-border-glass);
-                }
-                .bottom-nav-item {
-                    color: #555;
-                }
-                .bottom-nav-item:hover, .bottom-nav-item.active {
-                    color: var(--accent-cyan);
-                }
-                .action-btn-verify {
-                    background: var(--accent-green) !important;
-                    color: #fff !important;
-                }
-                .form-control,
-                .form-select {
-                    background-color: #f0f2f5 !important;
-                    color: var(--light-text-color) !important;
-                    border-color: rgba(0, 0, 0, 0.1) !important;
-                }
-                .form-control::placeholder {
-                    color: #888 !important;
-                }
-                .modal-content {
-                    background: var(--light-bg-main) !important;
-                }
-                .modal-header,
-                .modal-footer {
-                    border-color: var(--light-border-glass) !important;
-                }
-                .modal-title,
-                .text-white,
-                .btn-close-white {
-                    color: var(--light-text-color) !important;
-                }
-            }
+                            .glass-card {
+                                background: var(--light-bg-card);
+                                border: 1px solid var(--light-border-glass);
+                                box-shadow: 0 4px 12px 0 var(--light-shadow-color);
+                            }
+                            .navbar-custom {
+                                background: rgba(255, 255, 255, 0.95) !important;
+                                border-bottom-color: var(--light-border-glass);
+                            }
+                            .brand-logo {
+                                color: var(--light-text-color) !important;
+                                font-weight: 900;
+                            }
+                            .btn-modern-outline {
+                                color: var(--light-text-color);
+                                border-color: rgba(0, 0, 0, 0.15);
+                            }
+                            .btn-modern-outline:hover {
+                                background: rgba(0, 0, 0, 0.05);
+                                border-color: rgba(0, 0, 0, 0.3);
+                            }
+                            .bottom-nav {
+                                background: rgba(255, 255, 255, 0.98);
+                                border-top-color: var(--light-border-glass);
+                            }
+                            .bottom-nav-item {
+                                color: #444;
+                                font-weight: 600;
+                            }
+                            .bottom-nav-item:hover, .bottom-nav-item.active {
+                                color: var(--accent-cyan);
+                            }
+                            .action-btn-verify {
+                                background: var(--accent-green) !important;
+                                color: #fff !important;
+                            }
+                            .form-control,
+                            .form-select {
+                                background-color: #ffffff !important;
+                                color: var(--light-text-color) !important;
+                                border-color: rgba(0, 0, 0, 0.1) !important;
+                                font-weight: 600;
+                            }
+                            .form-control::placeholder {
+                                color: #888 !important;
+                            }
+                            .modal-content {
+                                background: var(--light-bg-main) !important;
+                            }
+                            .modal-header,
+                            .modal-footer {
+                                border-color: var(--light-border-glass) !important;
+                            }
+                            .modal-title,
+                            .text-white,
+                            .btn-close-white {
+                                color: var(--light-text-color) !important;
+                            }
+                            h1, h2, h3, h4, h5, h6 {
+                                font-weight: 800 !important;
+                            }
+                            .text-white {
+                                color: #1a1a1a !important;
+                                font-weight: 700;
+                            }
+                            .fw-bold {
+                                font-weight: 800 !important;
+                            }
+                            .glass-card p,
+                            .glass-card li,
+                            .glass-card span,
+                            .glass-card label,
+                            .glass-card small,
+                            .glass-card h6 {
+                                font-weight: 700 !important;
+                                color: #000000 !important;
+                            }
+                            .text-custom-muted {
+                                color: #334155 !important;
+                            }
+                        }
             min-height: 100vh;
             margin-bottom: 85px; /* Spacing for bottom navbar on mobile */
             overflow-x: hidden;
@@ -133,8 +159,8 @@
         }
 
         .brand-logo span {
-            color: var(--accent-green);
-        }
+                    color: var(--accent-coral);
+                }
 
         /* Modern Action Buttons */
         .btn-modern {
@@ -278,34 +304,44 @@
                 </a>
                 
                 <div class="d-flex align-items-center gap-2">
-                    <button id="theme-toggle" class="btn btn-modern btn-modern-outline py-1 px-2 d-flex align-items-center justify-content-center" style="width:40px;height:40px;">
-                        <i class="fa-solid fa-moon" style="font-size:1rem;"></i>
-                    </button>
-                    {% if user.is_authenticated %}
-                        <div class="dropdown">
-                            <a class="btn btn-modern btn-modern-outline py-1 px-2" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                <i class="fa-regular fa-user"></i>
-                            </a>
-                            <ul class="dropdown-menu dropdown-menu-dark dropdown-menu-end glass-card p-2" style="border-radius: 12px;">
-                                {% if user.is_staff %}
-                                    <li>
-                                        <a class="dropdown-item rounded-3 text-cyan fw-bold" href="{% url 'admin_dashboard' %}">
-                                            <i class="fa-solid fa-user-shield me-2 text-cyan"></i> پنل مدیریت پلتفرم
+                                    <!-- آیکون نامه / اعلان -->
+                                    <a href="#" class="btn btn-modern btn-modern-outline py-1 px-2 d-flex align-items-center justify-content-center position-relative" style="width:40px;height:40px;">
+                                        <i class="fa-regular fa-envelope" style="font-size:1rem;"></i>
+                                        {% if unreads_count > 0 %}
+                                        <span class="position-absolute translate-middle badge rounded-pill bg-danger" style="top: 5px; left: 5px; font-size: 0.6rem; padding: 3px 5px;">
+                                            {{ unreads_count }}
+                                        </span>
+                                        {% endif %}
+                                    </a>
+                    
+                                    <button id="theme-toggle" class="btn btn-modern btn-modern-outline py-1 px-2 d-flex align-items-center justify-content-center" style="width:40px;height:40px;">
+                                        <i class="fa-solid fa-moon" style="font-size:1rem;"></i>
+                                    </button>
+                                    {% if user.is_authenticated %}
+                                    <div class="dropdown">
+                                        <a class="btn btn-modern btn-modern-outline py-1 px-2" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                            <i class="fa-regular fa-user"></i>
                                         </a>
-                                    </li>
-                                    <li><hr class="dropdown-divider opacity-10"></li>
-                                {% endif %}
-                                
-                                <li><a class="dropdown-item rounded-3" href="{% url 'profile' %}"><i class="fa-solid fa-sliders me-2 text-custom-muted"></i> پروفایل کاربری</a></li>
-                                <li><hr class="dropdown-divider opacity-10"></li>
-                                <li><a class="dropdown-item rounded-3 text-coral" href="{% url 'logout' %}"><i class="fa-solid fa-arrow-right-from-bracket me-2"></i> خروج</a></li>
-                            </ul>
-                        </div>
-                    {% else %}
-                        <a href="{% url 'login' %}" class="btn btn-modern btn-modern-outline py-1 px-3">ورود</a>
-                        <a href="{% url 'register' %}" class="btn btn-modern btn-modern-primary py-1 px-3">ثبت نام</a>
-                    {% endif %}
-                </div>
+                                        <ul class="dropdown-menu dropdown-menu-dark dropdown-menu-end glass-card p-2" style="border-radius: 12px;">
+                                            {% if user.is_staff %}
+                                            <li>
+                                                <a class="dropdown-item rounded-3 text-cyan fw-bold" href="{% url 'panel_dashboard' %}">
+                                                    <i class="fa-solid fa-user-shield me-2 text-cyan"></i> پنل مدیریت پلتفرم
+                                                </a>
+                                            </li>
+                                            <li><hr class="dropdown-divider opacity-10"></li>
+                                            {% endif %}
+                        
+                                            <li><a class="dropdown-item rounded-3" href="{% url 'profile' %}"><i class="fa-solid fa-sliders me-2 text-custom-muted"></i> پروفایل کاربری</a></li>
+                                            <li><hr class="dropdown-divider opacity-10"></li>
+                                            <li><a class="dropdown-item rounded-3 text-coral" href="{% url 'logout' %}"><i class="fa-solid fa-arrow-right-from-bracket me-2"></i> خروج</a></li>
+                                        </ul>
+                                    </div>
+                                    {% else %}
+                                    <a href="{% url 'login' %}" class="btn btn-modern btn-modern-outline py-1 px-3">ورود</a>
+                                    <a href="{% url 'register' %}" class="btn btn-modern btn-modern-primary py-1 px-3">ثبت نام</a>
+                                    {% endif %}
+                                </div>
             </div>
         </nav>
 
@@ -383,11 +419,11 @@
             </a>
             
             {% if user.is_authenticated and user.is_staff %}
-                <a href="{% url 'admin_dashboard' %}" class="bottom-nav-item {% if request.resolver_match.url_name == 'admin_dashboard' %}active{% endif %}" style="color: var(--accent-cyan);">
-                    <i class="fa-solid fa-user-shield text-cyan"></i>
-                    <span>مدیریت</span>
-                </a>
-            {% else %}
+                            <a href="{% url 'panel_dashboard' %}" class="bottom-nav-item {% if request.resolver_match.url_name == 'panel_dashboard' %}active{% endif %}" style="color: var(--accent-cyan);">
+                                <i class="fa-solid fa-user-shield text-cyan"></i>
+                                <span>مدیریت</span>
+                            </a>
+                        {% else %}
                 <a href="#" class="bottom-nav-item">
                     <i class="fa-solid fa-wallet"></i>
                     <span>کیف پول</span>
