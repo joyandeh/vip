@@ -23,20 +23,29 @@ def create_request(request):
     # Get site settings for wallet addresses
     site_settings = SiteSetting.objects.first()
 
+    # Initialize all forms for both GET and POST
+    form = TransactionForm()
+    fiat_deposit_card_form = FiatDepositForm(initial={"fiat_deposit_type": "CARD"})
+    fiat_deposit_shaba_form = FiatDepositForm(initial={"fiat_deposit_type": "SHABA"})
+    crypto_to_rial_form = CryptoToRialConversionForm()
+
     if request.method == "POST":
         form_type = request.POST.get("form_type")
 
         if form_type == "fiat_deposit":
-            form = FiatDepositForm(request.POST)
-            if form.is_valid():
-                transaction = form.save(commit=False)
+            fiat_deposit_card_form = FiatDepositForm(request.POST)
+            fiat_deposit_shaba_form = FiatDepositForm(request.POST)
+            # Check which one is being submitted
+            deposit_type = request.POST.get("fiat_deposit_type", "CARD")
+            if deposit_type == "CARD":
+                form_to_use = fiat_deposit_card_form
+            else:
+                form_to_use = fiat_deposit_shaba_form
+            
+            if form_to_use.is_valid():
+                transaction = form_to_use.save(commit=False)
                 transaction.user = request.user
-                transaction.request_type = Transaction.BUY # Fiat deposit is essentially buying site credit
-                transaction.crypto_name = None # Not crypto related
-                transaction.amount = None
-                transaction.unit_price = None
-                transaction.total_price = transaction.fiat_amount # Total price is the fiat amount
-                transaction.status = "pending_review"
+                transaction.request_type = Transaction.BUY
                 transaction.save()
                 messages.success(
                     request,
@@ -45,14 +54,11 @@ def create_request(request):
                 return redirect("request_history")
 
         elif form_type == "crypto_to_rial_conversion":
-            form = CryptoToRialConversionForm(request.POST)
-            if form.is_valid():
-                transaction = form.save(commit=False)
+            crypto_to_rial_form = CryptoToRialConversionForm(request.POST)
+            if crypto_to_rial_form.is_valid():
+                transaction = crypto_to_rial_form.save(commit=False)
                 transaction.user = request.user
-                transaction.request_type = Transaction.SELL # Selling crypto to the site
-                # crypto_name, amount, transaction_hash are already set by the form
-                # unit_price and total_price will be calculated based on current rates or filled by admin
-                # For now, set them to 0 or None, and let admin update
+                transaction.request_type = Transaction.SELL
                 transaction.unit_price = Decimal(0)
                 transaction.total_price = Decimal(0)
                 transaction.status = "pending_transfer"
@@ -63,7 +69,6 @@ def create_request(request):
                 )
                 return redirect("request_history")
 
-        # Default form for crypto buy/sell if no specific form_type is provided or matched
         else:
             form = TransactionForm(request.POST)
             if form.is_valid():
@@ -87,12 +92,6 @@ def create_request(request):
                 transaction.user = request.user
                 transaction.unit_price = unit_price
                 transaction.total_price = total_price
-                transaction.save()
-                messages.success(
-                    request,
-                    "درخواست فروش ارز ثبت شد. پس از بررسی هش و تراکنش، تسویه انجام خواهد شد."
-                )
-                return redirect("request_history")
                 transaction.status = "pending_review"
                 transaction.save()
                 messages.success(
@@ -101,19 +100,19 @@ def create_request(request):
                 )
                 return redirect("request_history")
 
-    else: # GET request
-        form = TransactionForm()
-        fiat_deposit_form = FiatDepositForm()
-        crypto_to_rial_form = CryptoToRialConversionForm()
+    # Determine which form section to show based on query param
+    request_type = request.GET.get('type', 'all')
 
     return render(
         request,
         "transactions/request_crypto.html",
         {
             "form": form,
-            "fiat_deposit_form": fiat_deposit_form,
+            "fiat_deposit_card_form": fiat_deposit_card_form,
+            "fiat_deposit_shaba_form": fiat_deposit_shaba_form,
             "crypto_to_rial_form": crypto_to_rial_form,
-            "site_settings": site_settings # Pass site settings to template
+            "site_settings": site_settings,
+            "request_type": request_type,
         }
     )
 

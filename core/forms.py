@@ -96,6 +96,13 @@ class SiteSettingForm(forms.ModelForm):
             'contact_telegram',
             'usdt_wallet_address',
             'trx_wallet_address',
+            'btc_wallet_address',
+            'eth_wallet_address',
+            'sol_wallet_address',
+            'site_card_number',
+            'site_iban',
+            'site_account_holder',
+            'support_phone',
         ]
 
         widgets = {
@@ -122,5 +129,14 @@ class SiteSettingForm(forms.ModelForm):
             ),
             'trx_wallet_address': forms.TextInput(
                 attrs={'class': 'form-control bg-dark text-white border-secondary-subtle', 'dir': 'ltr'}
+            ),
+            'site_card_number': forms.TextInput(
+                attrs={'class': 'form-control bg-dark text-white border-secondary-subtle', 'dir': 'ltr'}
+            ),
+            'site_iban': forms.TextInput(
+                attrs={'class': 'form-control bg-dark text-white border-secondary-subtle', 'dir': 'ltr'}
+            ),
+            'site_account_holder': forms.TextInput(
+                attrs={'class': 'form-control bg-dark text-white border-secondary-subtle'}
             ),
         }

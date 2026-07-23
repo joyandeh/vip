@@ -85,6 +85,16 @@
                     </button>
                 </div>
             </div>
+            <div class="row g-1 mt-1">
+                <div class="col-6">
+                    <input type="date" name="date_from" class="form-control form-control-sm bg-dark text-white border-secondary-subtle py-2" 
+                           placeholder="از تاریخ" value="{{ tx_date_from }}" style="border-radius: 10px; font-size: 0.7rem;">
+                </div>
+                <div class="col-6">
+                    <input type="date" name="date_to" class="form-control form-control-sm bg-dark text-white border-secondary-subtle py-2" 
+                           placeholder="تا تاریخ" value="{{ tx_date_to }}" style="border-radius: 10px; font-size: 0.7rem;">
+                </div>
+            </div>
         </form>
 
         <!-- لیست کارت‌های درخواست‌ها بدون جدول و مجهز به مکانیزم بازشوی آکاردئونی روان بدون تداخل اسکرول -->
@@ -140,6 +150,55 @@
                             <span class="text-custom-muted">وضعیت تراکنش:</span>
                             <span class="fw-bold text-cyan">{{ tx.get_status_display }}</span>
                         </div>
+                        
+                        {% if tx.request_type == 'SELL' %}
+                        {# فروش ارز - نمایش اطلاعات بانکی کاربر #}
+                        <div class="border-bottom border-secondary-subtle pb-2">
+                            <span class="text-coral d-block mb-2 small"><i class="fa-solid fa-building-columns me-1"></i>اطلاعات واریز به کاربر:</span>
+                            <div class="row g-2">
+                                <div class="col-6">
+                                    <small class="text-custom-muted d-block">شماره کارت:</small>
+                                    <code class="text-white" dir="ltr" style="font-size: 0.75rem;">{{ tx.user.card_number|default:"-" }}</code>
+                                </div>
+                                <div class="col-6">
+                                    <small class="text-custom-muted d-block">شماره شبا:</small>
+                                    <code class="text-white" dir="ltr" style="font-size: 0.75rem;">{{ tx.user.iban|default:"-" }}</code>
+                                </div>
+                            </div>
+                        </div>
+                        {% else %}
+                        {# خرید ارز - نمایش آدرس کیف پول و شناسه واریز #}
+                        <div class="border-bottom border-secondary-subtle pb-2">
+                            <span class="text-neon-green d-block mb-2 small"><i class="fa-solid fa-wallet me-1"></i>اطلاعات پرداخت خریدار:</span>
+                            <div class="d-flex flex-column gap-2">
+                                {% if tx.wallet_address %}
+                                <div>
+                                    <small class="text-custom-muted d-block">آدرس کیف پول:</small>
+                                    <code class="text-cyan d-block p-2 rounded bg-dark" style="font-size: 0.7rem; word-break: break-all;">{{ tx.wallet_address }}</code>
+                                </div>
+                                {% endif %}
+                                {% if tx.transfer_reference %}
+                                <div>
+                                    <small class="text-custom-muted d-block">شناسه واریز:</small>
+                                    <code class="text-cyan d-block p-2 rounded bg-dark" style="font-size: 0.7rem;">{{ tx.transfer_reference }}</code>
+                                </div>
+                                {% endif %}
+                                {% if tx.depositor_card_number %}
+                                <div>
+                                    <small class="text-custom-muted d-block">شماره کارت واریزکننده:</small>
+                                    <code class="text-white" dir="ltr" style="font-size: 0.75rem;">{{ tx.depositor_card_number }}</code>
+                                </div>
+                                {% endif %}
+                                {% if tx.depositor_shaba_number %}
+                                <div>
+                                    <small class="text-custom-muted d-block">شماره شبا واریزکننده:</small>
+                                    <code class="text-white" dir="ltr" style="font-size: 0.75rem;">{{ tx.depositor_shaba_number }}</code>
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        {% endif %}
+
                         {% if tx.tx_hash %}
                         <div class="border-bottom border-secondary-subtle pb-2">
                             <span class="text-custom-muted d-block mb-1">هش تراکنش:</span>

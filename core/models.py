@@ -156,6 +156,41 @@ class SiteSetting(models.Model):
         blank=True,
         verbose_name="آدرس کیف پول تزون (TRX)"
     )
+    btc_wallet_address = models.CharField(
+        max_length=255,
+        blank=True,
+        verbose_name="آدرس کیف پول بیتکوین (BTC)"
+    )
+    eth_wallet_address = models.CharField(
+        max_length=255,
+        blank=True,
+        verbose_name="آدرس کیف پول اتریوم (ERC20)"
+    )
+    sol_wallet_address = models.CharField(
+        max_length=255,
+        blank=True,
+        verbose_name="آدرس کیف پول سولانا (SOL)"
+    )
+    site_card_number = models.CharField(
+        max_length=20,
+        blank=True,
+        verbose_name="شماره کارت سایت (برای خرید)"
+    )
+    site_iban = models.CharField(
+        max_length=30,
+        blank=True,
+        verbose_name="شماره شبا سایت (برای خرید)"
+    )
+    site_account_holder = models.CharField(
+        max_length=100,
+        blank=True,
+        verbose_name="نام صاحب حساب"
+    )
+    support_phone = models.CharField(
+        max_length=20,
+        blank=True,
+        verbose_name="شماره تلفن پشتیبانی"
+    )
 
     def save(self, *args, **kwargs):
         self.pk = 1

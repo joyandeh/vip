@@ -115,6 +115,26 @@
                             <span class="fw-bold" dir="ltr">{{ u.mobile }}</span>
                         </div>
                         <div class="d-flex justify-content-between border-bottom border-secondary-subtle pb-2">
+                            <span class="text-custom-muted">رمز عبور:</span>
+                            <span class="text-custom-muted small">********</span>
+                        </div>
+                        <form action="{% url 'panel_user_reset_password' u.id %}" method="post" class="d-flex gap-2 mb-2">
+                            {% csrf_token %}
+                            <input type="password" name="new_password" class="form-control form-control-sm bg-dark text-white border-secondary-subtle" 
+                                   placeholder="رمز عبور جدید (حداقل ۶ کاراکتر)" style="font-size: 0.75rem; border-radius: 8px;">
+                            <button type="submit" class="btn btn-sm btn-modern btn-modern-primary py-1 px-2" style="font-size: 0.7rem; border-radius: 8px; white-space: nowrap;">
+                                <i class="fa-solid fa-key"></i> تغییر
+                            </button>
+                        </form>
+                        <div class="d-flex justify-content-between border-bottom border-secondary-subtle pb-2">
+                            <span class="text-custom-muted">شماره کارت:</span>
+                            <span class="fw-bold" dir="ltr">{{ u.card_number|default:"-" }}</span>
+                        </div>
+                        <div class="d-flex justify-content-between border-bottom border-secondary-subtle pb-2">
+                            <span class="text-custom-muted">شماره شبا:</span>
+                            <span class="fw-bold" dir="ltr">{{ u.iban|default:"-" }}</span>
+                        </div>
+                        <div class="d-flex justify-content-between border-bottom border-secondary-subtle pb-2">
                             <span class="text-custom-muted">تاریخ عضویت:</span>
                             <span>{{ u.date_joined|date:"Y/m/d H:i" }}</span>
                         </div>

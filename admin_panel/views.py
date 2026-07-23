@@ -118,6 +118,8 @@ def transactions_list(request):
     tx_status_filter = request.GET.get('tx_status', '')
     tx_type_filter = request.GET.get('tx_type', '')
     tx_search = request.GET.get('tx_search', '')
+    tx_date_from = request.GET.get('date_from', '')
+    tx_date_to = request.GET.get('date_to', '')
 
     all_transactions_list = Transaction.objects.select_related('user').order_by('-created_at')
     if tx_status_filter:
@@ -130,12 +132,29 @@ def transactions_list(request):
             Q(user__full_name__icontains=tx_search) |
             Q(crypto_name__icontains=tx_search)
         )
+    if tx_date_from:
+        from datetime import datetime
+        try:
+            date_from = datetime.strptime(tx_date_from, '%Y-%m-%d')
+            all_transactions_list = all_transactions_list.filter(created_at__gte=date_from)
+        except ValueError:
+            pass
+    if tx_date_to:
+        from datetime import datetime
+        try:
+            date_to = datetime.strptime(tx_date_to, '%Y-%m-%d')
+            date_to = date_to.replace(hour=23, minute=59, second=59)
+            all_transactions_list = all_transactions_list.filter(created_at__lte=date_to)
+        except ValueError:
+            pass
 
     context = {
         'transactions': all_transactions_list,
         'tx_status_filter': tx_status_filter,
         'tx_type_filter': tx_type_filter,
         'tx_search': tx_search,
+        'tx_date_from': tx_date_from,
+        'tx_date_to': tx_date_to,
     }
     return render(request, 'admin_panel/transactions.html', context)
 
@@ -173,6 +192,16 @@ def site_settings(request):
             else:
                 messages.error(request, "خطایی در ذخیره تنظیمات قیمت‌گذاری رخ داد.")
 
+        elif form_type == 'bank_setting':
+            site = SiteSetting.get_solo()
+            site.site_card_number = request.POST.get('site_card_number', '')
+            site.site_iban = request.POST.get('site_iban', '')
+            site.site_account_holder = request.POST.get('site_account_holder', '')
+            site.support_phone = request.POST.get('support_phone', '')
+            site.save()
+            messages.success(request, "اطلاعات بانکی ذخیره شد.")
+            return redirect('panel_settings')
+
     site_form = SiteSettingForm(
         instance=SiteSetting.get_solo(),
         prefix='site'
@@ -184,9 +213,12 @@ def site_settings(request):
         prefix='crypto'
     )
 
+    site_settings = SiteSetting.get_solo()
+
     context = {
         'site_form': site_form,
         'crypto_form': crypto_form,
+        'site_settings': site_settings,
     }
     return render(request, 'admin_panel/settings.html', context)
 
@@ -305,4 +337,21 @@ def delete_user(request, user_id):
         messages.success(request, f"کاربر {username} با موفقیت حذف شد.")
     else:
         messages.error(request, "امکان حذف حساب کاربری خود وجود ندارد.")
+    return redirect('panel_users')
+
+
+@staff_member_required
+@require_POST
+def reset_user_password(request, user_id):
+    """ریست رمز عبور کاربر"""
+    user = get_object_or_404(CustomUser, id=user_id)
+    new_password = request.POST.get('new_password', '')
+
+    if not new_password or len(new_password) < 6:
+        messages.error(request, "رمز عبور جدید باید حداقل ۶ کاراکتر باشد.")
+    else:
+        user.set_password(new_password)
+        user.save()
+        messages.success(request, f"رمز عبور کاربر {user.username} با موفقیت تغییر یافت.")
+
     return redirect('panel_users')

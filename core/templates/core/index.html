@@ -12,15 +12,55 @@
     <p class="text-custom-muted mb-3" style="font-size: 0.8rem;">بازار معاملاتی ارزهای دیجیتال</p>
     
     <!-- دکمه‌های خرید و فروش -->
-    <div class="d-flex gap-2 justify-content-center mb-2">
-        <a href="{% url 'request_crypto' %}?type=buy" class="btn btn-modern btn-modern-primary py-2 px-4 flex-grow-1 fw-bold" style="font-size: 0.85rem;">
-            <i class="fa-solid fa-cart-shopping me-1"></i> خرید از سایت
-        </a>
-        <a href="{% url 'request_crypto' %}?type=sell" class="btn btn-modern py-2 px-4 flex-grow-1 fw-bold" style="font-size: 0.85rem; background: rgba(255,82,82,0.15); border: 1px solid rgba(255,82,82,0.3); color: var(--accent-coral);">
-            <i class="fa-solid fa-hand-holding-dollar me-1"></i> فروش به سایت
-        </a>
-    </div>
-</div>
+        <div class="d-flex gap-2 justify-content-center mb-2">
+            <a href="{% url 'request_crypto' %}?type=buy" class="btn btn-modern btn-modern-primary py-2 px-4 flex-grow-1 fw-bold" style="font-size: 0.85rem;">
+                <i class="fa-solid fa-cart-shopping me-1"></i> خرید از سایت
+            </a>
+            <a href="{% url 'request_crypto' %}?type=sell" class="btn btn-modern py-2 px-4 flex-grow-1 fw-bold" style="font-size: 0.85rem; background: rgba(255,82,82,0.15); border: 1px solid rgba(255,82,82,0.3); color: var(--accent-coral);">
+                <i class="fa-solid fa-hand-holding-dollar me-1"></i> فروش به سایت
+            </a>
+        </div>
+    
+        <!-- معامله سریع امن تلفنی -->
+            {% if site_settings.support_phone %}
+            <button type="button" class="btn w-100 py-2 fw-bold mb-2" data-bs-toggle="modal" data-bs-target="#phoneModal" style="background: rgba(0,230,118,0.15); border: 1px solid rgba(0,230,118,0.4); color: var(--accent-green); font-size: 0.85rem;">
+                <i class="fa-solid fa-phone-volume me-1"></i> معامله سریع امن تلفنی
+            </button>
+            {% endif %}
+        </div>
+
+        <!-- مودال شماره تماس -->
+        {% if site_settings.support_phone %}
+        <div class="modal fade" id="phoneModal" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content glass-card" style="background: rgba(20,26,38,0.95); border: 1px solid rgba(0,230,118,0.3);">
+                    <div class="modal-header border-secondary-subtle">
+                        <h5 class="modal-title text-neon-green fw-bold">
+                            <i class="fa-solid fa-shield-halved me-2"></i>معامله سریع امن تلفنی
+                        </h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="بستن"></button>
+                    </div>
+                    <div class="modal-body text-center py-4">
+                        <p class="text-custom-muted mb-3">برای انجام معامله تلفنی با ما تماس بگیرید:</p>
+                        <div class="bg-dark p-4 rounded-4 mb-3" style="border: 1px solid rgba(0,230,118,0.2);">
+                            <i class="fa-solid fa-phone text-neon-green mb-2" style="font-size: 2rem;"></i>
+                            <h3 class="text-white fw-bold ltr dir-ltr mb-0" dir="ltr">{{ site_settings.support_phone }}</h3>
+                        </div>
+                        <p class="text-custom-muted small mb-0">
+                            <i class="fa-solid fa-clock me-1"></i>
+                            پشتیبانی ۲۴ ساعته در خدمت شماست
+                        </p>
+                    </div>
+                    <div class="modal-footer border-secondary-subtle justify-content-center">
+                        <a href="tel:{{ site_settings.support_phone }}" class="btn btn-modern btn-modern-primary py-2 px-4 fw-bold">
+                            <i class="fa-solid fa-phone me-2"></i>تماس با شماره بالا
+                        </a>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">بستن</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
 
 <!-- ارزهای برتر - کادرهای جمع‌وجورتر -->
 <div class="crypto-list-section mb-3">
@@ -194,15 +234,52 @@
                     </div>
                 </div>
             </div>
+            
+            <!-- بنر ۵: معامله سریع تلفنی -->
+            {% if site_settings.support_phone %}
+            <div class="carousel-item">
+                <div class="d-flex align-items-center gap-3" data-bs-toggle="collapse" data-bs-target="#phoneInfo">
+                    <div class="d-flex align-items-center justify-content-center rounded-circle flex-shrink-0" style="width: 50px; height: 50px; background: rgba(0,230,118,0.15); border: 1px solid rgba(0,230,118,0.25);">
+                        <i class="fa-solid fa-phone-volume text-neon-green h5 mb-0"></i>
+                    </div>
+                    <div>
+                        <h6 class="text-neon-green fw-bold mb-1" style="font-size: 0.9rem;">معامله سریع امن تلفنی</h6>
+                        <p class="text-custom-muted mb-0 small">برای اطلاعات بیشتر کلیک کنید</p>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
         </div>
     </div>
 </div>
 
+<!-- اطلاعات تماس تلفنی -->
+{% if site_settings.support_phone %}
+<div class="collapse glass-card p-3 mb-3" id="phoneInfo" style="border-radius: 18px; background: rgba(0,230,118,0.05); border: 1px solid rgba(0,230,118,0.2);">
+    <div class="d-flex align-items-center gap-3">
+        <div class="d-flex align-items-center justify-content-center rounded-circle flex-shrink-0" style="width: 50px; height: 50px; background: rgba(0,230,118,0.15);">
+            <i class="fa-solid fa-phone text-neon-green h5 mb-0"></i>
+        </div>
+        <div class="flex-grow-1">
+            <h6 class="text-neon-green fw-bold mb-1" style="font-size: 0.9rem;">تماس با ما</h6>
+            <a href="tel:{{ site_settings.support_phone }}" class="text-white fw-bold text-decoration-none ltr d-block" dir="ltr" style="font-size: 1.1rem;">
+                {{ site_settings.support_phone }}
+            </a>
+        </div>
+        <a href="tel:{{ site_settings.support_phone }}" class="btn btn-modern btn-modern-primary py-2 px-3">
+            <i class="fa-solid fa-phone"></i>
+        </a>
+    </div>
+</div>
+{% endif %}
+
 <!-- فوتر -->
-<div class="text-center py-3 mb-2">
-    <small class="text-custom-muted" style="font-size: 0.7rem;">
-        تمام حقوق انحصاری برای <strong class="text-coral">ترون لند</strong> است
-        <br>کپی‌برداری پیگرد قانونی دارد
+<div class="glass-card text-center py-3 mb-2" style="border-radius: 14px;">
+    <small class="text-custom-muted" style="font-size: 0.75rem;">
+        <i class="fa-solid fa-copyright me-1"></i>
+        تمام حقوق انحصاری برای <strong class="text-coral">ترونلند (مهدی چالیش)</strong> محفوظ است
+        <br>
+        <span class="text-danger small"><i class="fa-solid fa-ban me-1"></i>کپی‌برداری پیگرد قانونی دارد</span>
     </small>
 </div>
 

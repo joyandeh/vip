@@ -41,7 +41,7 @@ def index(request):
             )
         })
 
-    site_setting = SiteSetting.get_solo()
+    site_settings = SiteSetting.get_solo()
 
     homepage_sections = HomePageSection.objects.filter(
         is_active=True
@@ -54,7 +54,7 @@ def index(request):
             "cryptos": cryptos,
             "toman_rate": toman_rate,
             "sell_buy_rate": sell_buy_rate,
-            "site_setting": site_setting,
+            "site_settings": site_settings,
             "homepage_sections": homepage_sections,
             "unreads_count": 0,
             "telegram_url": "https://t.me/tronlnd_support",

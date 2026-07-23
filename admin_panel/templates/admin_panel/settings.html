@@ -106,6 +106,53 @@
             </form>
         </div>
 
+        <!-- اطلاعات بانکی سایت -->
+        <div class="glass-card p-4">
+            <h5 class="text-coral fw-bold mb-4" style="font-size: 1rem;">
+                <i class="fa-solid fa-building-columns me-2"></i> اطلاعات بانکی سایت (برای خرید از سایت)
+            </h5>
+            <div class="alert alert-info bg-dark border-secondary-subtle rounded-4">
+                <small class="text-custom-muted">
+                    <i class="fa-solid fa-info-circle me-1"></i>
+                    این اطلاعات در صفحه خرید از سایت به کاربران نمایش داده می‌شود.
+                </small>
+            </div>
+            <form method="post" class="django-form-wrapper">
+                {% csrf_token %}
+                <input type="hidden" name="form_type" value="bank_setting">
+                <p>
+                    <label for="id_site_account_holder">نام صاحب حساب:</label>
+                    <input type="text" name="site_account_holder" id="id_site_account_holder" 
+                           value="{{ site_settings.site_account_holder|default:'' }}"
+                           class="form-control bg-dark text-white border-secondary-subtle">
+                </p>
+                <p>
+                    <label for="id_site_card_number">شماره کارت:</label>
+                    <input type="text" name="site_card_number" id="id_site_card_number" 
+                           value="{{ site_settings.site_card_number|default:'' }}"
+                           placeholder="XXXX-XXXX-XXXX-XXXX" maxlength="20"
+                           class="form-control bg-dark text-white border-secondary-subtle" dir="ltr">
+                </p>
+                <p>
+                    <label for="id_site_iban">شماره شبا:</label>
+                    <input type="text" name="site_iban" id="id_site_iban" 
+                           value="{{ site_settings.site_iban|default:'' }}"
+                           placeholder="IRXXXXXXXXXXXXXXXXXXXXXXXXXXXX" maxlength="30"
+                           class="form-control bg-dark text-white border-secondary-subtle" dir="ltr">
+                </p>
+                <p>
+                    <label for="id_support_phone">شماره تلفن پشتیبانی (معامله تلفنی):</label>
+                    <input type="text" name="support_phone" id="id_support_phone" 
+                           value="{{ site_settings.support_phone|default:'' }}"
+                           placeholder="09XXXXXXXXX" maxlength="20"
+                           class="form-control bg-dark text-white border-secondary-subtle" dir="ltr">
+                </p>
+                <button type="submit" class="btn btn-modern btn-modern-primary w-100 py-2.5 fw-bold text-dark mt-3">
+                    <i class="fa-solid fa-save me-1"></i> ذخیره اطلاعات بانکی
+                </button>
+            </form>
+        </div>
+
         <!-- تنظیمات قیمت‌گذاری -->
         <div class="glass-card p-4">
             <h5 class="text-cyan fw-bold mb-4" style="font-size: 1rem;">
