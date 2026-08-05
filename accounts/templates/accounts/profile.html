@@ -49,25 +49,55 @@
                 <span class="text-custom-muted small">شماره موبایل:</span>
                 <span class="fw-bold text-white text-ltr">{{ request.user.mobile }}</span>
             </div>
+
+            <div class="info-item d-flex justify-content-between py-2.5 border-bottom border-glass">
+                <span class="text-custom-muted small">ایمیل:</span>
+                <span class="fw-bold text-white">{{ request.user.email|default:"وارد نشده" }}</span>
+                {% if request.user.email %}
+                <a href="{% url 'profile' %}?edit=email" class="btn btn-sm btn-modern btn-modern-outline py-0 px-2" style="font-size:0.7rem;">
+                    <i class="fa-solid fa-pen me-1"></i> ویرایش
+                </a>
+                {% else %}
+                <a href="{% url 'profile' %}?edit=email" class="btn btn-sm btn-modern btn-modern-outline py-0 px-2" style="font-size:0.7rem;">
+                    <i class="fa-solid fa-plus me-1"></i> اضافه کنید
+                </a>
+                {% endif %}
+            </div>
             
             <div class="info-item d-flex justify-content-between py-2.5 border-bottom border-glass">
                 <span class="text-custom-muted small">شماره کارت بانکی:</span>
                 <span class="fw-bold text-cyan text-ltr tracking-wide">{{ request.user.card_number|default:"وارد نشده" }}</span>
+                <a href="{% url 'profile' %}?edit=card" class="btn btn-sm btn-modern btn-modern-outline py-0 px-2" style="font-size:0.7rem;">
+                    <i class="fa-solid fa-pen me-1"></i> ویرایش
+                </a>
             </div>
             
-            <div class="info-item d-flex justify-content-between py-2.5">
+            <div class="info-item d-flex justify-content-between py-2.5 border-bottom border-glass">
                 <span class="text-custom-muted small">شماره شبا (IBAN):</span>
                 <span class="fw-medium text-white text-ltr">{{ request.user.iban|default:"وارد نشده" }}</span>
+            </div>
+
+            <div class="info-item d-flex justify-content-between py-2.5">
+                <span class="text-custom-muted small">رمز عبور:</span>
+                <span class="fw-bold text-white">••••••••</span>
+                <a href="{% url 'profile' %}?edit=password" class="btn btn-sm btn-modern btn-modern-outline py-0 px-2" style="font-size:0.7rem;">
+                    <i class="fa-solid fa-pen me-1"></i> تغییر رمز
+                </a>
             </div>
         </div>
     </div>
 
     {% if request.user.national_card_image or request.user.selfie_image %}
     <div class="glass-card p-4 mb-4">
-        <h6 class="fw-bold mb-3 text-white d-flex align-items-center gap-2">
-            <i class="fa-solid fa-folder-open text-cyan"></i>
-            <span>مدارک ارسالی هویت</span>
-        </h6>
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h6 class="fw-bold mb-0 text-white d-flex align-items-center gap-2">
+                <i class="fa-solid fa-folder-open text-cyan"></i>
+                <span>مدارک ارسالی هویت</span>
+            </h6>
+            <a href="{% url 'profile' %}?edit=documents" class="btn btn-sm btn-modern btn-modern-outline py-1 px-3" style="font-size:0.75rem;">
+                <i class="fa-solid fa-pen me-1"></i> ویرایش مدارک
+            </a>
+        </div>
 
         <div class="row g-3">
             {% if request.user.national_card_image %}
@@ -96,18 +126,30 @@
     {% endif %}
 
     {% if not request.user.is_verified %}
-    <div class="glass-card p-3 mb-3 text-center" style="border-radius:12px; font-size:0.75rem;">
-        <i class="fa-solid fa-circle-info text-cyan me-2"></i>
-        لطفا در سلفی خود، این متن را بنویسید و در کنار صورت خود بگیرید و سپس آن را ارسال کنید:
-        <br><br>
-        "اینجانب [نام و نام خانوادگی] فرزند [نام پدر] به شماره ملی [شماره ملی] از صحت مدارک ارسالی خود آگاه هستم و همچنین متعهد میشوم فقط برای خرید و فروش برای شخص خودم انجام دهم و اکانت را در اختیار کسی نگذارم در غیر این صورت تمام عواقب حقوقی و کیفری این کار به عهده خودم می باشد."
-        <br><br>
-        امضا و نام تاریخ
+    <div class="glass-card p-3 mb-3" style="border-radius:12px; font-size:0.75rem;">
+        <p class="mb-2 text-custom-muted small">
+            <i class="fa-solid fa-circle-info text-cyan me-2"></i>
+            برای تکمیل احراز هویت خود، اطلاعات زیر را همراه با متنی که روی یک برگه کاغذ می‌نویسید، در کنار چهره خود به همراه کارت ملی یا شناسنامه در قالب یک عکس با کیفیت بالا ارسال کنید.
+        </p>
+        <div class="text-center">
+            <a href="{% url 'profile' %}?edit=documents" class="btn btn-modern btn-modern-primary py-2 px-4 mt-2" style="font-size:0.85rem;">
+                <i class="fa-solid fa-upload me-1"></i> ارسال مدارک جدید
+            </a>
+        </div>
     </div>
     {% endif %}
 
-</div>
-{% endblock %}
+        <!-- دکمه خروج از حساب -->
+        <div class="glass-card p-3 mb-3 text-center">
+            <a href="{% url 'logout' %}" class="btn btn-modern btn-modern-outline w-100 py-3 text-coral" 
+               style="border-color: rgba(255,82,82,0.3); font-weight: 600;"
+               onclick="return confirm('آیا از خروج از حساب کاربری مطمئن هستید؟');">
+                <i class="fa-solid fa-arrow-right-from-bracket me-2"></i> خروج از حساب کاربری
+            </a>
+        </div>
+
+    </div>
+    {% endblock %}
 
 {% block extra_css %}
 <style>
@@ -166,5 +208,81 @@
         letter-spacing: 1.5px;
         font-family: monospace, sans-serif;
     }
+
+    .info-item .btn-modern-outline {
+        margin-right: auto;
+        margin-left: 8px;
+    }
 </style>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    const editParam = new URLSearchParams(window.location.search).get('edit');
+    if (editParam) {
+        if (editParam === 'email') {
+            var email = prompt("ایمیل جدید خود را وارد کنید:", "{{ request.user.email|default:'' }}");
+            if (email && email.trim()) {
+                fetch("{% url 'profile' %}", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/x-www-form-urlencoded",
+                        "X-CSRFToken": "{{ csrf_token }}"
+                    },
+                    body: "edit_field=email&value=" + encodeURIComponent(email.trim())
+                }).then(function(r) { return r.json(); }).then(function(data) {
+                    if (data.success) { location.reload(); }
+                    else { alert(data.error || "خطا در ذخیره"); }
+                });
+            }
+        } else if (editParam === 'card') {
+            var card = prompt("شماره کارت بانکی ۱۶ رقمی خود را وارد کنید:", "{{ request.user.card_number|default:'' }}");
+            if (card && card.trim()) {
+                fetch("{% url 'profile' %}", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/x-www-form-urlencoded",
+                        "X-CSRFToken": "{{ csrf_token }}"
+                    },
+                    body: "edit_field=card_number&value=" + encodeURIComponent(card.trim())
+                }).then(function(r) { return r.json(); }).then(function(data) {
+                    if (data.success) { location.reload(); }
+                    else { alert(data.error || "خطا در ذخیره"); }
+                });
+            }
+        } else if (editParam === 'password') {
+            var p1 = prompt("رمز عبور جدید خود را وارد کنید (حداقل ۸ کاراکتر):");
+            if (p1 && p1.length >= 8) {
+                var p2 = prompt("رمز عبور جدید را مجدداً وارد کنید:");
+                if (p2 === p1) {
+                    fetch("{% url 'profile' %}", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/x-www-form-urlencoded",
+                            "X-CSRFToken": "{{ csrf_token }}"
+                        },
+                        body: "edit_field=password&value=" + encodeURIComponent(p1)
+                    }).then(function(r) { return r.json(); }).then(function(data) {
+                        if (data.success) { alert("رمز عبور با موفقیت تغییر یافت."); location.reload(); }
+                        else { alert(data.error || "خطا در تغییر رمز"); }
+                    });
+                } else {
+                    alert("رمز عبور و تکرار آن مطابقت ندارند.");
+                }
+            } else {
+                alert("رمز عبور باید حداقل ۸ کاراکتر باشد.");
+            }
+        } else if (editParam === 'documents') {
+            // برای ارسال مجدد مدارک، کاربر را به صفحه ثبت‌نام redirect می‌کنیم با این تفاوت که
+            // یک مودال مخصوص نمایش می‌دهیم (یا با form ساده)
+            window.location.href = "{% url 'register' %}?reupload=1";
+        }
+        // حذف پارامتر edit از URL بدون ریلود
+        var url = new URL(window.location);
+        url.searchParams.delete('edit');
+        window.history.replaceState({}, '', url);
+    }
+});
+</script>
 {% endblock %}

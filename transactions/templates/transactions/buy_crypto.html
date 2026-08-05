@@ -1,0 +1,116 @@
+{% extends 'core/base.html' %}
+
+{% block title %}tronlnd | خرید از سایت{% endblock %}
+
+{% block content %}
+<div class="container my-4 pt-2">
+    <div class="d-flex align-items-center gap-2 mb-4">
+        <div class="d-flex align-items-center justify-content-center" style="width: 42px; height: 42px; background: rgba(0, 230, 118, 0.08); border: 1px solid rgba(0, 230, 118, 0.15); border-radius: 12px;">
+            <i class="fa-solid fa-cart-shopping text-neon-green h5 mb-0"></i>
+        </div>
+        <div>
+            <h5 class="fw-black text-white mb-0" style="font-weight: 800;">خرید از سایت</h5>
+            <p class="text-custom-muted small mb-0">واریز ریالی برای خرید رمزارز</p>
+        </div>
+    </div>
+
+    <div class="glass-card p-4 mb-4">
+        <h6 class="fw-bold mb-3 text-cyan d-flex align-items-center gap-2">
+            <i class="fa-solid fa-money-bill-transfer"></i>
+            <span>فرم خرید رمزارز</span>
+        </h6>
+
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert {% if message.tags == 'error' %}alert-danger{% else %}alert-success{% endif %} alert-dismissible fade show rounded-4 mb-3" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endfor %}
+        {% endif %}
+
+        <form method="post" class="django-form-wrapper">
+            {% csrf_token %}
+            <input type="hidden" name="form_type" value="buy_crypto">
+            
+            {{ form.non_field_errors }}
+            
+            <div class="mb-3">
+                <label class="form-label text-custom-muted small">نوع ارز <span class="text-danger">*</span></label>
+                {{ form.crypto_name }}
+                {% if form.crypto_name.errors %}
+                    <div class="text-danger small">{{ form.crypto_name.errors }}</div>
+                {% endif %}
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label text-custom-muted small">مقدار <span class="text-danger">*</span></label>
+                {{ form.amount }}
+                {% if form.amount.errors %}
+                    <div class="text-danger small">{{ form.amount.errors }}</div>
+                {% endif %}
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label text-custom-muted small">آدرس مقصد (ولت) <span class="text-danger">*</span></label>
+                {{ form.destination_address }}
+                {% if form.destination_address.errors %}
+                    <div class="text-danger small">{{ form.destination_address.errors }}</div>
+                {% endif %}
+            </div>
+
+            <hr class="my-3">
+
+            <h6 class="fw-bold text-cyan mb-3">اطلاعات واریز بانکی</h6>
+
+            <div class="mb-3">
+                <label class="form-label text-custom-muted small">نام و نام خانوادگی <span class="text-danger">*</span></label>
+                {{ form.purchaser_full_name }}
+                {% if form.purchaser_full_name.errors %}
+                    <div class="text-danger small">{{ form.purchaser_full_name.errors }}</div>
+                {% endif %}
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label text-custom-muted small">شماره کارت واریزی <span class="text-danger">*</span></label>
+                {{ form.purchaser_card_number }}
+                {% if form.purchaser_card_number.errors %}
+                    <div class="text-danger small">{{ form.purchaser_card_number.errors }}</div>
+                {% endif %}
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label text-custom-muted small">شماره شبا واریزی <span class="text-danger">*</span></label>
+                {{ form.purchaser_shaba_number }}
+                {% if form.purchaser_shaba_number.errors %}
+                    <div class="text-danger small">{{ form.purchaser_shaba_number.errors }}</div>
+                {% endif %}
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label text-custom-muted small">شناسه واریزی بانکی <span class="text-danger">*</span></label>
+                {{ form.deposit_reference }}
+                {% if form.deposit_reference.errors %}
+                    <div class="text-danger small">{{ form.deposit_reference.errors }}</div>
+                {% endif %}
+            </div>
+
+            <button type="submit" class="btn btn-modern btn-modern-primary w-100 py-3 mt-3 fw-bold text-dark">
+                <i class="fa-solid fa-paper-plane me-1"></i> ثبت درخواست خرید
+            </button>
+        </form>
+    </div>
+
+    <!-- درگاه بانکی -->
+    <div class="glass-card p-4 mb-4">
+        <h6 class="fw-bold mb-3 text-cyan d-flex align-items-center gap-2">
+            <i class="fa-solid fa-credit-card"></i>
+            <span>درگاه بانکی آنلاین</span>
+        </h6>
+        <p class="text-custom-muted small mb-3">پس از ثبت فرم بالا، به درگاه بانکی متصل شوید.</p>
+        <button class="btn btn-modern btn-modern-primary w-100 py-3 fw-bold text-dark" disabled>
+            <i class="fa-solid fa-lock me-1"></i> درگاه بانکی (فعال پس از ثبت درخواست)
+        </button>
+    </div>
+</div>
+{% endblock %}

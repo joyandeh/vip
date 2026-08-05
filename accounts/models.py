@@ -1,5 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 
 
 class CustomUser(AbstractUser):
@@ -80,16 +82,29 @@ class UserProfile(models.Model):
 
     def __str__(self):
         return f"پروفایل {self.user.username}"
-
     class Meta:
         verbose_name = "پروفایل کاربر"
         verbose_name_plural = "پروفایل‌های کاربران"
 
 
-# سیگنال‌ها برای ایجاد خودکار پروفایل کاربر
-from django.db.models.signals import post_save
-from django.dispatch import receiver
+class AdminMessage(models.Model):
+    """پیام ارسالی ادمین به کاربر"""
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='admin_messages', verbose_name="کاربر")
+    subject = models.CharField(max_length=200, verbose_name="موضوع")
+    body = models.TextField(verbose_name="متن پیام")
+    is_read = models.BooleanField(default=False, verbose_name="خوانده شده")
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name="تاریخ ارسال")
 
+    class Meta:
+        verbose_name = "پیام ادمین"
+        verbose_name_plural = "پیام‌های ادمین"
+        ordering = ['-created_at']
+
+    def __str__(self):
+        return f"{self.subject} → {self.user.username}"
+
+
+# سیگنال‌ها برای ایجاد خودکار پروفایل کاربر
 @receiver(post_save, sender=CustomUser)
 def create_user_profile(sender, instance, created, **kwargs):
     if created:

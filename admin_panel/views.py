@@ -9,7 +9,7 @@ from django.http import HttpResponseForbidden
 from datetime import timedelta
 
 from transactions.models import Transaction
-from accounts.models import CustomUser
+from accounts.models import CustomUser, AdminMessage
 from core.models import CryptoApiSetting, HomePageSection, SiteSetting
 from core.forms import HomePageSectionForm, CryptoApiSettingForm, SiteSettingForm
 
@@ -24,7 +24,7 @@ def dashboard(request):
     verified_users = CustomUser.objects.filter(is_verified=True).count()
     unverified_users = CustomUser.objects.filter(is_verified=False).count()
 
-    pending_transactions_count = Transaction.objects.filter(status='pending_review').count()
+    pending_transactions_count = Transaction.objects.filter(status='paid').count()
     completed_transactions = Transaction.objects.filter(status='completed').count()
     rejected_transactions = Transaction.objects.filter(status='rejected').count()
 
@@ -44,7 +44,7 @@ def dashboard(request):
         total=Sum('total_price')
     )['total'] or 0
 
-    pending_volume = Transaction.objects.filter(status__in=['pending_review', 'pending_transfer']).aggregate(
+    pending_volume = Transaction.objects.filter(status__in=['paid']).aggregate(
         total=Sum('total_price')
     )['total'] or 0
 
@@ -58,7 +58,7 @@ def dashboard(request):
 
     # --- لیست‌های خلاصه ---
     pending_tx_list = Transaction.objects.filter(
-        status__in=['pending_review', 'pending_transfer']
+        status__in=['paid']
     ).order_by('created_at')[:10]
     
     unverified_users_list = CustomUser.objects.filter(is_verified=False).order_by('date_joined')[:10]
@@ -353,5 +353,22 @@ def reset_user_password(request, user_id):
         user.set_password(new_password)
         user.save()
         messages.success(request, f"رمز عبور کاربر {user.username} با موفقیت تغییر یافت.")
+
+    return redirect('panel_users')
+
+
+@staff_member_required
+@require_POST
+def send_admin_message(request, user_id):
+    """ارسال پیام ادمین به کاربر"""
+    user = get_object_or_404(CustomUser, id=user_id)
+    subject = request.POST.get('subject', '').strip()
+    body = request.POST.get('body', '').strip()
+
+    if not subject or not body:
+        messages.error(request, "موضوع و متن پیام الزامی هستند.")
+    else:
+        AdminMessage.objects.create(user=user, subject=subject, body=body)
+        messages.success(request, f"پیام با موفقیت برای {user.username} ارسال شد.")
 
     return redirect('panel_users')

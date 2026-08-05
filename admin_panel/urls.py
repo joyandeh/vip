@@ -7,6 +7,7 @@ urlpatterns = [
     path('users/<int:user_id>/verify/', views.change_user_verification, name='panel_user_verify'),
     path('users/<int:user_id>/delete/', views.delete_user, name='panel_user_delete'),
     path('users/<int:user_id>/reset-password/', views.reset_user_password, name='panel_user_reset_password'),
+    path('users/<int:user_id>/send-message/', views.send_admin_message, name='panel_send_message'),
     path('transactions/', views.transactions_list, name='panel_transactions'),
     path('transactions/<int:tx_id>/update/', views.change_transaction_status, name='panel_transaction_update'),
     path('transactions/<int:tx_id>/note/', views.add_transaction_note, name='panel_transaction_note'),

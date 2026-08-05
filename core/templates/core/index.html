@@ -12,14 +12,14 @@
     <p class="text-custom-muted mb-3" style="font-size: 0.8rem;">بازار معاملاتی ارزهای دیجیتال</p>
     
     <!-- دکمه‌های خرید و فروش -->
-        <div class="d-flex gap-2 justify-content-center mb-2">
-            <a href="{% url 'request_crypto' %}?type=buy" class="btn btn-modern btn-modern-primary py-2 px-4 flex-grow-1 fw-bold" style="font-size: 0.85rem;">
-                <i class="fa-solid fa-cart-shopping me-1"></i> خرید از سایت
-            </a>
-            <a href="{% url 'request_crypto' %}?type=sell" class="btn btn-modern py-2 px-4 flex-grow-1 fw-bold" style="font-size: 0.85rem; background: rgba(255,82,82,0.15); border: 1px solid rgba(255,82,82,0.3); color: var(--accent-coral);">
-                <i class="fa-solid fa-hand-holding-dollar me-1"></i> فروش به سایت
-            </a>
-        </div>
+            <div class="d-flex gap-2 justify-content-center mb-2">
+                <a href="{% url 'buy_crypto' %}" class="btn btn-modern btn-modern-primary py-2 px-4 flex-grow-1 fw-bold" style="font-size: 0.85rem;">
+                    <i class="fa-solid fa-cart-shopping me-1"></i> خرید از سایت
+                </a>
+                <a href="{% url 'sell_crypto' %}" class="btn btn-modern py-2 px-4 flex-grow-1 fw-bold" style="font-size: 0.85rem; background: rgba(255,82,82,0.15); border: 1px solid rgba(255,82,82,0.3); color: var(--accent-coral);">
+                    <i class="fa-solid fa-hand-holding-dollar me-1"></i> فروش به سایت
+                </a>
+            </div>
     
         <!-- معامله سریع امن تلفنی -->
             {% if site_settings.support_phone %}
@@ -83,7 +83,9 @@
                         {% elif crypto.symbol == 'USDT' %}
                             <i class="fa-solid fa-coins" style="color: #26a17b; font-size: 0.85rem;"></i>
                         {% elif crypto.symbol == 'BNB' %}
-                            <i class="fa-solid fa-coins" style="color: #f3ba2f; font-size: 0.85rem;"></i>
+                                                    <i class="fa-solid fa-coins" style="color: #f3ba2f; font-size: 0.85rem;"></i>
+                                                {% elif crypto.symbol == 'SOL' %}
+                                                    <i class="fa-solid fa-sun text-warning" style="font-size: 0.85rem;"></i>
                         {% else %}
                             <i class="fa-solid fa-coins text-custom-muted" style="font-size: 0.85rem;"></i>
                         {% endif %}
@@ -141,6 +143,10 @@
                     {{ crypto.name }} ({{ crypto.symbol }})
                 </option>
                 {% endfor %}
+                <!-- Perfect Money -->
+                <option value="{{ toman_rate }}" data-symbol="PM">
+                    Perfect Money (PM) - {{ toman_rate|intcomma }} تومان
+                </option>
             </select>
         </div>
 
@@ -174,6 +180,16 @@
             <span class="text-custom-muted d-block" style="font-size: 0.75rem;">مبلغ کل:</span>
             <h4 id="total" class="fw-black text-cyan mb-0" style="font-size: 1.3rem; font-weight: 900;">۰ تومان</h4>
         </div>
+
+        <!-- دکمه‌های خرید و فروش مستقیم -->
+                <div class="d-flex gap-2 mt-3">
+                    <a id="btnGoBuy" href="{% url 'buy_crypto' %}" class="btn btn-modern btn-modern-primary w-50 py-2 fw-bold" style="font-size:0.8rem;">
+                        <i class="fa-solid fa-cart-shopping me-1"></i> خرید
+                    </a>
+                    <a id="btnGoSell" href="{% url 'sell_crypto' %}" class="btn w-50 py-2 fw-bold" style="font-size:0.8rem; background: rgba(255,82,82,0.15); border: 1px solid rgba(255,82,82,0.3); color: var(--accent-coral);">
+                        <i class="fa-solid fa-hand-holding-dollar me-1"></i> فروش
+                    </a>
+                </div>
     </div>
 </div>
 

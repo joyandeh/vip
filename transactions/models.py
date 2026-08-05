@@ -10,15 +10,13 @@ class Transaction(models.Model):
         (SELL, 'فروش'),
     ]
 
+    # Updated status choices: پرداخت شده، رد شد، انجام شد
     STATUS_CHOICES = [
-        ('pending_transfer', 'در انتظار ارسال'),
-        ('pending_review', 'در انتظار بررسی'),
-        ('reviewing', 'در حال بررسی'),
-        ('completed', 'تکمیل شده'),
-        ('rejected', 'رد شده'),
+        ('paid', 'پرداخت شده'),
+        ('rejected', 'رد شد'),
+        ('completed', 'انجام شد'),
     ]
 
-    # استفاده از تنظیمات برای ارجاع به مدل کاربر
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
@@ -76,7 +74,7 @@ class Transaction(models.Model):
     status = models.CharField(
         max_length=20,
         choices=STATUS_CHOICES,
-        default='pending',
+        default='paid',  # Default to "پرداخت شده"
         verbose_name="وضعیت"
     )
 
@@ -87,19 +85,21 @@ class Transaction(models.Model):
         verbose_name="هش تراکنش"
     )
 
-    wallet_address = models.CharField(
-        max_length=255,
-        blank=True,
-        null=True,
-        verbose_name="آدرس کیف پول"
-    )
+    # --- NEW FIELDS FOR BUY (خرید) ---
+    purchaser_full_name = models.CharField(max_length=200, blank=True, null=True, verbose_name="نام و نام خانوادگی خریدار")
+    purchaser_card_number = models.CharField(max_length=20, blank=True, null=True, verbose_name="شماره کارت خریدار")
+    purchaser_shaba_number = models.CharField(max_length=30, blank=True, null=True, verbose_name="شماره شبا خریدار")
+    destination_address = models.CharField(max_length=255, blank=True, null=True, verbose_name="آدرس مقصد")
+    deposit_reference = models.CharField(max_length=100, blank=True, null=True, verbose_name="شناسه واریزی بانکی")
 
-    transfer_reference = models.CharField(
-        max_length=100,
-        blank=True,
-        null=True,
-        verbose_name="شناسه واریز"
-    )
+    # --- NEW FIELDS FOR SELL (فروش) ---
+    seller_full_name = models.CharField(max_length=200, blank=True, null=True, verbose_name="نام و نام خانوادگی فروشنده")
+    seller_card_number = models.CharField(max_length=20, blank=True, null=True, verbose_name="شماره کارت فروشنده")
+    seller_shaba_number = models.CharField(max_length=30, blank=True, null=True, verbose_name="شماره شبا فروشنده")
+    # Wallet addresses for specific coins in sell
+    wallet_address_bnb = models.CharField(max_length=255, blank=True, null=True, verbose_name="آدرس کیف پول BNB")
+    wallet_address_btc = models.CharField(max_length=255, blank=True, null=True, verbose_name="آدرس کیف پول BTC")
+    wallet_address_sol = models.CharField(max_length=255, blank=True, null=True, verbose_name="آدرس کیف پول SOL")
 
     admin_note = models.TextField(
         blank=True,
@@ -110,34 +110,6 @@ class Transaction(models.Model):
     final_approval = models.BooleanField(
         default=False,
         verbose_name="تایید نهایی مدیریت"
-    )
-
-    # Fields for fiat deposits
-    fiat_deposit_type = models.CharField(
-        max_length=50,
-        blank=True,
-        null=True,
-        choices=[("CARD_TO_CARD", "کارت به کارت"), ("SHABA", "واریز از طریق شبا")],
-        verbose_name="نوع واریز ریالی"
-    )
-    fiat_amount = models.DecimalField(
-        max_digits=20,
-        decimal_places=0,
-        blank=True,
-        null=True,
-        verbose_name="مبلغ ریالی"
-    )
-    depositor_card_number = models.CharField(
-        max_length=20,
-        blank=True,
-        null=True,
-        verbose_name="شماره کارت واریز کننده"
-    )
-    depositor_shaba_number = models.CharField(
-        max_length=30,
-        blank=True,
-        null=True,
-        verbose_name="شماره شبا واریز کننده"
     )
 
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="تاریخ ایجاد")

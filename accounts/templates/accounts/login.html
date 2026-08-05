@@ -48,6 +48,79 @@
         border-radius: 10px;
         border: 1px solid rgba(255, 82, 82, 0.2);
     }
+    
+    /* Captcha Image Styles */
+    .captcha-section {
+        display: none;
+        animation: fadeIn 0.3s ease;
+    }
+    .captcha-section.active {
+        display: block;
+    }
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(-10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    .captcha-image-container {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 12px;
+        margin: 16px 0;
+        user-select: none;
+    }
+    .captcha-image {
+        width: 160px;
+        height: 60px;
+        border: 2px solid rgba(0, 229, 255, 0.3);
+        border-radius: 12px;
+        background: linear-gradient(135deg, rgba(0, 229, 255, 0.05), rgba(0, 230, 118, 0.05));
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+    .captcha-image:hover {
+        border-color: var(--accent-cyan);
+        box-shadow: 0 0 15px rgba(0, 229, 255, 0.2);
+    }
+    .captcha-input-group {
+        display: flex;
+        gap: 8px;
+        justify-content: center;
+        margin-top: 16px;
+    }
+    .captcha-digit {
+        width: 48px !important;
+        height: 56px !important;
+        text-align: center !important;
+        font-size: 1.5rem !important;
+        font-weight: 700 !important;
+        letter-spacing: 4px !important;
+        border-radius: 12px !important;
+        padding: 0 !important;
+        background-color: rgba(11, 14, 20, 0.8) !important;
+        border: 1px solid rgba(255, 255, 255, 0.1) !important;
+        color: #ffffff !important;
+    }
+    .captcha-digit:focus {
+        border-color: var(--accent-cyan) !important;
+        box-shadow: 0 0 0 3px rgba(0, 229, 255, 0.15) !important;
+    }
+    .btn-refresh-captcha {
+        background: linear-gradient(135deg, var(--accent-cyan), var(--accent-green)) !important;
+        border: none !important;
+        color: #000 !important;
+        font-weight: 700 !important;
+    }
+    .btn-refresh-captcha:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 15px rgba(0, 229, 255, 0.3) !important;
+    }
+    .captcha-hint {
+        font-size: 0.8rem;
+        color: var(--text-muted);
+        text-align: center;
+        margin-top: 8px;
+    }
 </style>
 {% endblock %}
 
@@ -55,7 +128,6 @@
 <div class="container d-flex align-items-center justify-content-center" style="min-height: calc(100vh - 180px);">
     
     <div class="glass-card p-4 w-100 position-relative overflow-hidden" style="max-width: 380px;">
-        
         <div class="position-absolute top-0 start-50 translate-middle-x" style="width: 100px; height: 2px; background: linear-gradient(90deg, transparent, var(--accent-cyan), transparent);"></div>
         
         <div class="text-center mb-4">
@@ -66,14 +138,44 @@
             <p class="text-custom-muted small mb-0">خوش آمدید، مشخصات خود را وارد کنید</p>
         </div>
 
-        <form method="post" class="django-form-wrapper">
+        <form method="post" class="django-form-wrapper" id="loginForm">
             {% csrf_token %}
             
             {{ form.as_p }}
+            
+            <!-- مرحله ۲: ورود کپچا 4 رقمی تصویری -->
+                        <div class="captcha-section {% if show_captcha %}active{% endif %}" id="captchaSection">
+                <div class="mb-3">
+                    <label class="form-label text-custom-muted small text-center">کد امنیتی ۴ رقمی را از تصویر زیر وارد کنید</label>
+                    <div class="captcha-image-container">
+                        <canvas id="captchaCanvas" class="captcha-image" width="160" height="60" title="کلیک برای تازه‌سازی"></canvas>
+                    </div>
+                    <div class="captcha-input-group" dir="ltr">
+                                            <input type="text" class="form-control captcha-digit" maxlength="1" inputmode="numeric" pattern="[0-9]*" autocomplete="off" dir="ltr">
+                                            <input type="text" class="form-control captcha-digit" maxlength="1" inputmode="numeric" pattern="[0-9]*" autocomplete="off" dir="ltr">
+                                            <input type="text" class="form-control captcha-digit" maxlength="1" inputmode="numeric" pattern="[0-9]*" autocomplete="off" dir="ltr">
+                                            <input type="text" class="form-control captcha-digit" maxlength="1" inputmode="numeric" pattern="[0-9]*" autocomplete="off" dir="ltr">
+                                        </div>
+                    <div class="captcha-hint">
+                        <button type="button" class="btn btn-sm btn-refresh-captcha" id="refreshCaptchaBtn">
+                            <i class="fa-solid fa-rotate me-1"></i> کد جدید
+                        </button>
+                        <span class="ms-2">روی تصویر هم می‌توانید کلیک کنید</span>
+                    </div>
+                </div>
+            </div>
 
-            <button type="submit" class="btn btn-modern btn-modern-primary w-100 py-3 mt-2 fw-bold text-dark">
-                <i class="fa-solid fa-arrow-right-to-bracket me-1"></i> ورود به پلتفرم
-            </button>
+            <!-- دکمه ورود / تایید کپچا -->
+                        <button type="submit" class="btn btn-modern btn-modern-primary w-100 py-3 mt-2 fw-bold text-dark" id="submitBtn">
+                            {% if show_captcha %}
+                                <i class="fa-solid fa-check me-1"></i> تایید و ورود
+                            {% else %}
+                                <i class="fa-solid fa-arrow-right-to-bracket me-1"></i> ورود به پلتفرم
+                            {% endif %}
+                        </button>
+            
+                        <input type="hidden" name="login_step" id="loginStep" value="{% if show_captcha %}2{% else %}1{% endif %}">
+            <input type="hidden" name="captcha_code" id="captchaCodeInput">
         </form>
 
         <div class="text-center mt-4 pt-3" style="border-top: 1px solid var(--border-glass);">
@@ -83,4 +185,208 @@
 
     </div>
 </div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    const form = document.getElementById('loginForm');
+    const submitBtn = document.getElementById('submitBtn');
+    const captchaSection = document.getElementById('captchaSection');
+    const captchaInputs = captchaSection.querySelectorAll('.captcha-digit');
+    const captchaCodeInput = document.getElementById('captchaCodeInput');
+    const loginStep = document.getElementById('loginStep');
+    const refreshCaptchaBtn = document.getElementById('refreshCaptchaBtn');
+    const captchaCanvas = document.getElementById('captchaCanvas');
+    const ctx = captchaCanvas.getContext('2d');
+    
+    let currentCaptcha = '';
+
+    // Generate random 4-digit captcha and draw on canvas
+    function generateCaptcha() {
+        currentCaptcha = '';
+        for (let i = 0; i < 4; i++) {
+            currentCaptcha += Math.floor(Math.random() * 10);
+        }
+        drawCaptchaOnCanvas(currentCaptcha);
+        console.log('Generated captcha:', currentCaptcha);
+    }
+
+    // Draw captcha on canvas with noise and distortion
+    function drawCaptchaOnCanvas(code) {
+        const width = captchaCanvas.width;
+        const height = captchaCanvas.height;
+        
+        // Clear canvas
+        ctx.clearRect(0, 0, width, height);
+        
+        // Background gradient
+        const gradient = ctx.createLinearGradient(0, 0, width, height);
+        gradient.addColorStop(0, 'rgba(0, 229, 255, 0.05)');
+        gradient.addColorStop(1, 'rgba(0, 230, 118, 0.05)');
+        ctx.fillStyle = gradient;
+        ctx.fillRect(0, 0, width, height);
+        
+        // Draw noise lines
+        ctx.strokeStyle = 'rgba(0, 229, 255, 0.15)';
+        ctx.lineWidth = 1;
+        for (let i = 0; i < 8; i++) {
+            ctx.beginPath();
+            ctx.moveTo(Math.random() * width, 0);
+            ctx.lineTo(Math.random() * width, height);
+            ctx.stroke();
+        }
+        
+        // Draw noise circles
+        ctx.fillStyle = 'rgba(0, 229, 255, 0.1)';
+        for (let i = 0; i < 20; i++) {
+            ctx.beginPath();
+            ctx.arc(Math.random() * width, Math.random() * height, Math.random() * 3 + 1, 0, Math.PI * 2);
+            ctx.fill();
+        }
+        
+        // Draw each digit with random rotation and position
+        const charWidth = width / 4;
+        for (let i = 0; i < 4; i++) {
+            const digit = code[i];
+            const x = i * charWidth + charWidth / 2;
+            const y = height / 2;
+            
+            // Random rotation (-15 to 15 degrees)
+            const rotation = (Math.random() - 0.5) * (Math.PI / 6);
+            const fontSize = 32 + Math.random() * 8;
+            
+            ctx.save();
+            ctx.translate(x, y);
+            ctx.rotate(rotation);
+            
+            // Text shadow for glow effect
+            ctx.shadowColor = 'rgba(0, 229, 255, 0.8)';
+            ctx.shadowBlur = 8;
+            
+            // Main text
+            ctx.font = `bold ${fontSize}px 'Courier New', monospace`;
+            ctx.fillStyle = 'rgb(0, 229, 255)';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText(digit, 0, 0);
+            
+            ctx.restore();
+        }
+        
+        // Border
+        ctx.strokeStyle = 'rgba(0, 229, 255, 0.4)';
+        ctx.lineWidth = 2;
+        ctx.strokeRect(1, 1, width - 2, height - 2);
+    }
+
+    // مدیریت ورود خودکار بین فیلدهای کپچا
+    captchaInputs.forEach((input, index) => {
+        input.addEventListener('input', function(e) {
+            this.value = this.value.replace(/[^0-9]/g, '');
+            if (this.value.length === 1 && index < captchaInputs.length - 1) {
+                captchaInputs[index + 1].focus();
+            }
+            // ترکیب کد کپچا
+            const fullCode = Array.from(captchaInputs).map(i => i.value).join('');
+            captchaCodeInput.value = fullCode;
+        });
+        
+        input.addEventListener('keydown', function(e) {
+            if (e.key === 'Backspace' && this.value === '' && index > 0) {
+                captchaInputs[index - 1].focus();
+            }
+        });
+        
+        input.addEventListener('paste', function(e) {
+            e.preventDefault();
+            const paste = e.clipboardData.getData('text').replace(/[^0-9]/g, '');
+            if (paste.length === 4) {
+                captchaInputs.forEach((inp, i) => {
+                    inp.value = paste[i] || '';
+                });
+                captchaCodeInput.value = paste;
+                if (paste.length === 4) captchaInputs[3].focus();
+            }
+        });
+    });
+
+    function showToast(message, type) {
+        const toast = document.createElement('div');
+        toast.className = `alert alert-${type === 'success' ? 'success' : 'danger'} alert-dismissible fade show position-fixed bottom-0 end-0 m-3 rounded-4`;
+        toast.style.zIndex = '9999';
+        toast.innerHTML = `
+            ${message}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        `;
+        document.body.appendChild(toast);
+        setTimeout(() => toast.remove(), 5000);
+    }
+
+    // دکمه تازه‌سازی کپچا
+        refreshCaptchaBtn.addEventListener('click', function() {
+            captchaInputs.forEach(inp => inp.value = '');
+            captchaCodeInput.value = '';
+            // Update server-side captcha via AJAX
+            fetch('{% url "refresh_captcha" %}', {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.captcha_code) {
+                    currentCaptcha = data.captcha_code;
+                    drawCaptchaOnCanvas(currentCaptcha);
+                } else {
+                    generateCaptcha(); // fallback
+                }
+            })
+            .catch(() => generateCaptcha()); // fallback on error
+            captchaInputs[0].focus();
+        });
+
+    // کلیک روی تصویر برای تازه‌سازی
+        captchaCanvas.addEventListener('click', function() {
+            captchaInputs.forEach(inp => inp.value = '');
+            captchaCodeInput.value = '';
+            // Update server-side captcha via AJAX
+            fetch('{% url "refresh_captcha" %}', {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.captcha_code) {
+                    currentCaptcha = data.captcha_code;
+                    drawCaptchaOnCanvas(currentCaptcha);
+                } else {
+                    generateCaptcha(); // fallback
+                }
+            })
+            .catch(() => generateCaptcha()); // fallback on error
+            captchaInputs[0].focus();
+        });
+
+    // مدیریت فرم
+        form.addEventListener('submit', function(e) {
+            // Allow normal form submission - server handles both steps
+            // JavaScript only populates captchaCodeInput and handles refresh
+        });
+
+    // Initialize captcha on page load (hidden)
+        // Use server-provided captcha if available, otherwise generate new one
+        {% if captcha_code %}
+            currentCaptcha = '{{ captcha_code }}';
+            drawCaptchaOnCanvas(currentCaptcha);
+        {% else %}
+            generateCaptcha();
+        {% endif %}
+    });
+</script>
 {% endblock %}

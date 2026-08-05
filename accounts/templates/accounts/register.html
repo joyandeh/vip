@@ -120,31 +120,48 @@
         {% endif %}
 
         <form method="post" enctype="multipart/form-data" class="django-form-wrapper">
-            {% csrf_token %}
+                    {% csrf_token %}
+                    {% if from_profile %}
+                    <input type="hidden" name="reupload" value="1">
+                    {% endif %}
             
-            {% if form.non_field_errors %}
-                <div class="form-non-field-errors">
-                    {% for error in form.non_field_errors %}
-                        <p class="mb-0 small"><i class="fa-solid fa-triangle-exclamation me-1"></i> {{ error }}</p>
-                    {% endfor %}
-                </div>
-            {% endif %}
+                    {% if form.non_field_errors %}
+                        <div class="form-non-field-errors">
+                            {% for error in form.non_field_errors %}
+                                <p class="mb-0 small"><i class="fa-solid fa-triangle-exclamation me-1"></i> {{ error }}</p>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
             
-            <p class="text-custom-muted small mb-3 p-3 glass-card" style="border-radius:12px; font-size:0.75rem;">
-                <i class="fa-solid fa-circle-info text-cyan me-2"></i>
-                برای تکمیل احراز هویت خود اطلاعات زیر را ارسال کرده. عکس کارت ملی یا شناسنامه را با متن زیر را به درستی نوشته و ارسال کنید:
-                <br><br>
-                "اینجانب [نام و نام خانوادگی] فرزند [نام پدر] به شماره ملی [شماره ملی] از صحت مدارک ارسالی خود آگاه هستم و همچنین متعهد میشوم فقط برای خرید و فروش برای شخص خودم انجام دهم و اکانت را در اختیار کسی نگذارم در غیر این صورت تمام عواقب حقوقی و کیفری این کار به عهده خودم می باشد."
-                <br><br>
-                امضا و نام تاریخ
-            </p>
+                    <p class="text-custom-muted small mb-3 p-3 glass-card" style="border-radius:12px; font-size:0.75rem;">
+                        <i class="fa-solid fa-circle-info text-cyan me-2"></i>
+                        برای تکمیل احراز هویت خود، اطلاعات زیر را همراه با متنی که روی یک برگه کاغذ می‌نویسید، در کنار چهره خود به همراه کارت ملی یا شناسنامه در قالب یک عکس با کیفیت بالا ارسال کنید.
+                    </p>
 
-            {{ form.as_p }}
+                    {# اگر از پروفایل برای آپلود مجدد آمده، فقط فیلدهای مدارک را نشان بده #}
+                    {% if from_profile and user.is_authenticated %}
+                        <p><label for="id_national_card_image">تصویر کارت ملی:</label>{{ form.national_card_image }}</p>
+                        <p><label for="id_selfie_image">تصویر سلفی:</label>{{ form.selfie_image }}</p>
+                        <p>
+                            <label for="id_card_number">شماره کارت:</label>
+                            <input type="text" name="card_number" id="id_card_number" class="form-control" value="{{ user.card_number }}">
+                        </p>
+                        <p>
+                            <label for="id_iban">شماره شبا:</label>
+                            <input type="text" name="iban" id="id_iban" class="form-control" value="{{ user.iban }}">
+                        </p>
+                    {% else %}
+                        {{ form.as_p }}
+                    {% endif %}
 
-            <button type="submit" class="btn btn-modern btn-modern-primary w-100 py-3 mt-3 fw-bold text-dark">
-                <i class="fa-solid fa-user-check me-1"></i> تکمیل ثبت‌نام و ورود
-            </button>
-        </form>
+                    <button type="submit" class="btn btn-modern btn-modern-primary w-100 py-3 mt-3 fw-bold text-dark">
+                        {% if from_profile %}
+                            <i class="fa-solid fa-upload me-1"></i> ارسال مجدد مدارک
+                        {% else %}
+                            <i class="fa-solid fa-user-check me-1"></i> تکمیل ثبت‌نام و ورود
+                        {% endif %}
+                    </button>
+                </form>
 
         <div class="text-center mt-4 pt-3" style="border-top: 1px solid var(--border-glass);">
             <span class="text-custom-muted small">قبلاً ثبت نام کرده‌اید؟</span>
