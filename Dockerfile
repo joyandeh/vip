@@ -14,8 +14,8 @@ RUN pip install --no-cache-dir -r requirements.txt
 # کپی کردن تمام کدهای پروژه به درون کانتینر
 COPY . /app/
 
-# پورت پیش‌فرض جنگو
+# پورت پیش‌فرض جنگو/گانیکورن
 EXPOSE 8000
 
-# دستور اجرای سرور
-CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
+# دستور اجرای سرور با Gunicorn (مناسب برای محیط داکر و پروداکشن)
+CMD ["gunicorn", "vip_crypto.wsgi:application", "--bind", "0.0.0.0:8000", "--workers", "3"]
