@@ -1,13 +1,19 @@
 <!DOCTYPE html>
 <html lang="fa" dir="rtl">
+{% load static %}
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}tronlnd | پلتفرم معاملاتی رمزارز{% endblock %}</title>
 
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.rtl.min.css" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/vazirmatn@33.0.3/Vazirmatn-font-face.css" rel="stylesheet" type="text/css" />
+    <link href="{% static 'css/bootstrap.rtl.min.css' %}" rel="stylesheet">
+        <link href="{% static 'css/fontawesome.min.css' %}" rel="stylesheet">
+        <link href="{% static 'css/vazirmatn.css' %}" rel="stylesheet" type="text/css" />
+        <link rel="preload" as="font" type="font/woff2" crossorigin href="{% static 'fonts/Vazirmatn-Regular.woff2' %}">
+        <link rel="preload" as="font" type="font/woff2" crossorigin href="{% static 'fonts/Vazirmatn-Medium.woff2' %}">
+        <link rel="preload" as="font" type="font/woff2" crossorigin href="{% static 'fonts/Vazirmatn-Bold.woff2' %}">
+        <link rel="preload" as="font" type="font/woff2" crossorigin href="{% static 'webfonts/fa-solid-900.woff2' %}">
+        <link rel="preload" as="font" type="font/woff2" crossorigin href="{% static 'webfonts/fa-regular-400.woff2' %}">
     <style>
         :root {
             --bg-main: #0B0E14;
@@ -324,28 +330,33 @@
         .text-custom-muted { color: var(--text-muted); }
 
         /* Mobile Viewport Container Wrapping */
-        @media (min-width: 576px) {
-            .mobile-viewport-container {
-                max-width: 430px;
-                margin: 20px auto;
-                border-radius: 40px;
-                border: 8px solid #272e3f;
-                position: relative;
-                box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
-                overflow: hidden;
-                background: var(--bg-main);
-            }
-            .bottom-nav {
-                position: absolute;
-                width: 100%;
-                left: 0;
-                right: 0;
-            }
-            .navbar-custom {
-                border-top-left-radius: 32px;
-                border-top-right-radius: 32px;
-            }
-        }
+                @media (min-width: 576px) {
+                    .mobile-viewport-container {
+                        max-width: 430px;
+                        margin: 20px auto;
+                        border-radius: 40px;
+                        border: 8px solid #272e3f;
+                        position: relative;
+                        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+                        overflow: hidden;
+                        background: var(--bg-main);
+                    }
+                    body.light-mode .mobile-viewport-container {
+                        background: var(--light-bg-main);
+                        border-color: #e2e8f0;
+                        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15);
+                    }
+                    .bottom-nav {
+                        position: absolute;
+                        width: 100%;
+                        left: 0;
+                        right: 0;
+                    }
+                    .navbar-custom {
+                        border-top-left-radius: 32px;
+                        border-top-right-radius: 32px;
+                    }
+                }
     </style>
     {% block extra_css %}{% endblock %}
 </head>
@@ -360,45 +371,43 @@
                 </a>
 
                 <div class="d-flex align-items-center gap-2">
-                                    <!-- آیکون نامه / اعلان - نمایش پیام‌های ادمین -->
-                                    {% if user.is_authenticated %}
-                                    <div class="dropdown">
-                                        <a class="btn btn-modern btn-modern-outline py-1 px-2 d-flex align-items-center justify-content-center position-relative dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false" style="width:40px;height:40px;">
-                                            <i class="fa-regular fa-envelope" style="font-size:1rem;"></i>
-                                            {% with unread_count=user.admin_messages.filter.is_read.false.count %}
-                                            {% if unread_count > 0 %}
-                                            <span class="position-absolute translate-middle badge rounded-pill bg-danger" style="top: 5px; left: 5px; font-size: 0.6rem; padding: 3px 5px;">
-                                                {{ unread_count }}
-                                            </span>
-                                            {% endif %}
-                                            {% endwith %}
-                                        </a>
-                                        <ul class="dropdown-menu dropdown-menu-end dropdown-menu-dark p-0" style="min-width: 320px; max-height: 400px; overflow-y: auto; background: var(--bg-card); border: 1px solid var(--border-glass);">
-                                            <li class="px-3 py-2 border-bottom border-secondary-subtle">
-                                                <h6 class="mb-0 fw-bold text-cyan"><i class="fa-solid fa-envelope me-1"></i> پیام‌های مدیریت</h6>
-                                            </li>
-                                            {% for msg in user.admin_messages.all|slice:":10" %}
-                                            <li>
-                                                <a class="dropdown-item py-2 px-3 {% if not msg.is_read %}fw-bold{% endif %}" href="#" data-message-id="{{ msg.id }}">
-                                                    <div class="d-flex justify-content-between">
-                                                        <span class="small text-white">{{ msg.subject }}</span>
-                                                        <small class="text-custom-muted">{{ msg.created_at|date:"Y/m/d H:i" }}</small>
-                                                    </div>
-                                                    <p class="mb-0 small text-custom-muted mt-1">{{ msg.body|truncatechars:80 }}</p>
-                                                    {% if not msg.is_read %}
-                                                    <span class="badge bg-success-subtle text-neon-green" style="font-size: 0.55rem;">جدید</span>
-                                                    {% endif %}
-                                                </a>
-                                            </li>
-                                            {% empty %}
-                                            <li class="px-3 py-3 text-center text-custom-muted small">پیامی وجود ندارد</li>
-                                            {% endfor %}
-                                            <li class="px-3 py-2 border-top border-secondary-subtle">
-                                                <a class="text-center text-cyan small d-block" href="{% url 'profile' %}">مشاهده تمام پیام‌ها</a>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                    {% else %}
+                                                    <!-- آیکون نامه / اعلان - نمایش پیام‌های ادمین -->
+                                                                                                        {% if user.is_authenticated %}
+                                                                                                        <div class="dropdown">
+                                                                                                            <a class="btn btn-modern btn-modern-outline py-1 px-2 d-flex align-items-center justify-content-center position-relative dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false" style="width:40px;height:40px;">
+                                                                                                                <i class="fa-regular fa-envelope" style="font-size:1rem;"></i>
+                                                                                                                {% with unread_count=user.admin_messages.filter.is_read.false.count %}
+                                                                                                                <span class="position-absolute translate-middle badge rounded-pill bg-danger" style="top: -2px; right: -2px; font-size: 0.55rem; padding: 2px 5px; min-width: 18px; height: 18px; display: flex; align-items: center; justify-content: center;">
+                                                                                                                    {{ unread_count }}
+                                                                                                                </span>
+                                                                                                                {% endwith %}
+                                                                                                            </a>
+                                                                                                            <ul class="dropdown-menu dropdown-menu-end p-0" style="min-width: 320px; max-height: 400px; overflow-y: auto; background: var(--light-bg-card); border: 1px solid var(--light-border-glass); border-radius: 12px; box-shadow: 0 8px 32px rgba(0,0,0,0.15);">
+                                                                                                                <li class="px-3 py-2 border-bottom" style="border-color: var(--light-border-glass) !important;">
+                                                                                                                    <h6 class="mb-0 fw-bold" style="color: var(--light-text-color);"><i class="fa-solid fa-envelope me-1" style="color: var(--accent-green);"></i> پیام‌های مدیریت</h6>
+                                                                                                                </li>
+                                                                                                                {% for msg in user.admin_messages.all|slice:":10" %}
+                                                                                                                <li>
+                                                                                                                    <a class="dropdown-item py-2 px-3 {% if not msg.is_read %}fw-bold{% endif %}" href="#" data-message-id="{{ msg.id }}" style="color: var(--light-text-color);">
+                                                                                                                        <div class="d-flex justify-content-between">
+                                                                                                                            <span class="small">{{ msg.subject }}</span>
+                                                                                                                            <small style="color: var(--light-text-color); opacity: 0.6;">{{ msg.created_at|date:"Y/m/d H:i" }}</small>
+                                                                                                                        </div>
+                                                                                                                        <p class="mb-0 small mt-1" style="color: var(--light-text-color); opacity: 0.7;">{{ msg.body|truncatechars:80 }}</p>
+                                                                                                                        {% if not msg.is_read %}
+                                                                                                                        <span class="badge" style="background: rgba(0,230,118,0.15); color: var(--accent-green); font-size: 0.55rem;">جدید</span>
+                                                                                                                        {% endif %}
+                                                                                                                    </a>
+                                                                                                                </li>
+                                                                                                                {% empty %}
+                                                                                                                <li class="px-3 py-3 text-center small" style="color: var(--light-text-color); opacity: 0.6;">پیامی وجود ندارد</li>
+                                                                                                                {% endfor %}
+                                                                                                                <li class="px-3 py-2 border-top" style="border-color: var(--light-border-glass) !important;">
+                                                                                                                    <a class="text-center small d-block" href="{% url 'profile' %}" style="color: var(--accent-green);">مشاهده تمام پیام‌ها</a>
+                                                                                                                </li>
+                                                                                                            </ul>
+                                                                                                        </div>
+                                                                                                        {% else %}
                                     <a href="#" class="btn btn-modern btn-modern-outline py-1 px-2 d-flex align-items-center justify-content-center position-relative" style="width:40px;height:40px;">
                                         <i class="fa-regular fa-envelope" style="font-size:1rem;"></i>
                                     </a>
@@ -536,7 +545,7 @@
 
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
     <script>
         document.addEventListener("DOMContentLoaded", function() {
             const themeToggle = document.getElementById("theme-toggle");

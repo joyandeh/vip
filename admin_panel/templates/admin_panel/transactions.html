@@ -47,9 +47,9 @@
     <!-- بخش پیام‌ها -->
     {% if messages %}
         {% for message in messages %}
-            <div class="alert alert-{% if message.tags == 'error' %}danger{% else %}{{ message.tags }}{% endif %} alert-dismissible fade show rounded-4 bg-dark border-secondary-subtle mb-3 p-3" role="alert">
-                <span class="text-white small">{{ message }}</span>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert" aria-label="Close"></button>
+            <div class="alert alert-{% if message.tags == 'error' %}danger{% else %}{{ message.tags }}{% endif %} alert-dismissible fade show rounded-4 bg-light border-secondary-subtle mb-3 p-3" role="alert">
+                <span class="text-dark small">{{ message }}</span>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
         {% endfor %}
     {% endif %}
@@ -107,7 +107,7 @@
                         {% if tx.crypto_name %}
                             <small class="text-cyan d-block fw-bold" style="font-size: 0.75rem;">{{ tx.amount }} {{ tx.crypto_name }}</small>
                         {% else %}
-                            <small class="text-white d-block fw-bold" style="font-size: 0.75rem;">{{ tx.fiat_amount|intcomma }} تومان (ریالی)</small>
+                            <small class="text-white d-block fw-bold" style="font-size: 0.75rem;">{{ tx.total_price|default:0|intcomma }} تومان (ریالی)</small>
                         {% endif %}
                     </div>
                     <div class="text-end d-flex flex-column align-items-end">
@@ -123,102 +123,102 @@
 
             <!-- پنل تاشو جزییات درخواست - روان و بدون تداخل با بدنه اسکرول سایت -->
             <div class="collapse mb-2" id="txCollapse{{ tx.id }}">
-                <div class="p-3 rounded-4 border-secondary-subtle text-white" style="background: rgba(15, 21, 32, 0.95); border: 1px solid rgba(0, 229, 255, 0.15); font-size: 0.85rem;">
+                <div class="p-3 rounded-4 border-secondary-subtle text-dark" style="background: rgba(255, 255, 255, 0.95); border: 1px solid rgba(0, 229, 255, 0.2); font-size: 0.85rem;">
                     <div class="d-flex flex-column gap-2.5">
-                        <div class="d-flex justify-content-between border-bottom border-secondary-subtle pb-2">
-                            <span class="text-custom-muted">کاربر:</span>
-                            <span class="fw-bold">{{ tx.user.full_name|default:tx.user.username }} ({{ tx.user.mobile }})</span>
-                        </div>
-                        <div class="d-flex justify-content-between border-bottom border-secondary-subtle pb-2">
-                            <span class="text-custom-muted">نوع درخواست:</span>
-                            <span class="fw-bold">{{ tx.get_request_type_display }}</span>
-                        </div>
-                        <div class="d-flex justify-content-between border-bottom border-secondary-subtle pb-2">
-                            <span class="text-custom-muted">جزئیات ارز:</span>
-                            <span class="fw-bold">{% if tx.crypto_name %}{{ tx.amount }} {{ tx.crypto_name }}{% else %}واریز ریالی{% endif %}</span>
-                        </div>
-                        <div class="d-flex justify-content-between border-bottom border-secondary-subtle pb-2">
-                            <span class="text-custom-muted">مبلغ کل (تومان):</span>
-                            <span class="fw-bold">{{ tx.total_price|default:tx.fiat_amount|intcomma }} تومان</span>
-                        </div>
-                        <div class="d-flex justify-content-between border-bottom border-secondary-subtle pb-2">
-                            <span class="text-custom-muted">تاریخ درخواست:</span>
-                            <span>{{ tx.created_at|date:"Y/m/d H:i" }}</span>
-                        </div>
-                        <div class="d-flex justify-content-between border-bottom border-secondary-subtle pb-2">
-                            <span class="text-custom-muted">وضعیت تراکنش:</span>
-                            <span class="fw-bold text-cyan">{{ tx.get_status_display }}</span>
-                        </div>
+                                            <div class="d-flex justify-content-between border-bottom border-secondary-subtle pb-2">
+                                                <span class="text-muted">کاربر:</span>
+                                                <span class="fw-bold">{{ tx.user.full_name|default:tx.user.username }} ({{ tx.user.mobile }})</span>
+                                            </div>
+                                            <div class="d-flex justify-content-between border-bottom border-secondary-subtle pb-2">
+                                                <span class="text-muted">نوع درخواست:</span>
+                                                <span class="fw-bold">{{ tx.get_request_type_display }}</span>
+                                            </div>
+                                            <div class="d-flex justify-content-between border-bottom border-secondary-subtle pb-2">
+                                                <span class="text-muted">جزئیات ارز:</span>
+                                                <span class="fw-bold">{% if tx.crypto_name %}{{ tx.amount }} {{ tx.crypto_name }}{% else %}واریز ریالی{% endif %}</span>
+                                            </div>
+                                            <div class="d-flex justify-content-between border-bottom border-secondary-subtle pb-2">
+                                                <span class="text-muted">مبلغ کل (تومان):</span>
+                                                <span class="fw-bold">{{ tx.total_price|default:0|intcomma }} تومان</span>
+                                            </div>
+                                            <div class="d-flex justify-content-between border-bottom border-secondary-subtle pb-2">
+                                                <span class="text-muted">تاریخ درخواست:</span>
+                                                <span>{{ tx.created_at|date:"Y/m/d H:i" }}</span>
+                                            </div>
+                                            <div class="d-flex justify-content-between border-bottom border-secondary-subtle pb-2">
+                                                <span class="text-muted">وضعیت تراکنش:</span>
+                                                <span class="fw-bold text-cyan">{{ tx.get_status_display }}</span>
+                                            </div>
                         
-                        {% if tx.request_type == 'SELL' %}
-                        {# فروش ارز - نمایش اطلاعات بانکی فروشنده #}
-                        <div class="border-bottom border-secondary-subtle pb-2">
-                            <span class="text-coral d-block mb-2 small"><i class="fa-solid fa-building-columns me-1"></i>اطلاعات فروشنده:</span>
-                            <div class="row g-2">
-                                <div class="col-6">
-                                    <small class="text-custom-muted d-block">نام و نام خانوادگی:</small>
-                                    <span class="text-white small">{{ tx.seller_full_name|default:"-" }}</span>
-                                </div>
-                                <div class="col-6">
-                                    <small class="text-custom-muted d-block">مقدار و نوع ارز:</small>
-                                    <span class="text-white small">{{ tx.amount }} {{ tx.crypto_name }}</span>
-                                </div>
-                                <div class="col-6">
-                                    <small class="text-custom-muted d-block">شماره کارت:</small>
-                                    <code class="text-white" dir="ltr" style="font-size: 0.75rem;">{{ tx.seller_card_number|default:"-" }}</code>
-                                </div>
-                                <div class="col-6">
-                                    <small class="text-custom-muted d-block">شماره شبا:</small>
-                                    <code class="text-white" dir="ltr" style="font-size: 0.75rem;">{{ tx.seller_shaba_number|default:"-" }}</code>
-                                </div>
-                                <div class="col-6">
-                                    <small class="text-custom-muted d-block">آدرس کیف پول BNB:</small>
-                                    <code class="text-cyan d-block p-2 rounded bg-dark" style="font-size: 0.65rem; word-break: break-all;">{{ tx.wallet_address_bnb|default:"-" }}</code>
-                                </div>
-                                <div class="col-6">
-                                    <small class="text-custom-muted d-block">آدرس کیف پول BTC:</small>
-                                    <code class="text-cyan d-block p-2 rounded bg-dark" style="font-size: 0.65rem; word-break: break-all;">{{ tx.wallet_address_btc|default:"-" }}</code>
-                                </div>
-                                <div class="col-6">
-                                    <small class="text-custom-muted d-block">آدرس کیف پول SOL:</small>
-                                    <code class="text-cyan d-block p-2 rounded bg-dark" style="font-size: 0.65rem; word-break: break-all;">{{ tx.wallet_address_sol|default:"-" }}</code>
-                                </div>
-                                {% if tx.tx_hash %}
-                                <div class="col-12">
-                                    <small class="text-custom-muted d-block">هش تراکنش ارسالی:</small>
-                                    <code class="text-cyan d-block p-2 rounded bg-dark" style="font-size: 0.7rem; word-break: break-all;">{{ tx.tx_hash }}</code>
-                                </div>
-                                {% endif %}
-                            </div>
-                        </div>
-                        {% else %}
-                        {# خرید ارز - نمایش اطلاعات پرداخت خریدار #}
-                        <div class="border-bottom border-secondary-subtle pb-2">
-                            <span class="text-neon-green d-block mb-2 small"><i class="fa-solid fa-wallet me-1"></i>اطلاعات خریدار:</span>
-                            <div class="row g-2">
-                                <div class="col-6">
-                                    <small class="text-custom-muted d-block">نام و نام خانوادگی:</small>
-                                    <span class="text-white small">{{ tx.purchaser_full_name|default:"-" }}</span>
-                                </div>
-                                <div class="col-6">
-                                    <small class="text-custom-muted d-block">آدرس مقصد:</small>
-                                    <code class="text-cyan d-block p-2 rounded bg-dark" style="font-size: 0.7rem; word-break: break-all;">{{ tx.destination_address|default:"-" }}</code>
-                                </div>
-                                <div class="col-6">
-                                    <small class="text-custom-muted d-block">شناسه واریزی بانکی:</small>
-                                    <code class="text-cyan d-block p-2 rounded bg-dark" style="font-size: 0.7rem;">{{ tx.deposit_reference|default:"-" }}</code>
-                                </div>
-                                <div class="col-6">
-                                    <small class="text-custom-muted d-block">شماره کارت:</small>
-                                    <code class="text-white" dir="ltr" style="font-size: 0.75rem;">{{ tx.purchaser_card_number|default:"-" }}</code>
-                                </div>
-                                <div class="col-6">
-                                    <small class="text-custom-muted d-block">شماره شبا:</small>
-                                    <code class="text-white" dir="ltr" style="font-size: 0.75rem;">{{ tx.purchaser_shaba_number|default:"-" }}</code>
-                                </div>
-                            </div>
-                        </div>
-                        {% endif %}
+                                            {% if tx.request_type == 'SELL' %}
+                                            {# فروش ارز - نمایش اطلاعات بانکی فروشنده #}
+                                            <div class="border-bottom border-secondary-subtle pb-2">
+                                                <span class="text-coral d-block mb-2 small"><i class="fa-solid fa-building-columns me-1"></i>اطلاعات فروشنده:</span>
+                                                <div class="row g-2">
+                                                    <div class="col-6">
+                                                        <small class="text-muted d-block">نام و نام خانوادگی:</small>
+                                                        <span class="fw-bold small">{{ tx.seller_full_name|default:"-" }}</span>
+                                                    </div>
+                                                    <div class="col-6">
+                                                        <small class="text-muted d-block">مقدار و نوع ارز:</small>
+                                                        <span class="fw-bold small">{{ tx.amount }} {{ tx.crypto_name }}</span>
+                                                    </div>
+                                                    <div class="col-6">
+                                                        <small class="text-muted d-block">شماره کارت:</small>
+                                                        <code class="fw-bold" dir="ltr" style="font-size: 0.75rem;">{{ tx.seller_card_number|default:"-" }}</code>
+                                                    </div>
+                                                    <div class="col-6">
+                                                        <small class="text-muted d-block">شماره شبا:</small>
+                                                        <code class="fw-bold" dir="ltr" style="font-size: 0.75rem;">{{ tx.seller_shaba_number|default:"-" }}</code>
+                                                    </div>
+                                                    <div class="col-6">
+                                                        <small class="text-muted d-block">آدرس کیف پول BNB:</small>
+                                                        <code class="text-cyan d-block p-2 rounded bg-light" style="font-size: 0.65rem; word-break: break-all;">{{ tx.wallet_address_bnb|default:"-" }}</code>
+                                                    </div>
+                                                    <div class="col-6">
+                                                        <small class="text-muted d-block">آدرس کیف پول BTC:</small>
+                                                        <code class="text-cyan d-block p-2 rounded bg-light" style="font-size: 0.65rem; word-break: break-all;">{{ tx.wallet_address_btc|default:"-" }}</code>
+                                                    </div>
+                                                    <div class="col-6">
+                                                        <small class="text-muted d-block">آدرس کیف پول SOL:</small>
+                                                        <code class="text-cyan d-block p-2 rounded bg-light" style="font-size: 0.65rem; word-break: break-all;">{{ tx.wallet_address_sol|default:"-" }}</code>
+                                                    </div>
+                                                    {% if tx.tx_hash %}
+                                                    <div class="col-12">
+                                                        <small class="text-muted d-block">هش تراکنش ارسالی:</small>
+                                                        <code class="text-cyan d-block p-2 rounded bg-light" style="font-size: 0.7rem; word-break: break-all;">{{ tx.tx_hash }}</code>
+                                                    </div>
+                                                    {% endif %}
+                                                </div>
+                                            </div>
+                                            {% else %}
+                                            {# خرید ارز - نمایش اطلاعات پرداخت خریدار #}
+                                            <div class="border-bottom border-secondary-subtle pb-2">
+                                                <span class="text-neon-green d-block mb-2 small"><i class="fa-solid fa-wallet me-1"></i>اطلاعات خریدار:</span>
+                                                <div class="row g-2">
+                                                    <div class="col-6">
+                                                        <small class="text-muted d-block">نام و نام خانوادگی:</small>
+                                                        <span class="fw-bold small">{{ tx.purchaser_full_name|default:"-" }}</span>
+                                                    </div>
+                                                    <div class="col-6">
+                                                        <small class="text-muted d-block">آدرس مقصد:</small>
+                                                        <code class="text-cyan d-block p-2 rounded bg-light" style="font-size: 0.7rem; word-break: break-all;">{{ tx.destination_address|default:"-" }}</code>
+                                                    </div>
+                                                    <div class="col-6">
+                                                        <small class="text-muted d-block">شناسه واریزی بانکی:</small>
+                                                        <code class="text-cyan d-block p-2 rounded bg-light" style="font-size: 0.7rem;">{{ tx.deposit_reference|default:"-" }}</code>
+                                                    </div>
+                                                    <div class="col-6">
+                                                        <small class="text-muted d-block">شماره کارت:</small>
+                                                        <code class="fw-bold" dir="ltr" style="font-size: 0.75rem;">{{ tx.purchaser_card_number|default:"-" }}</code>
+                                                    </div>
+                                                    <div class="col-6">
+                                                        <small class="text-muted d-block">شماره شبا:</small>
+                                                        <code class="fw-bold" dir="ltr" style="font-size: 0.75rem;">{{ tx.purchaser_shaba_number|default:"-" }}</code>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            {% endif %}
 
                         {% if tx.tx_hash %}
                         <div class="border-bottom border-secondary-subtle pb-2">

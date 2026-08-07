@@ -81,9 +81,9 @@
     <!-- بخش پیام‌ها -->
     {% if messages %}
         {% for message in messages %}
-            <div class="alert alert-{% if message.tags == 'error' %}danger{% else %}{{ message.tags }}{% endif %} alert-dismissible fade show rounded-4 bg-dark border-secondary-subtle mb-3 p-3" role="alert">
-                <span class="text-white small">{{ message }}</span>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert" aria-label="Close"></button>
+            <div class="alert alert-{% if message.tags == 'error' %}danger{% else %}{{ message.tags }}{% endif %} alert-dismissible fade show rounded-4 bg-light border-secondary-subtle mb-3 p-3" role="alert">
+                <span class="text-dark small">{{ message }}</span>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
         {% endfor %}
     {% endif %}
@@ -111,7 +111,7 @@
             <h5 class="text-coral fw-bold mb-4" style="font-size: 1rem;">
                 <i class="fa-solid fa-building-columns me-2"></i> اطلاعات بانکی سایت (برای خرید از سایت)
             </h5>
-            <div class="alert alert-info bg-dark border-secondary-subtle rounded-4">
+            <div class="alert alert-info bg-light border-secondary-subtle rounded-4">
                 <small class="text-custom-muted">
                     <i class="fa-solid fa-info-circle me-1"></i>
                     این اطلاعات در صفحه خرید از سایت به کاربران نمایش داده می‌شود.

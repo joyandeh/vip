@@ -61,7 +61,33 @@
 
             <hr class="my-3">
 
-            <h6 class="fw-bold text-cyan mb-3">اطلاعات واریز بانکی</h6>
+            <!-- اطلاعات بانکی سایت برای واریز -->
+            {% if site_settings.site_card_number or site_settings.site_iban or site_settings.site_account_holder %}
+            <h6 class="fw-bold text-cyan mb-3">اطلاعات واریز به سایت</h6>
+            <div class="glass-card p-3 mb-3" style="background: rgba(0, 230, 118, 0.05); border-color: rgba(0, 230, 118, 0.15);">
+                {% if site_settings.site_account_holder %}
+                <div class="d-flex justify-content-between mb-2">
+                    <span class="text-custom-muted small">نام صاحب حساب:</span>
+                    <span class="fw-bold text-white" dir="ltr">{{ site_settings.site_account_holder }}</span>
+                </div>
+                {% endif %}
+                {% if site_settings.site_card_number %}
+                <div class="d-flex justify-content-between mb-2">
+                    <span class="text-custom-muted small">شماره کارت:</span>
+                    <span class="fw-bold text-white font-monospace" dir="ltr">{{ site_settings.site_card_number }}</span>
+                </div>
+                {% endif %}
+                {% if site_settings.site_iban %}
+                <div class="d-flex justify-content-between mb-2">
+                    <span class="text-custom-muted small">شماره شبا:</span>
+                    <span class="fw-bold text-white font-monospace" dir="ltr">{{ site_settings.site_iban }}</span>
+                </div>
+                {% endif %}
+            </div>
+            <p class="text-custom-muted small mb-3">مبلغ دقیق محاسبه شده را به یکی از حساب‌های بالا واریز کنید و شناسه واریز را در فرم زیر وارد نمایید.</p>
+            {% endif %}
+
+            <h6 class="fw-bold text-cyan mb-3">اطلاعات واریز بانکی (توسط شما)</h6>
 
             <div class="mb-3">
                 <label class="form-label text-custom-muted small">نام و نام خانوادگی <span class="text-danger">*</span></label>

@@ -47,9 +47,9 @@
     <!-- بخش پیام‌ها -->
     {% if messages %}
         {% for message in messages %}
-            <div class="alert alert-{% if message.tags == 'error' %}danger{% else %}{{ message.tags }}{% endif %} alert-dismissible fade show rounded-4 bg-dark border-secondary-subtle mb-3 p-3" role="alert">
-                <span class="text-white small">{{ message }}</span>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert" aria-label="Close"></button>
+            <div class="alert alert-{% if message.tags == 'error' %}danger{% else %}{{ message.tags }}{% endif %} alert-dismissible fade show rounded-4 bg-light border-secondary-subtle mb-3 p-3" role="alert">
+                <span class="text-dark small">{{ message }}</span>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
         {% endfor %}
     {% endif %}
