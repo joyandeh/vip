@@ -55,6 +55,16 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
+# Reverse proxy support
+USE_X_FORWARDED_HOST = True
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+
+# CSRF trusted origins for reverse proxy
+CSRF_TRUSTED_ORIGINS = [
+    'http://212.100.171.49',
+    'https://212.100.171.49',
+]
+
 ROOT_URLCONF = 'vip_crypto.urls'
 
 TEMPLATES = [
