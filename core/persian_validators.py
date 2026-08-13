@@ -13,7 +13,7 @@ class UserAttributeSimilarityValidator(BaseSimilarityValidator):
     def get_help_text(self):
         return "رمز عبور شما نمی‌تواند شباهت زیادی به سایر اطلاعات شخصی شما داشته باشد."
 
-    def get_error_message(self, user_attributes):
+    def get_error_message(self):
         return "رمز عبور شما بیش از حد به اطلاعات شخصی شما شباهت دارد."
 
 
@@ -33,7 +33,7 @@ class CommonPasswordValidator(BaseCommonValidator):
     def get_help_text(self):
         return "رمز عبور شما نمی‌تواند یک رمز عبور رایج و ساده باشد."
 
-    def get_error_message(self, password):
+    def get_error_message(self):
         return "این رمز عبور بسیار رایج و ساده است. لطفاً یک رمز عبور پیچیده‌تر انتخاب کنید."
 
 
