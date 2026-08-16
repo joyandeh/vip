@@ -51,12 +51,51 @@
                 {% endif %}
             </div>
 
+            <!-- محاسبه خودکار مبلغ کل -->
+            <div class="mb-3 p-3 rounded-4 glass-card border-0" style="background: linear-gradient(135deg, rgba(0, 212, 255, 0.12), rgba(0, 180, 216, 0.08)); border: 1px solid rgba(0, 212, 255, 0.25) !important;">
+                <div class="d-flex align-items-center gap-2 mb-2">
+                    <div class="d-flex align-items-center justify-content-center rounded-3" style="width: 36px; height: 36px; background: rgba(0, 212, 255, 0.18);">
+                        <i class="fa-solid fa-calculator text-cyan" style="font-size: 1rem;"></i>
+                    </div>
+                    <div>
+                        <label class="form-label text-white fw-semibold mb-0 small">مبلغ قابل دریافت (ریال)</label>
+                        <span class="text-cyan small fw-medium">محاسبه خودکار</span>
+                    </div>
+                </div>
+                <div class="input-group" style="max-width: 100%;">
+                    <span class="input-group-text bg-transparent border-0 text-cyan fw-bold px-3" style="background: rgba(0, 212, 255, 0.1) !important; border-right: 1px solid rgba(0, 212, 255, 0.2) !important;"><i class="fa-solid fa-money-bill-wave"></i></span>
+                    <input type="text" id="calculated_total" class="form-control form-control-sm bg-transparent text-neon-green fw-bold border-0 text-end px-3" readonly style="font-size: 1.25rem; background: rgba(255,255,255,0.02) !important; box-shadow: inset 0 2px 8px rgba(0,0,0,0.15);" placeholder="ارز و مقدار را انتخاب کنید">
+                    <span class="input-group-text bg-transparent border-0 text-custom-muted fw-medium px-3" style="background: rgba(255,255,255,0.03) !important; border-left: 1px solid rgba(255,255,255,0.05) !important;">تومان</span>
+                </div>
+                <div class="mt-2">
+                    <span class="text-custom-muted small" id="rate_info"></span>
+                </div>
+            </div>
+
             <div class="mb-3">
                 <label class="form-label text-custom-muted small">هش تراکنش (TX Hash) <span class="text-danger">*</span></label>
                 {{ form.tx_hash }}
                 {% if form.tx_hash.errors %}
                     <div class="text-danger small">{{ form.tx_hash.errors }}</div>
                 {% endif %}
+            </div>
+
+            <!-- آدرس کیف پول ارز انتخاب شده -->
+            <div class="mb-3 p-3 rounded-4 glass-card border-0" style="background: linear-gradient(135deg, rgba(40, 167, 69, 0.12), rgba(30, 140, 58, 0.08)); border: 1px solid rgba(40, 167, 69, 0.25) !important;">
+                <div class="d-flex align-items-center gap-2 mb-2">
+                    <div class="d-flex align-items-center justify-content-center rounded-3" style="width: 36px; height: 36px; background: rgba(40, 167, 69, 0.18);">
+                        <i class="fa-solid fa-wallet text-neon-green" style="font-size: 1rem;"></i>
+                    </div>
+                    <div>
+                        <label class="form-label text-white fw-semibold mb-0 small">آدرس کیف پول ارز انتخاب شده</label>
+                        <span class="text-neon-green small fw-medium">پر شدن خودکار</span>
+                    </div>
+                </div>
+                <div class="input-group">
+                    <span class="input-group-text bg-transparent border-0 text-neon-green fw-bold px-3" style="background: rgba(40, 167, 69, 0.1) !important; border-right: 1px solid rgba(40, 167, 69, 0.2) !important;"><i class="fa-solid fa-qrcode"></i></span>
+                    <input type="text" id="wallet_address_display" class="form-control form-control-sm bg-transparent text-white border-0 ltr px-3" dir="ltr" readonly style="font-size: 0.85rem; background: rgba(255,255,255,0.02) !important; box-shadow: inset 0 2px 8px rgba(0,0,0,0.15);" placeholder="ابتدا ارز را انتخاب کنید">
+                </div>
+                <small class="text-custom-muted d-block mt-2"><i class="fa-solid fa-circle-info me-1"></i>این آدرس برای انتقال ارز به سایت استفاده می‌شود</small>
             </div>
 
             <hr class="my-3">
@@ -88,36 +127,85 @@
             </div>
 
             <hr class="my-3">
-            <h6 class="fw-bold text-cyan mb-3">آدرس‌های کیف پول ارزها</h6>
-
-            <div class="mb-3">
-                <label class="form-label text-custom-muted small">آدرس کیف پول BNB <span class="text-danger">*</span></label>
-                {{ form.wallet_address_bnb }}
-                {% if form.wallet_address_bnb.errors %}
-                    <div class="text-danger small">{{ form.wallet_address_bnb.errors }}</div>
-                {% endif %}
-            </div>
-
-            <div class="mb-3">
-                <label class="form-label text-custom-muted small">آدرس کیف پول BTC <span class="text-danger">*</span></label>
-                {{ form.wallet_address_btc }}
-                {% if form.wallet_address_btc.errors %}
-                    <div class="text-danger small">{{ form.wallet_address_btc.errors }}</div>
-                {% endif %}
-            </div>
-
-            <div class="mb-3">
-                <label class="form-label text-custom-muted small">آدرس کیف پول SOL <span class="text-danger">*</span></label>
-                {{ form.wallet_address_sol }}
-                {% if form.wallet_address_sol.errors %}
-                    <div class="text-danger small">{{ form.wallet_address_sol.errors }}</div>
-                {% endif %}
-            </div>
-
             <button type="submit" class="btn btn-modern btn-modern-primary w-100 py-3 mt-3 fw-bold text-dark">
                 <i class="fa-solid fa-paper-plane me-1"></i> ثبت درخواست فروش
             </button>
         </form>
     </div>
 </div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // داده‌های قیمت از Django
+    const prices = {{ prices|safe }};
+    const tomanRate = {{ toman_rate }};
+    
+    // نگاشت ارز به فیلد آدرس کیف پول
+    const walletFields = {
+        'BNB': '{{ form.wallet_address_bnb.value|default:"" }}',
+        'BTC': '{{ form.wallet_address_btc.value|default:"" }}',
+        'SOL': '{{ form.wallet_address_sol.value|default:"" }}',
+    };
+    
+    const cryptoSelect = document.querySelector('[name="crypto_name"]');
+    const amountInput = document.querySelector('[name="amount"]');
+    const calculatedTotal = document.getElementById('calculated_total');
+    const rateInfo = document.getElementById('rate_info');
+    const walletDisplay = document.getElementById('wallet_address_display');
+    
+    function updateCalculation() {
+        const crypto = cryptoSelect.value;
+        const amount = parseFloat(amountInput.value) || 0;
+        
+        if (crypto && prices[crypto] && amount > 0) {
+            const usdPrice = prices[crypto];
+            const unitPrice = usdPrice * tomanRate;
+            const total = unitPrice * amount;
+            
+            calculatedTotal.value = total.toLocaleString('fa-IR');
+            rateInfo.textContent = `نرخ: ${usdPrice.toLocaleString()} $ × ${tomanRate.toLocaleString()} = ${unitPrice.toLocaleString()} تومان/واحد`;
+            rateInfo.className = 'text-cyan small';
+        } else if (crypto && prices[crypto]) {
+            const usdPrice = prices[crypto];
+            const unitPrice = usdPrice * tomanRate;
+            calculatedTotal.value = 'مقدار را وارد کنید';
+            rateInfo.textContent = `نرخ واحد: ${unitPrice.toLocaleString()} تومان (${usdPrice.toLocaleString()} $ × ${tomanRate.toLocaleString()})`;
+            rateInfo.className = 'text-custom-muted small';
+        } else {
+            calculatedTotal.value = 'ارز و مقدار را انتخاب کنید';
+            rateInfo.textContent = '';
+        }
+    }
+    
+    function updateWalletAddress() {
+        const crypto = cryptoSelect.value;
+        const address = walletFields[crypto] || '';
+        
+        if (address) {
+            walletDisplay.value = address;
+            walletDisplay.style.background = 'rgba(40, 167, 69, 0.1)';
+        } else {
+            walletDisplay.value = 'آدرس برای این ارز تنظیم نشده';
+            walletDisplay.style.background = 'rgba(255, 82, 82, 0.1)';
+        }
+    }
+    
+    if (cryptoSelect) {
+        cryptoSelect.addEventListener('change', function() {
+            updateCalculation();
+            updateWalletAddress();
+        });
+    }
+    
+    if (amountInput) {
+        amountInput.addEventListener('input', updateCalculation);
+    }
+    
+    // Initial calculation
+    updateCalculation();
+    updateWalletAddress();
+});
+</script>
 {% endblock %}

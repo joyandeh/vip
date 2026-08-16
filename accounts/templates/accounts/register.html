@@ -4,19 +4,26 @@
 
 {% block extra_css %}
 <style>
-    /* استایل‌دهی مستقیم به فیلدها و کانتینرهای تولید شده توسط {{ form.as_p }} */
+    /* === کانتینر اصلی فرم === */
+    .register-card {
+        max-width: 580px;
+        width: 100%;
+    }
+
+    /* استایل‌دهی مستقیم به فیلدها و کانتینرهای تولید شده توسط form.as_p */
     .django-form-wrapper p {
-        margin-bottom: 1.15rem;
+        margin-bottom: 1rem;
         display: flex;
         flex-direction: column;
+        gap: 6px;
     }
 
     .django-form-wrapper label {
         font-size: 0.85rem;
-        color: var(--text-muted);
-        margin-bottom: 6px;
+        color: var(--text-muted, #6c757d);
         font-weight: 500;
         text-align: right;
+        margin: 0;
     }
 
     /* استایل‌دهی به ورودی‌های متنی و فیلدهای آپلود فایل */
@@ -26,148 +33,262 @@
     .django-form-wrapper input[type="number"],
     .django-form-wrapper select {
         width: 100%;
-        padding: 11px 16px;
-        background-color: rgba(11, 14, 20, 0.8) !important;
-        border: 1px solid rgba(255, 255, 255, 0.1) !important;
-        border-radius: 14px;
-        color: #ffffff !important;
+        padding: 11px 14px;
+        background-color: var(--input-bg, #f5f7fa) !important;
+        border: 1px solid var(--border-color, #dde2e8) !important;
+        border-radius: 12px;
+        color: var(--text-color, #1a1d21) !important;
         font-size: 0.95rem;
+        font-family: inherit;
         transition: all 0.2s ease;
         outline: none;
+        box-sizing: border-box;
     }
 
-    .django-form-wrapper input:focus, 
+    .django-form-wrapper input:focus,
     .django-form-wrapper select:focus {
-        border-color: var(--accent-cyan) !important;
-        box-shadow: 0 0 0 4px rgba(0, 229, 255, 0.1) !important;
+        border-color: var(--accent-cyan, #00b8d4) !important;
+        box-shadow: 0 0 0 3px rgba(0, 184, 212, 0.12) !important;
+        background-color: #ffffff !important;
     }
 
     /* استایل‌دهی اختصاصی به فیلد آپلود فایل (کارت ملی و سلفی) */
     .django-form-wrapper input[type="file"] {
-        background: rgba(255, 255, 255, 0.03);
-        border: 1px dashed rgba(255, 255, 255, 0.15);
+        background: #f5f7fa;
+        border: 1px dashed #c5cdd6;
         border-radius: 12px;
         padding: 10px;
-        color: var(--text-muted);
+        color: var(--text-muted, #6c757d);
         font-size: 0.85rem;
         cursor: pointer;
+        font-family: inherit;
     }
 
     .django-form-wrapper input[type="file"]::-webkit-file-upload-button {
-        background: rgba(0, 229, 255, 0.1);
-        border: 1px solid rgba(0, 229, 255, 0.2);
+        background: rgba(0, 184, 212, 0.08);
+        border: 1px solid rgba(0, 184, 212, 0.25);
         border-radius: 8px;
-        color: var(--accent-cyan);
+        color: var(--accent-cyan, #00b8d4);
         padding: 6px 12px;
-        margin-right: 10px;
+        margin-left: 10px;
         cursor: pointer;
         transition: background 0.2s;
+        font-family: inherit;
     }
 
     .django-form-wrapper input[type="file"]::-webkit-file-upload-button:hover {
-        background: rgba(0, 229, 255, 0.2);
+        background: rgba(0, 184, 212, 0.18);
     }
 
     /* استایل اختصاصی برای متون راهنما (Hints) فرم */
     .django-form-wrapper .helptext {
         font-size: 0.75rem;
-        color: var(--text-muted);
-        margin-top: 5px;
-        padding-right: 4px;
+        color: var(--text-muted, #6c757d);
+        margin-top: 2px;
         text-align: right;
-        opacity: 0.8;
+        opacity: 0.85;
+        line-height: 1.6;
     }
 
     /* مدیریت لیست خطاهای فیلدها و خطاهای کلی فرم */
-    .django-form-wrapper .errorlist, .form-non-field-errors {
+    .django-form-wrapper .errorlist,
+    .form-non-field-errors {
         list-style: none;
-        padding-right: 0;
-        margin-bottom: 12px;
-        font-size: 0.8rem;
-        color: #ff5252;
-        background: rgba(255, 82, 82, 0.08);
         padding: 8px 12px;
+        margin-bottom: 10px;
+        font-size: 0.8rem;
+        color: #d32f2f;
+        background: rgba(211, 47, 47, 0.06);
         border-radius: 10px;
-        border: 1px solid rgba(255, 82, 82, 0.15);
+        border: 1px solid rgba(211, 47, 47, 0.18);
+    }
+
+    .django-form-wrapper .errorlist li {
+        padding: 2px 0;
+    }
+
+    /* بلوک اطلاعات احراز هویت (intro) */
+    .register-info {
+        background: rgba(0, 184, 212, 0.05);
+        border: 1px solid rgba(0, 184, 212, 0.18);
+        border-right: 4px solid var(--accent-cyan, #00b8d4);
+        border-radius: 12px;
+        padding: 12px 14px;
+        font-size: 0.8rem;
+        color: var(--text-color, #1a1d21);
+        line-height: 1.8;
+        text-align: right;
+        margin-bottom: 1rem;
+    }
+
+    /* بلوک متن دست‌نویس احراز هویت که کاربر باید روی کاغذ بنویسد */
+    .handwritten-text-block {
+        background: linear-gradient(135deg, rgba(0, 184, 212, 0.04), rgba(0, 200, 83, 0.04));
+        border: 1px solid rgba(0, 184, 212, 0.2);
+        border-right: 4px solid var(--accent-cyan, #00b8d4);
+        border-radius: 12px;
+        padding: 16px 18px;
+        margin-bottom: 1rem;
+        font-family: 'Vazirmatn', 'Tahoma', sans-serif;
+        font-size: 0.88rem;
+        line-height: 2;
+        color: var(--text-color, #1a1d21);
+        text-align: right;
+        word-break: break-word;
+        box-shadow: 0 2px 12px rgba(0, 184, 212, 0.04);
+    }
+
+    .handwritten-text-block .hw-title {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        font-size: 0.92rem;
+        font-weight: 700;
+        color: var(--accent-cyan, #00b8d4);
+        margin-bottom: 12px;
+        padding-bottom: 10px;
+        border-bottom: 1px dashed rgba(0, 184, 212, 0.25);
+    }
+
+    .handwritten-text-block .hw-line {
+        display: block;
+        padding: 3px 0;
+    }
+
+    .handwritten-text-block .hw-blank {
+        display: inline-block;
+        min-width: 90px;
+        border-bottom: 1px dotted rgba(0, 0, 0, 0.35);
+        margin: 0 4px;
+        vertical-align: middle;
+    }
+
+    .handwritten-text-block .hw-footer {
+        margin-top: 14px;
+        padding-top: 10px;
+        border-top: 1px dashed rgba(0, 184, 212, 0.2);
+        display: flex;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 12px;
+        font-size: 0.82rem;
+        color: var(--text-muted, #6c757d);
+    }
+
+    .handwritten-text-block .hw-footer span {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+    .handwritten-text-block .hw-footer strong {
+        color: var(--text-color, #1a1d21);
+        font-weight: 600;
+    }
+
+    /* دکمه ارسال */
+    .btn-modern-primary {
+        border-radius: 12px;
+        font-size: 0.95rem;
+        letter-spacing: 0.2px;
     }
 </style>
 {% endblock %}
 
 {% block content %}
 <div class="container d-flex align-items-center justify-content-center my-4">
-    
-    <div class="glass-card p-4 w-100 position-relative overflow-hidden" style="max-width: 400px;">
-        
-        <div class="position-absolute top-0 start-50 translate-middle-x" style="width: 120px; height: 2px; background: linear-gradient(90deg, transparent, var(--accent-green), transparent);"></div>
-        
+
+    <div class="glass-card p-4 register-card position-relative overflow-hidden">
+
+        <div class="position-absolute top-0 start-50 translate-middle-x" style="width: 120px; height: 2px; background: linear-gradient(90deg, transparent, var(--accent-green, #00c853), transparent);"></div>
+
         <div class="text-center mb-4">
-            <div class="register-icon-box d-inline-flex align-items-center justify-content-center mb-3" style="width: 60px; height: 60px; background: rgba(0, 230, 118, 0.05); border: 1px solid rgba(0, 230, 118, 0.15); border-radius: 18px;">
+            <div class="register-icon-box d-inline-flex align-items-center justify-content-center mb-3" style="width: 60px; height: 60px; background: rgba(0, 200, 83, 0.06); border: 1px solid rgba(0, 200, 83, 0.2); border-radius: 18px;">
                 <i class="fa-solid fa-user-plus h3 mb-0 text-neon-green"></i>
-            </div>
-            <h5 class="fw-bold text-white mb-1">ایجاد حساب کاربری</h5>
+           </div>
+            <h5 class="fw-bold mb-1">ایجاد حساب کاربری</h5>
             <p class="text-custom-muted small mb-0">به پلتفرم معاملاتی tronlnd خوش آمدید</p>
-        </div>
+       </div>
 
         {% if messages %}
             <div class="messages-container mb-3">
                 {% for message in messages %}
-                    <div class="alert {% if message.tags == 'error' %}alert-danger bg-danger-subtle text-danger{% else %}alert-success bg-success-subtle text-success{% endif %} border-0 small p-2.5 rounded-3 d-flex align-items-center gap-2" role="alert">
+                    <div class="alert {% if message.tags == 'error' %}alert-danger{% else %}alert-success{% endif %} border-0 small p-2 rounded-3 d-flex align-items-center gap-2" role="alert">
                         <i class="fa-solid {% if message.tags == 'error' %}fa-circle-exclamation{% else %}fa-circle-check{% endif %}"></i>
                         <span>{{ message }}</span>
-                    </div>
+                   </div>
                 {% endfor %}
-            </div>
+           </div>
         {% endif %}
 
         <form method="post" enctype="multipart/form-data" class="django-form-wrapper">
-                    {% csrf_token %}
-                    {% if from_profile %}
-                    <input type="hidden" name="reupload" value="1">
-                    {% endif %}
-            
-                    {% if form.non_field_errors %}
-                        <div class="form-non-field-errors">
-                            {% for error in form.non_field_errors %}
-                                <p class="mb-0 small"><i class="fa-solid fa-triangle-exclamation me-1"></i> {{ error }}</p>
-                            {% endfor %}
-                        </div>
-                    {% endif %}
-            
-                    <p class="text-custom-muted small mb-3 p-3 glass-card" style="border-radius:12px; font-size:0.75rem;">
-                        <i class="fa-solid fa-circle-info text-cyan me-2"></i>
-                        برای تکمیل احراز هویت خود، اطلاعات زیر را همراه با متنی که روی یک برگه کاغذ می‌نویسید، در کنار چهره خود به همراه کارت ملی یا شناسنامه در قالب یک عکس با کیفیت بالا ارسال کنید.
-                    </p>
+            {% csrf_token %}
+            {% if from_profile %}
+                <input type="hidden" name="reupload" value="1">
+            {% endif %}
 
-                    {# اگر از پروفایل برای آپلود مجدد آمده، فقط فیلدهای مدارک را نشان بده #}
-                    {% if from_profile and user.is_authenticated %}
-                        <p><label for="id_national_card_image">تصویر کارت ملی:</label>{{ form.national_card_image }}</p>
-                        <p><label for="id_selfie_image">تصویر سلفی:</label>{{ form.selfie_image }}</p>
-                        <p>
-                            <label for="id_card_number">شماره کارت:</label>
-                            <input type="text" name="card_number" id="id_card_number" class="form-control" value="{{ user.card_number }}">
-                        </p>
-                        <p>
-                            <label for="id_iban">شماره شبا:</label>
-                            <input type="text" name="iban" id="id_iban" class="form-control" value="{{ user.iban }}">
-                        </p>
-                    {% else %}
-                        {{ form.as_p }}
-                    {% endif %}
+            {% if form.non_field_errors %}
+                <div class="form-non-field-errors">
+                    {% for error in form.non_field_errors %}
+                        <p class="mb-0 small"><i class="fa-solid fa-triangle-exclamation me-1"></i> {{ error }}</p>
+                    {% endfor %}
+               </div>
+            {% endif %}
 
-                    <button type="submit" class="btn btn-modern btn-modern-primary w-100 py-3 mt-3 fw-bold text-dark">
-                        {% if from_profile %}
-                            <i class="fa-solid fa-upload me-1"></i> ارسال مجدد مدارک
-                        {% else %}
-                            <i class="fa-solid fa-user-check me-1"></i> تکمیل ثبت‌نام و ورود
-                        {% endif %}
-                    </button>
-                </form>
+            <div class="register-info">
+                <i class="fa-solid fa-circle-info text-cyan ms-1"></i>
+                برای تکمیل احراز هویت خود، اطلاعات زیر را همراه با متنی که روی یک برگه کاغذ می‌نویسید، در کنار چهره خود به همراه کارت ملی یا شناسنامه در قالب یک عکس با کیفیت بالا ارسال کنید.
+           </div>
 
-        <div class="text-center mt-4 pt-3" style="border-top: 1px solid var(--border-glass);">
+            <div class="handwritten-text-block" dir="rtl">
+                <div class="hw-title">
+                    <i class="fa-solid fa-pen-fancy"></i>
+                    <span>متن دست‌نویس احراز هویت (روی کاغذ بنویسید)</span>
+               </div>
+
+                <span class="hw-line"><strong>احراز هویت برای سایت tronlnd.ir</strong></span>
+
+                <span class="hw-line">
+                    اینجانب <span class="hw-blank" title="نام و نام خانوادگی"></span> به کد ملی <span class="hw-blank" title="کد ملی"></span> از صحت اطلاعات هویتی ارسالی آگاه هستم و شماره حسابی را که تأیید کردم برای خرید ارز از آن حساب استفاده کنم و اطلاعات حساب کاربری و کارت بانکی را در اختیار کسی قرار ندهم؛ در غیر این صورت تمامی حقوق کیفری این کار به عهده خودم است و صرافی ترونلند هیچ مسئولیتی در این کار ندارد و تمامی عواقب کیفری به عهده خودم می‌باشد.
+               </span>
+
+                <div class="hw-footer">
+                    <span><i class="fa-regular fa-calendar"></i> تاریخ: <strong><span class="hw-blank" title="تاریخ"></span></strong></span>
+                    <span><i class="fa-solid fa-signature"></i> امضا: <strong><span class="hw-blank" title="امضا"></span></strong></span>
+               </div>
+           </div>
+
+            {# اگر از پروفایل برای آپلود مجدد آمده، فقط فیلدهای مدارک را نشان بده #}
+            {% if from_profile and user.is_authenticated %}
+                <p><label for="id_national_card_image">تصویر کارت ملی:</label>{{ form.national_card_image }}</p>
+                <p><label for="id_selfie_image">تصویر سلفی:</label>{{ form.selfie_image }}</p>
+                <p>
+                    <label for="id_card_number">شماره کارت:</label>
+                    <input type="text" name="card_number" id="id_card_number" value="{{ user.card_number }}">
+               </p>
+                <p>
+                    <label for="id_iban">شماره شبا:</label>
+                    <input type="text" name="iban" id="id_iban" value="{{ user.iban }}">
+               </p>
+            {% else %}
+                {{ form.as_p }}
+            {% endif %}
+
+            <button type="submit" class="btn btn-modern btn-modern-primary w-100 py-3 mt-3 fw-bold">
+                {% if from_profile %}
+                    <i class="fa-solid fa-upload me-1"></i> ارسال مجدد مدارک
+                {% else %}
+                    <i class="fa-solid fa-user-check me-1"></i> تکمیل ثبت‌نام و ورود
+                {% endif %}
+           </button>
+       </form>
+
+        <div class="text-center mt-4 pt-3" style="border-top: 1px solid var(--border-glass, #e5e8ec);">
             <span class="text-custom-muted small">قبلاً ثبت نام کرده‌اید؟</span>
             <a href="{% url 'login' %}" class="text-cyan small ms-1 fw-bold text-decoration-none">وارد شوید</a>
-        </div>
+       </div>
 
-    </div>
+   </div>
 </div>
 {% endblock %}

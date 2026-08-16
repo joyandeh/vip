@@ -133,7 +133,7 @@
 
             <!-- بخش تاشو جزییات -->
             <div class="collapse mb-2" id="activeCollapse{{ item.id }}">
-                <div class="p-3 rounded-4 text-white" style="background: rgba(15, 21, 32, 0.95); border: 1px solid rgba(0, 229, 255, 0.15); font-size: 0.8rem;">
+                <div class="p-3 rounded-4 glass-card" style="font-size: 0.8rem;">
                     <div class="d-flex flex-column gap-2">
                         <div class="d-flex justify-content-between">
                             <span class="text-custom-muted">کد درخواست:</span>
@@ -149,6 +149,35 @@
                             <code class="text-cyan d-block p-2 rounded bg-dark" style="font-size: 0.75rem; word-break: break-all;">{{ item.tx_hash }}</code>
                         </div>
                         {% endif %}
+                        {% if item.request_type == 'BUY' %}
+                        <div style="border-top: 1px solid rgba(255,255,255,0.05); padding-top: 8px;">
+                            <span class="text-custom-muted d-block mb-1 small">آدرس کیف پول مقصد:</span>
+                            <code class="text-neon-green d-block p-2 rounded bg-light" style="font-size: 0.75rem; word-break: break-all;">{{ item.destination_address|default:"-" }}</code>
+                        </div>
+                        {% if item.deposit_reference %}
+                        <div style="border-top: 1px solid rgba(255,255,255,0.05); padding-top: 8px;">
+                            <span class="text-custom-muted d-block mb-1 small">شناسه واریز بانکی:</span>
+                            <code class="text-warning d-block p-2 rounded bg-dark" style="font-size: 0.75rem; word-break: break-all;">{{ item.deposit_reference }}</code>
+                        </div>
+                        {% endif %}
+                        <div style="border-top: 1px solid rgba(255,255,255,0.05); padding-top: 8px;">
+                            <span class="text-custom-muted d-block mb-1 small">اطلاعات حساب واریز:</span>
+                            <div class="row g-2">
+                                <div class="col-6">
+                                    <span class="text-custom-muted small d-block">نام و نام خانوادگی:</span>
+                                    <span class="text-white">{{ item.purchaser_full_name|default:"-" }}</span>
+                                </div>
+                                <div class="col-6">
+                                    <span class="text-custom-muted small d-block">شماره کارت:</span>
+                                    <span class="text-white ltr" dir="ltr">{{ item.purchaser_card_number|default:"-" }}</span>
+                                </div>
+                                <div class="col-12">
+                                    <span class="text-custom-muted small d-block">شماره شبا:</span>
+                                    <span class="text-white ltr" dir="ltr">{{ item.purchaser_shaba_number|default:"-" }}</span>
+                                </div>
+                            </div>
+                        </div>
+                        {% endif %}
                         {% if item.admin_note %}
                         <div style="border-top: 1px solid rgba(255,255,255,0.05); padding-top: 8px;">
                             <span class="text-coral d-block mb-1 small">پیام مدیریت:</span>
@@ -159,7 +188,7 @@
                 </div>
             </div>
             {% empty %}
-            <p class="text-center text-custom-muted py-3 mb-0 small">تراکنش فعالی ندارید.</p>
+            <p class="text-center text-custom-muted py-3 mb-0 small">تراکنش فعالی ندارید</p>
             {% endfor %}
         </div>
     </div>
@@ -214,7 +243,7 @@
 
             <!-- بخش تاشو جزییات -->
             <div class="collapse mb-2" id="completedCollapse{{ item.id }}">
-                <div class="p-3 rounded-4 text-white" style="background: rgba(15, 21, 32, 0.95); border: 1px solid rgba(0, 229, 255, 0.15); font-size: 0.8rem;">
+                <div class="p-3 rounded-4 glass-card" style="font-size: 0.8rem;">
                     <div class="d-flex flex-column gap-2">
                         <div class="d-flex justify-content-between">
                             <span class="text-custom-muted">کد درخواست:</span>
@@ -230,6 +259,35 @@
                             <code class="text-cyan d-block p-2 rounded bg-dark" style="font-size: 0.75rem; word-break: break-all;">{{ item.tx_hash }}</code>
                         </div>
                         {% endif %}
+                        {% if item.request_type == 'BUY' %}
+                        <div style="border-top: 1px solid rgba(255,255,255,0.05); padding-top: 8px;">
+                            <span class="text-custom-muted d-block mb-1 small">آدرس کیف پول مقصد:</span>
+                            <code class="text-neon-green d-block p-2 rounded bg-light" style="font-size: 0.75rem; word-break: break-all;">{{ item.destination_address|default:"-" }}</code>
+                        </div>
+                        {% if item.deposit_reference %}
+                        <div style="border-top: 1px solid rgba(255,255,255,0.05); padding-top: 8px;">
+                            <span class="text-custom-muted d-block mb-1 small">شناسه واریز بانکی:</span>
+                            <code class="text-warning d-block p-2 rounded bg-dark" style="font-size: 0.75rem; word-break: break-all;">{{ item.deposit_reference }}</code>
+                        </div>
+                        {% endif %}
+                        <div style="border-top: 1px solid rgba(255,255,255,0.05); padding-top: 8px;">
+                            <span class="text-custom-muted d-block mb-1 small">اطلاعات حساب واریز:</span>
+                            <div class="row g-2">
+                                <div class="col-6">
+                                    <span class="text-custom-muted small d-block">نام و نام خانوادگی:</span>
+                                    <span class="text-white">{{ item.purchaser_full_name|default:"-" }}</span>
+                                </div>
+                                <div class="col-6">
+                                    <span class="text-custom-muted small d-block">شماره کارت:</span>
+                                    <span class="text-white ltr" dir="ltr">{{ item.purchaser_card_number|default:"-" }}</span>
+                                </div>
+                                <div class="col-12">
+                                    <span class="text-custom-muted small d-block">شماره شبا:</span>
+                                    <span class="text-white ltr" dir="ltr">{{ item.purchaser_shaba_number|default:"-" }}</span>
+                                </div>
+                            </div>
+                        </div>
+                        {% endif %}
                         {% if item.admin_note %}
                         <div style="border-top: 1px solid rgba(255,255,255,0.05); padding-top: 8px;">
                             <span class="text-coral d-block mb-1 small">پیام مدیریت:</span>
@@ -240,7 +298,7 @@
                 </div>
             </div>
             {% empty %}
-            <p class="text-center text-custom-muted py-3 mb-0 small">هنوز تراکنش تکمیل شده‌ای وجود ندارد.</p>
+            <p class="text-center text-custom-muted py-3 mb-0 small">هنوز تراکنش تکمیل شده‌ای وجود ندارد</p>
             {% endfor %}
         </div>
     </div>

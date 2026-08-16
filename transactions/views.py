@@ -59,6 +59,9 @@ def sell_crypto(request):
         return redirect("profile")
 
     site_settings = SiteSetting.get_solo()
+    prices = get_crypto_prices()
+    setting = CryptoApiSetting.objects.filter(active=True).first()
+    toman_rate = setting.toman_rate if setting else 85000
 
     if request.method == "POST":
         form = SellTransactionForm(request.POST)
@@ -79,6 +82,8 @@ def sell_crypto(request):
     return render(request, "transactions/sell_crypto.html", {
         "form": form,
         "site_settings": site_settings,
+        "prices": prices,
+        "toman_rate": toman_rate,
     })
 
 
