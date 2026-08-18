@@ -32,9 +32,8 @@
         <form method="post" class="django-form-wrapper">
             {% csrf_token %}
             <input type="hidden" name="form_type" value="buy_crypto">
-            
             {{ form.non_field_errors }}
-            
+
             <div class="mb-3">
                 <label class="form-label text-custom-muted small">نوع ارز <span class="text-danger">*</span></label>
                 {{ form.crypto_name }}
@@ -49,6 +48,27 @@
                 {% if form.amount.errors %}
                     <div class="text-danger small">{{ form.amount.errors }}</div>
                 {% endif %}
+            </div>
+
+            <!-- محاسبه خودکار مبلغ کل -->
+            <div class="mb-3 p-3 rounded-4 glass-card border-0" style="background: linear-gradient(135deg, rgba(0, 230, 118, 0.12), rgba(0, 180, 216, 0.08)); border: 1px solid rgba(0, 230, 118, 0.25) !important;">
+                <div class="d-flex align-items-center gap-2 mb-2">
+                    <div class="d-flex align-items-center justify-content-center rounded-3" style="width: 36px; height: 36px; background: rgba(0, 230, 118, 0.18);">
+                        <i class="fa-solid fa-calculator text-neon-green" style="font-size: 1rem;"></i>
+                    </div>
+                    <div>
+                        <label class="form-label text-white fw-semibold mb-0 small">مبلغ قابل پرداخت (ریال)</label>
+                        <span class="text-neon-green small fw-medium">محاسبه خودکار</span>
+                    </div>
+                </div>
+                <div class="input-group" style="max-width: 100%;">
+                    <span class="input-group-text bg-transparent border-0 text-neon-green fw-bold px-3" style="background: rgba(0, 230, 118, 0.1) !important; border-right: 1px solid rgba(0, 230, 118, 0.2) !important;"><i class="fa-solid fa-money-bill-wave"></i></span>
+                    <input type="text" id="calculated_total" class="form-control form-control-sm bg-transparent text-neon-green fw-bold border-0 text-end px-3" readonly style="font-size: 1.25rem; background: rgba(255,255,255,0.02) !important; box-shadow: inset 0 2px 8px rgba(0,0,0,0.15);" placeholder="ارز و مقدار را انتخاب کنید">
+                    <span class="input-group-text bg-transparent border-0 text-custom-muted fw-medium px-3" style="background: rgba(255,255,255,0.03) !important; border-left: 1px solid rgba(255,255,255,0.05) !important;">تومان</span>
+                </div>
+                <div class="mt-2">
+                    <span class="text-custom-muted small" id="rate_info"></span>
+                </div>
             </div>
 
             <div class="mb-3">
@@ -139,4 +159,54 @@
         </button>
     </div>
 </div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // داده‌های قیمت از Django
+    const prices = {{ prices|safe }};
+    const tomanRate = {{ toman_rate }};
+
+    const cryptoSelect = document.querySelector('[name="crypto_name"]');
+    const amountInput = document.querySelector('[name="amount"]');
+    const calculatedTotal = document.getElementById('calculated_total');
+    const rateInfo = document.getElementById('rate_info');
+
+    function updateCalculation() {
+        const crypto = cryptoSelect.value;
+        const amount = parseFloat(amountInput.value) || 0;
+
+        if (crypto && prices[crypto] && amount > 0) {
+            const usdPrice = prices[crypto];
+            const unitPrice = usdPrice * tomanRate;
+            const total = unitPrice * amount;
+
+            calculatedTotal.value = total.toLocaleString('fa-IR');
+            rateInfo.textContent = `نرخ: ${usdPrice.toLocaleString()} $ × ${tomanRate.toLocaleString()} = ${unitPrice.toLocaleString()} تومان/واحد`;
+            rateInfo.className = 'text-neon-green small';
+        } else if (crypto && prices[crypto]) {
+            const usdPrice = prices[crypto];
+            const unitPrice = usdPrice * tomanRate;
+            calculatedTotal.value = 'مقدار را وارد کنید';
+            rateInfo.textContent = `نرخ واحد: ${unitPrice.toLocaleString()} تومان (${usdPrice.toLocaleString()} $ × ${tomanRate.toLocaleString()})`;
+            rateInfo.className = 'text-custom-muted small';
+        } else {
+            calculatedTotal.value = 'ارز و مقدار را انتخاب کنید';
+            rateInfo.textContent = '';
+        }
+    }
+
+    if (cryptoSelect) {
+        cryptoSelect.addEventListener('change', updateCalculation);
+    }
+
+    if (amountInput) {
+        amountInput.addEventListener('input', updateCalculation);
+    }
+
+    // Initial calculation
+    updateCalculation();
+});
+</script>
 {% endblock %}

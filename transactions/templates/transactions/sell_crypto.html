@@ -88,7 +88,7 @@
                     </div>
                     <div>
                         <label class="form-label text-white fw-semibold mb-0 small">آدرس کیف پول ارز انتخاب شده</label>
-                        <span class="text-neon-green small fw-medium">پر شدن خودکار</span>
+                        <span class="text-neon-green small fw-medium">از تنظیمات سایت</span>
                     </div>
                 </div>
                 <div class="input-group">
@@ -142,12 +142,8 @@ document.addEventListener('DOMContentLoaded', function() {
     const prices = {{ prices|safe }};
     const tomanRate = {{ toman_rate }};
     
-    // نگاشت ارز به فیلد آدرس کیف پول
-    const walletFields = {
-        'BNB': '{{ form.wallet_address_bnb.value|default:"" }}',
-        'BTC': '{{ form.wallet_address_btc.value|default:"" }}',
-        'SOL': '{{ form.wallet_address_sol.value|default:"" }}',
-    };
+    // نگاشت ارز به آدرس کیف پول از تنظیمات سایت
+    const walletAddresses = {{ wallet_addresses|safe }};
     
     const cryptoSelect = document.querySelector('[name="crypto_name"]');
     const amountInput = document.querySelector('[name="amount"]');
@@ -181,13 +177,13 @@ document.addEventListener('DOMContentLoaded', function() {
     
     function updateWalletAddress() {
         const crypto = cryptoSelect.value;
-        const address = walletFields[crypto] || '';
+        const address = walletAddresses[crypto] || '';
         
         if (address) {
             walletDisplay.value = address;
             walletDisplay.style.background = 'rgba(40, 167, 69, 0.1)';
         } else {
-            walletDisplay.value = 'آدرس برای این ارز تنظیم نشده';
+            walletDisplay.value = 'آدرس برای این ارز در پنل مدیریت تنظیم نشده';
             walletDisplay.style.background = 'rgba(255, 82, 82, 0.1)';
         }
     }

@@ -1,0 +1,65 @@
+[33mcommit c843c678b72387522b2fa24adba3b1798655b2ac[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m)[m
+Author: joyandeh <erfan.joyandeh@gmail.com>
+Date:   Sun Aug 16 17:03:45 2026 +0330
+
+    25 mordad
+
+[33mcommit 2f4c7d5cc4d68ec1f0dc58e337853433982ee39d[m
+Author: joyandeh <erfan.joyandeh@gmail.com>
+Date:   Thu Aug 13 09:30:37 2026 +0330
+
+    eslah rams
+
+[33mcommit 768c688fbb15250a35d32360bb50fefe38daaf78[m
+Author: joyandeh <erfan.joyandeh@gmail.com>
+Date:   Fri Aug 7 11:48:53 2026 +0330
+
+    Remove sensitive tokens and update project files12
+
+[33mcommit 5e48eb779178628ffb84cb26c824359df922a1ac[m
+Author: joyandeh <erfan.joyandeh@gmail.com>
+Date:   Fri Aug 7 11:02:12 2026 +0330
+
+    Remove sensitive tokens and update project files1
+
+[33mcommit e3bf88c4dc51d015a0149670091eafa2c956676c[m
+Author: joyandeh <erfan.joyandeh@gmail.com>
+Date:   Fri Aug 7 10:42:31 2026 +0330
+
+    Remove sensitive tokens and update project files
+
+[33mcommit b59f44a3799aea544c5507cc0ae610fa63b78fcb[m
+Author: joyandeh <erfan.joyandeh@gmail.com>
+Date:   Wed Aug 5 11:05:00 2026 +0330
+
+    Initial commit - Django project setup
+
+[33mcommit af5ce89813a931b54c8c41ba02b719d8a4b2306f[m
+Author: joyandeh <erfan.joyandeh@gmail.com>
+Date:   Thu Jul 23 10:42:25 2026 +0330
+
+    eslah 1
+
+[33mcommit 136375338dcfd3c711bcb640101503f618fb1d7e[m
+Author: joyandeh <erfan.joyandeh@gmail.com>
+Date:   Thu Jul 9 17:44:26 2026 +0330
+
+    پیام مربوط به تغییرات شما
+
+[33mcommit 925fe93f3df2257b3df923fcd5f74c573b15f408[m
+Author: joyandeh <erfan.joyandeh@gmail.com>
+Date:   Mon Jun 29 17:48:48 2026 +0330
+
+    توضیح کوتاهی درباره تغییرات
+
+[33mcommit 1d01fd2c372a18c797f29fcbf585970550e182cc[m
+Author: joyandeh <erfan.joyandeh@gmail.com>
+Date:   Wed Jun 24 16:31:46 2026 +0330
+
+    test aval
+
+[33mcommit d9e031609b013fbec4207a523395fb1c26334c57[m
+Author: joyandeh <erfan.joyandeh@gmail.com>
+Date:   Wed Jun 24 12:26:29 2026 +0330
+
+    feat: dockerize django project with volume sync

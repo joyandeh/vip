@@ -7,13 +7,13 @@
     <title>{% block title %}tronlnd | پلتفرم معاملاتی رمزارز{% endblock %}</title>
 
     <link href="{% static 'css/bootstrap.rtl.min.css' %}" rel="stylesheet">
-        <link href="{% static 'css/fontawesome.min.css' %}" rel="stylesheet">
-        <link href="{% static 'css/vazirmatn.css' %}" rel="stylesheet" type="text/css" />
-        <link rel="preload" as="font" type="font/woff2" crossorigin href="{% static 'fonts/Vazirmatn-Regular.woff2' %}">
-        <link rel="preload" as="font" type="font/woff2" crossorigin href="{% static 'fonts/Vazirmatn-Medium.woff2' %}">
-        <link rel="preload" as="font" type="font/woff2" crossorigin href="{% static 'fonts/Vazirmatn-Bold.woff2' %}">
-        <link rel="preload" as="font" type="font/woff2" crossorigin href="{% static 'webfonts/fa-solid-900.woff2' %}">
-        <link rel="preload" as="font" type="font/woff2" crossorigin href="{% static 'webfonts/fa-regular-400.woff2' %}">
+    <link href="{% static 'css/fontawesome.min.css' %}" rel="stylesheet">
+    <link href="{% static 'css/vazirmatn.css' %}" rel="stylesheet" type="text/css" />
+    <link rel="preload" as="font" type="font/woff2" crossorigin href="{% static 'fonts/Vazirmatn-Regular.woff2' %}">
+    <link rel="preload" as="font" type="font/woff2" crossorigin href="{% static 'fonts/Vazirmatn-Medium.woff2' %}">
+    <link rel="preload" as="font" type="font/woff2" crossorigin href="{% static 'fonts/Vazirmatn-Bold.woff2' %}">
+    <link rel="preload" as="font" type="font/woff2" crossorigin href="{% static 'webfonts/fa-solid-900.woff2' %}">
+    <link rel="preload" as="font" type="font/woff2" crossorigin href="{% static 'webfonts/fa-regular-400.woff2' %}">
     <style>
         :root {
             --bg-main: #0B0E14;
@@ -209,6 +209,7 @@
             -webkit-backdrop-filter: blur(10px);
             border-bottom: 1px solid var(--border-glass);
             padding: 15px 0;
+            z-index: 1055;
         }
 
         .brand-logo {
@@ -330,33 +331,32 @@
         .text-custom-muted { color: var(--text-muted); }
 
         /* Mobile Viewport Container Wrapping */
-                @media (min-width: 576px) {
-                    .mobile-viewport-container {
-                        max-width: 430px;
-                        margin: 20px auto;
-                        border-radius: 40px;
-                        border: 8px solid #272e3f;
-                        position: relative;
-                        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
-                        overflow: hidden;
-                        background: var(--bg-main);
-                    }
-                    body.light-mode .mobile-viewport-container {
-                        background: var(--light-bg-main);
-                        border-color: #e2e8f0;
-                        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15);
-                    }
-                    .bottom-nav {
-                        position: absolute;
-                        width: 100%;
-                        left: 0;
-                        right: 0;
-                    }
-                    .navbar-custom {
-                        border-top-left-radius: 32px;
-                        border-top-right-radius: 32px;
-                    }
-                }
+        @media (min-width: 576px) {
+            .mobile-viewport-container {
+                max-width: 430px;
+                margin: 20px auto;
+                border-radius: 40px;
+                border: 8px solid #272e3f;
+                position: relative;
+                box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+                background: var(--bg-main);
+            }
+            body.light-mode .mobile-viewport-container {
+                background: var(--light-bg-main);
+                border-color: #e2e8f0;
+                box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15);
+            }
+            .bottom-nav {
+                position: absolute;
+                width: 100%;
+                left: 0;
+                right: 0;
+            }
+            .navbar-custom {
+                border-top-left-radius: 32px;
+                border-top-right-radius: 32px;
+            }
+        }
     </style>
     {% block extra_css %}{% endblock %}
 </head>
@@ -382,7 +382,7 @@
                                                                                                                 </span>
                                                                                                                 {% endwith %}
                                                                                                             </a>
-                                                                                                            <ul class="dropdown-menu dropdown-menu-end p-0" style="min-width: 320px; max-height: 400px; overflow-y: auto; background: var(--light-bg-card); border: 1px solid var(--light-border-glass); border-radius: 12px; box-shadow: 0 8px 32px rgba(0,0,0,0.15);">
+                                                                                                            <ul class="dropdown-menu dropdown-menu-end p-0" style="min-width: 320px; max-height: 400px; overflow-y: auto; background: var(--light-bg-card); border: 1px solid var(--light-border-glass); border-radius: 12px; box-shadow: 0 8px 32px rgba(0,0,0,0.15); z-index: 1060;">
                                                                                                                 <li class="px-3 py-2 border-bottom" style="border-color: var(--light-border-glass) !important;">
                                                                                                                     <h6 class="mb-0 fw-bold" style="color: var(--light-text-color);"><i class="fa-solid fa-envelope me-1" style="color: var(--accent-green);"></i> پیام‌های مدیریت</h6>
                                                                                                                 </li>
@@ -422,7 +422,7 @@
                             <i class="fa-regular fa-user"></i>
                         </button>
                         <!-- پنل مدیریت به صورت Overlay روی صفحه -->
-                        <div class="profile-overlay" id="profileOverlay" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; z-index:9999; background:rgba(0,0,0,0.5);">
+                        <div class="profile-overlay" id="profileOverlay" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; z-index:1070; background:rgba(0,0,0,0.5);">
                             <div class="profile-panel" style="position:absolute; top:60px; left:10px; right:10px; background:rgba(255,255,255,0.98); border-radius:16px; box-shadow:0 8px 32px rgba(0,0,0,0.3); border:1px solid rgba(0,0,0,0.08); padding:16px; max-width:360px; margin:0 auto;">
                                 <div class="d-flex justify-content-between align-items-center mb-3 pb-2" style="border-bottom:1px solid rgba(0,0,0,0.08);">
                                     <span style="font-weight:700; color:#1a1a1a;">{{ user.full_name|default:user.username }}</span>

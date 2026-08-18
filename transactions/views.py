@@ -19,6 +19,9 @@ def buy_crypto(request):
         return redirect("profile")
 
     site_settings = SiteSetting.get_solo()
+    prices = get_crypto_prices()
+    setting = CryptoApiSetting.objects.filter(active=True).first()
+    toman_rate = setting.toman_rate if setting else 85000
 
     if request.method == "POST":
         form = BuyTransactionForm(request.POST)
@@ -28,9 +31,6 @@ def buy_crypto(request):
             transaction.request_type = Transaction.BUY
             
             # Calculate prices
-            prices = get_crypto_prices()
-            setting = CryptoApiSetting.objects.filter(active=True).first()
-            toman_rate = setting.toman_rate if setting else 85000
             usd_price = prices.get(transaction.crypto_name, 0)
             unit_price = Decimal(usd_price * toman_rate)
             total_price = unit_price * transaction.amount
@@ -48,6 +48,8 @@ def buy_crypto(request):
     return render(request, "transactions/buy_crypto.html", {
         "form": form,
         "site_settings": site_settings,
+        "prices": prices,
+        "toman_rate": toman_rate,
     })
 
 
@@ -62,6 +64,15 @@ def sell_crypto(request):
     prices = get_crypto_prices()
     setting = CryptoApiSetting.objects.filter(active=True).first()
     toman_rate = setting.toman_rate if setting else 85000
+
+    # نگاشت ارز به آدرس کیف پول از تنظیمات سایت
+    wallet_addresses = {
+        'USDT': site_settings.usdt_wallet_address or '',
+        'TRX': site_settings.trx_wallet_address or '',
+        'BTC': site_settings.btc_wallet_address or '',
+        'ETH': site_settings.eth_wallet_address or '',
+        'SOL': site_settings.sol_wallet_address or '',
+    }
 
     if request.method == "POST":
         form = SellTransactionForm(request.POST)
@@ -84,6 +95,7 @@ def sell_crypto(request):
         "site_settings": site_settings,
         "prices": prices,
         "toman_rate": toman_rate,
+        "wallet_addresses": wallet_addresses,
     })
 
 
