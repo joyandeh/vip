@@ -113,7 +113,7 @@
                 <div class="text-center py-2" style="border-top: 1px solid rgba(255,255,255,0.05); border-bottom: 1px solid rgba(255,255,255,0.05);">
                     <span class="text-custom-muted small d-block mb-1" style="font-size: 0.7rem;">مقدار معامله:</span>
                     <span class="fw-bold text-white" style="font-size: 1.05rem;">
-                        {{ item.amount|default:"-" }} <span class="text-cyan small">{{ item.crypto_name|default:"ریالی" }}</span>
+                        {{ item.amount|floatformat:"-8"|default:"-" }} <span class="text-cyan small">{{ item.crypto_name|default:"ریالی" }}</span>
                     </span>
                 </div>
 
@@ -146,7 +146,7 @@
                         {% if item.tx_hash %}
                         <div style="border-top: 1px solid rgba(255,255,255,0.05); padding-top: 8px;">
                             <span class="text-custom-muted d-block mb-1 small">هش تراکنش:</span>
-                            <code class="text-cyan d-block p-2 rounded bg-dark" style="font-size: 0.75rem; word-break: break-all;">{{ item.tx_hash }}</code>
+                            <code class="text-cyan d-block p-2 rounded bg-light text-dark" style="font-size: 0.75rem; word-break: break-all;">{{ item.tx_hash }}</code>
                         </div>
                         {% endif %}
                         {% if item.request_type == 'BUY' %}
@@ -157,7 +157,7 @@
                         {% if item.deposit_reference %}
                         <div style="border-top: 1px solid rgba(255,255,255,0.05); padding-top: 8px;">
                             <span class="text-custom-muted d-block mb-1 small">شناسه واریز بانکی:</span>
-                            <code class="text-warning d-block p-2 rounded bg-dark" style="font-size: 0.75rem; word-break: break-all;">{{ item.deposit_reference }}</code>
+                            <code class="text-warning d-block p-2 rounded bg-light text-dark" style="font-size: 0.75rem; word-break: break-all;">{{ item.deposit_reference }}</code>
                         </div>
                         {% endif %}
                         <div style="border-top: 1px solid rgba(255,255,255,0.05); padding-top: 8px;">
@@ -180,8 +180,8 @@
                         {% endif %}
                         {% if item.admin_note %}
                         <div style="border-top: 1px solid rgba(255,255,255,0.05); padding-top: 8px;">
-                            <span class="text-coral d-block mb-1 small">پیام مدیریت:</span>
-                            <p class="text-white mb-0 bg-dark p-2 rounded" style="font-size: 0.75rem;">{{ item.admin_note }}</p>
+                            <span class="text-coral d-block mb-1 small">پیام مدیریت / هش / شماره پیگیری:</span>
+                            <p class="text-white mb-0 bg-light text-dark p-2 rounded" style="font-size: 0.75rem;">{{ item.admin_note }}</p>
                         </div>
                         {% endif %}
                     </div>
@@ -223,7 +223,7 @@
                 <div class="text-center py-2" style="border-top: 1px solid rgba(255,255,255,0.05); border-bottom: 1px solid rgba(255,255,255,0.05);">
                     <span class="text-custom-muted small d-block mb-1" style="font-size: 0.7rem;">مقدار معامله:</span>
                     <span class="fw-bold text-white" style="font-size: 1.05rem;">
-                        {{ item.amount|default:"-" }} <span class="text-cyan small">{{ item.crypto_name|default:"ریالی" }}</span>
+                        {{ item.amount|floatformat:"-8"|default:"-" }} <span class="text-cyan small">{{ item.crypto_name|default:"ریالی" }}</span>
                     </span>
                 </div>
 
@@ -256,7 +256,7 @@
                         {% if item.tx_hash %}
                         <div style="border-top: 1px solid rgba(255,255,255,0.05); padding-top: 8px;">
                             <span class="text-custom-muted d-block mb-1 small">هش تراکنش:</span>
-                            <code class="text-cyan d-block p-2 rounded bg-dark" style="font-size: 0.75rem; word-break: break-all;">{{ item.tx_hash }}</code>
+                            <code class="text-cyan d-block p-2 rounded bg-light text-dark" style="font-size: 0.75rem; word-break: break-all;">{{ item.tx_hash }}</code>
                         </div>
                         {% endif %}
                         {% if item.request_type == 'BUY' %}
@@ -267,7 +267,7 @@
                         {% if item.deposit_reference %}
                         <div style="border-top: 1px solid rgba(255,255,255,0.05); padding-top: 8px;">
                             <span class="text-custom-muted d-block mb-1 small">شناسه واریز بانکی:</span>
-                            <code class="text-warning d-block p-2 rounded bg-dark" style="font-size: 0.75rem; word-break: break-all;">{{ item.deposit_reference }}</code>
+                            <code class="text-warning d-block p-2 rounded bg-light text-dark" style="font-size: 0.75rem; word-break: break-all;">{{ item.deposit_reference }}</code>
                         </div>
                         {% endif %}
                         <div style="border-top: 1px solid rgba(255,255,255,0.05); padding-top: 8px;">
@@ -290,8 +290,8 @@
                         {% endif %}
                         {% if item.admin_note %}
                         <div style="border-top: 1px solid rgba(255,255,255,0.05); padding-top: 8px;">
-                            <span class="text-coral d-block mb-1 small">پیام مدیریت:</span>
-                            <p class="text-white mb-0 bg-dark p-2 rounded" style="font-size: 0.75rem;">{{ item.admin_note }}</p>
+                            <span class="text-coral d-block mb-1 small">پیام مدیریت / هش / شماره پیگیری:</span>
+                            <p class="text-white mb-0 bg-light text-dark p-2 rounded" style="font-size: 0.75rem;">{{ item.admin_note }}</p>
                         </div>
                         {% endif %}
                     </div>

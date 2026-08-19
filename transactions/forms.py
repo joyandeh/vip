@@ -32,7 +32,7 @@ class BuyTransactionForm(forms.ModelForm):
 
 
 class SellTransactionForm(forms.ModelForm):
-    """فرم فروش به سایت - فیلدهای اجباری، بدون آدرس کیف پول عمومی"""
+    """فرم فروش به سایت - فیلدهای اجباری، آدرس کیف پول از تنظیمات سایت"""
     class Meta:
         model = Transaction
         fields = [
@@ -42,9 +42,6 @@ class SellTransactionForm(forms.ModelForm):
             'seller_full_name',
             'seller_card_number',
             'seller_shaba_number',
-            'wallet_address_bnb',
-            'wallet_address_btc',
-            'wallet_address_sol',
         ]
         widgets = {
             'crypto_name': forms.Select(attrs={'class': 'form-select form-select-sm bg-dark text-white border-secondary-subtle', 'required': True}),
@@ -53,9 +50,6 @@ class SellTransactionForm(forms.ModelForm):
             'seller_full_name': forms.TextInput(attrs={'class': 'form-control form-control-sm bg-dark text-white border-secondary-subtle', 'placeholder': 'نام و نام خانوادگی', 'required': True}),
             'seller_card_number': forms.TextInput(attrs={'class': 'form-control form-control-sm bg-dark text-white border-secondary-subtle', 'placeholder': 'شماره کارت', 'required': True}),
             'seller_shaba_number': forms.TextInput(attrs={'class': 'form-control form-control-sm bg-dark text-white border-secondary-subtle', 'placeholder': 'شماره شبا', 'required': True}),
-            'wallet_address_bnb': forms.TextInput(attrs={'class': 'form-control form-control-sm bg-dark text-white border-secondary-subtle', 'placeholder': 'آدرس کیف پول BNB', 'required': True}),
-            'wallet_address_btc': forms.TextInput(attrs={'class': 'form-control form-control-sm bg-dark text-white border-secondary-subtle', 'placeholder': 'آدرس کیف پول BTC', 'required': True}),
-            'wallet_address_sol': forms.TextInput(attrs={'class': 'form-control form-control-sm bg-dark text-white border-secondary-subtle', 'placeholder': 'آدرس کیف پول SOL', 'required': True}),
         }
 
     def __init__(self, *args, **kwargs):
