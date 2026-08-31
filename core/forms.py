@@ -103,6 +103,22 @@ class SiteSettingForm(forms.ModelForm):
             'site_iban',
             'site_account_holder',
             'support_phone',
+            # Announcements
+            'announcement_1_title',
+            'announcement_1_text',
+            'announcement_1_icon',
+            'announcement_1_color',
+            'announcement_1_active',
+            'announcement_2_title',
+            'announcement_2_text',
+            'announcement_2_icon',
+            'announcement_2_color',
+            'announcement_2_active',
+            'announcement_3_title',
+            'announcement_3_text',
+            'announcement_3_icon',
+            'announcement_3_color',
+            'announcement_3_active',
         ]
 
         widgets = {
@@ -130,6 +146,15 @@ class SiteSettingForm(forms.ModelForm):
             'trx_wallet_address': forms.TextInput(
                 attrs={'class': 'form-control bg-dark text-white border-secondary-subtle', 'dir': 'ltr'}
             ),
+            'btc_wallet_address': forms.TextInput(
+                attrs={'class': 'form-control bg-dark text-white border-secondary-subtle', 'dir': 'ltr'}
+            ),
+            'eth_wallet_address': forms.TextInput(
+                attrs={'class': 'form-control bg-dark text-white border-secondary-subtle', 'dir': 'ltr'}
+            ),
+            'sol_wallet_address': forms.TextInput(
+                attrs={'class': 'form-control bg-dark text-white border-secondary-subtle', 'dir': 'ltr'}
+            ),
             'site_card_number': forms.TextInput(
                 attrs={'class': 'form-control bg-dark text-white border-secondary-subtle', 'dir': 'ltr'}
             ),
@@ -138,5 +163,72 @@ class SiteSettingForm(forms.ModelForm):
             ),
             'site_account_holder': forms.TextInput(
                 attrs={'class': 'form-control bg-dark text-white border-secondary-subtle'}
+            ),
+            'support_phone': forms.TextInput(
+                attrs={'class': 'form-control bg-dark text-white border-secondary-subtle', 'dir': 'ltr'}
+            ),
+            # Announcement widgets
+            'announcement_1_title': forms.TextInput(
+                attrs={'class': 'form-control bg-dark text-white border-secondary-subtle'}
+            ),
+            'announcement_1_text': forms.Textarea(
+                attrs={'class': 'form-control bg-dark text-white border-secondary-subtle', 'rows': 3}
+            ),
+            'announcement_1_icon': forms.TextInput(
+                attrs={'class': 'form-control bg-dark text-white border-secondary-subtle', 'placeholder': 'fa-solid fa-bullhorn'}
+            ),
+            'announcement_1_color': forms.Select(
+                choices=[
+                    ('cyan', 'فیروزه‌ای (Cyan)'),
+                    ('green', 'سبز (Green)'),
+                    ('coral', 'مرجانی (Coral)'),
+                    ('warning', 'زرد/نارنجی (Warning)'),
+                ],
+                attrs={'class': 'form-select bg-dark text-white border-secondary-subtle'}
+            ),
+            'announcement_1_active': forms.CheckboxInput(
+                attrs={'class': 'form-check-input'}
+            ),
+            'announcement_2_title': forms.TextInput(
+                attrs={'class': 'form-control bg-dark text-white border-secondary-subtle'}
+            ),
+            'announcement_2_text': forms.Textarea(
+                attrs={'class': 'form-control bg-dark text-white border-secondary-subtle', 'rows': 3}
+            ),
+            'announcement_2_icon': forms.TextInput(
+                attrs={'class': 'form-control bg-dark text-white border-secondary-subtle', 'placeholder': 'fa-solid fa-gift'}
+            ),
+            'announcement_2_color': forms.Select(
+                choices=[
+                    ('cyan', 'فیروزه‌ای (Cyan)'),
+                    ('green', 'سبز (Green)'),
+                    ('coral', 'مرجانی (Coral)'),
+                    ('warning', 'زرد/نارنجی (Warning)'),
+                ],
+                attrs={'class': 'form-select bg-dark text-white border-secondary-subtle'}
+            ),
+            'announcement_2_active': forms.CheckboxInput(
+                attrs={'class': 'form-check-input'}
+            ),
+            'announcement_3_title': forms.TextInput(
+                attrs={'class': 'form-control bg-dark text-white border-secondary-subtle'}
+            ),
+            'announcement_3_text': forms.Textarea(
+                attrs={'class': 'form-control bg-dark text-white border-secondary-subtle', 'rows': 3}
+            ),
+            'announcement_3_icon': forms.TextInput(
+                attrs={'class': 'form-control bg-dark text-white border-secondary-subtle', 'placeholder': 'fa-solid fa-bolt'}
+            ),
+            'announcement_3_color': forms.Select(
+                choices=[
+                    ('cyan', 'فیروزه‌ای (Cyan)'),
+                    ('green', 'سبز (Green)'),
+                    ('coral', 'مرجانی (Coral)'),
+                    ('warning', 'زرد/نارنجی (Warning)'),
+                ],
+                attrs={'class': 'form-select bg-dark text-white border-secondary-subtle'}
+            ),
+            'announcement_3_active': forms.CheckboxInput(
+                attrs={'class': 'form-check-input'}
             ),
         }

@@ -34,6 +34,53 @@
         font-size: 0.8rem;
         color: #ff5252;
     }
+    /* Accordion custom styles */
+    .accordion-button {
+        background: var(--bg-card);
+        color: var(--text-color);
+        border: 1px solid var(--border-glass);
+        border-radius: 12px !important;
+        box-shadow: none !important;
+    }
+    .accordion-button:not(.collapsed) {
+        background: var(--bg-card);
+        color: var(--accent-cyan);
+        box-shadow: none !important;
+    }
+    .accordion-button:focus {
+        box-shadow: none !important;
+        border-color: var(--accent-cyan);
+    }
+    .accordion-button::after {
+        filter: invert(1);
+    }
+    .accordion-item {
+        background: transparent;
+        border: none;
+        margin-bottom: 8px;
+    }
+    .accordion-body {
+        background: transparent;
+        border: none;
+        padding: 1rem 0 0 0;
+    }
+    .accordion-header {
+        border-radius: 12px !important;
+    }
+    .accordion-collapse {
+        border-radius: 0 0 12px 12px;
+    }
+    /* RTL support for accordion */
+    .accordion-button::after {
+        margin-left: auto;
+        margin-right: 0;
+    }
+    [dir="rtl"] .accordion-button::after {
+        transform: rotate(180deg);
+    }
+    [dir="rtl"] .accordion-button:not(.collapsed)::after {
+        transform: rotate(0deg);
+    }
 </style>
 {% endblock %}
 
@@ -88,85 +135,210 @@
         {% endfor %}
     {% endif %}
 
-    <!-- تنظیمات به صورت stacked (زیر هم) -->
-    <div class="d-flex flex-column gap-3">
+    <!-- تنظیمات به صورت آکاردئونی -->
+    <div class="accordion" id="settingsAccordion">
         <!-- تنظیمات سایت -->
-        <div class="glass-card p-4">
-            <h5 class="text-cyan fw-bold mb-4" style="font-size: 1rem;">
-                <i class="fa-solid fa-globe me-2"></i> اطلاعات سایت
-            </h5>
-            
-            <form method="post" class="django-form-wrapper">
-                {% csrf_token %}
-                <input type="hidden" name="form_type" value="site_setting">
-                {{ site_form.as_p }}
-                <button type="submit" class="btn btn-modern btn-modern-primary w-100 py-2.5 fw-bold text-dark mt-3">
-                    <i class="fa-solid fa-save me-1"></i> ذخیره تنظیمات سایت
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="headingSite">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSite" aria-expanded="false" aria-controls="collapseSite">
+                    <i class="fa-solid fa-globe text-cyan me-2"></i> اطلاعات سایت
                 </button>
-            </form>
+            </h2>
+            <div id="collapseSite" class="accordion-collapse collapse" aria-labelledby="headingSite" data-bs-parent="#settingsAccordion">
+                <div class="accordion-body">
+                    <form method="post" class="django-form-wrapper">
+                        {% csrf_token %}
+                        <input type="hidden" name="form_type" value="site_setting">
+                        {{ site_form.as_p }}
+                        <button type="submit" class="btn btn-modern btn-modern-primary w-100 py-2.5 fw-bold text-dark mt-3">
+                            <i class="fa-solid fa-save me-1"></i> ذخیره تنظیمات سایت
+                        </button>
+                    </form>
+                </div>
+            </div>
         </div>
 
         <!-- اطلاعات بانکی سایت -->
-        <div class="glass-card p-4">
-            <h5 class="text-coral fw-bold mb-4" style="font-size: 1rem;">
-                <i class="fa-solid fa-building-columns me-2"></i> اطلاعات بانکی سایت (برای خرید از سایت)
-            </h5>
-            <div class="alert alert-info bg-light border-secondary-subtle rounded-4">
-                <small class="text-custom-muted">
-                    <i class="fa-solid fa-info-circle me-1"></i>
-                    این اطلاعات در صفحه خرید از سایت به کاربران نمایش داده می‌شود.
-                </small>
-            </div>
-            <form method="post" class="django-form-wrapper">
-                {% csrf_token %}
-                <input type="hidden" name="form_type" value="bank_setting">
-                <p>
-                    <label for="id_site_account_holder">نام صاحب حساب:</label>
-                    <input type="text" name="site_account_holder" id="id_site_account_holder" 
-                           value="{{ site_settings.site_account_holder|default:'' }}"
-                           class="form-control bg-dark text-white border-secondary-subtle">
-                </p>
-                <p>
-                    <label for="id_site_card_number">شماره کارت:</label>
-                    <input type="text" name="site_card_number" id="id_site_card_number" 
-                           value="{{ site_settings.site_card_number|default:'' }}"
-                           placeholder="XXXX-XXXX-XXXX-XXXX" maxlength="20"
-                           class="form-control bg-dark text-white border-secondary-subtle" dir="ltr">
-                </p>
-                <p>
-                    <label for="id_site_iban">شماره شبا:</label>
-                    <input type="text" name="site_iban" id="id_site_iban" 
-                           value="{{ site_settings.site_iban|default:'' }}"
-                           placeholder="IRXXXXXXXXXXXXXXXXXXXXXXXXXXXX" maxlength="30"
-                           class="form-control bg-dark text-white border-secondary-subtle" dir="ltr">
-                </p>
-                <p>
-                    <label for="id_support_phone">شماره تلفن پشتیبانی (معامله تلفنی):</label>
-                    <input type="text" name="support_phone" id="id_support_phone" 
-                           value="{{ site_settings.support_phone|default:'' }}"
-                           placeholder="09XXXXXXXXX" maxlength="20"
-                           class="form-control bg-dark text-white border-secondary-subtle" dir="ltr">
-                </p>
-                <button type="submit" class="btn btn-modern btn-modern-primary w-100 py-2.5 fw-bold text-dark mt-3">
-                    <i class="fa-solid fa-save me-1"></i> ذخیره اطلاعات بانکی
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="headingBank">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseBank" aria-expanded="false" aria-controls="collapseBank">
+                    <i class="fa-solid fa-building-columns text-coral me-2"></i> اطلاعات بانکی سایت (برای خرید از سایت)
                 </button>
-            </form>
+            </h2>
+            <div id="collapseBank" class="accordion-collapse collapse" aria-labelledby="headingBank" data-bs-parent="#settingsAccordion">
+                <div class="accordion-body">
+                    <div class="alert alert-info bg-light border-secondary-subtle rounded-4">
+                        <small class="text-custom-muted">
+                            <i class="fa-solid fa-info-circle me-1"></i>
+                            این اطلاعات در صفحه خرید از سایت به کاربران نمایش داده می‌شود.
+                        </small>
+                    </div>
+                    <form method="post" class="django-form-wrapper">
+                        {% csrf_token %}
+                        <input type="hidden" name="form_type" value="bank_setting">
+                        <p>
+                            <label for="id_site_account_holder">نام صاحب حساب:</label>
+                            <input type="text" name="site_account_holder" id="id_site_account_holder" 
+                                   value="{{ site_settings.site_account_holder|default:'' }}"
+                                   class="form-control bg-dark text-white border-secondary-subtle">
+                        </p>
+                        <p>
+                            <label for="id_site_card_number">شماره کارت:</label>
+                            <input type="text" name="site_card_number" id="id_site_card_number" 
+                                   value="{{ site_settings.site_card_number|default:'' }}"
+                                   placeholder="XXXX-XXXX-XXXX-XXXX" maxlength="20"
+                                   class="form-control bg-dark text-white border-secondary-subtle" dir="ltr">
+                        </p>
+                        <p>
+                            <label for="id_site_iban">شماره شبا:</label>
+                            <input type="text" name="site_iban" id="id_site_iban" 
+                                   value="{{ site_settings.site_iban|default:'' }}"
+                                   placeholder="IRXXXXXXXXXXXXXXXXXXXXXXXXXXXX" maxlength="30"
+                                   class="form-control bg-dark text-white border-secondary-subtle" dir="ltr">
+                        </p>
+                        <p>
+                            <label for="id_support_phone">شماره تلفن پشتیبانی (معامله تلفنی):</label>
+                            <input type="text" name="support_phone" id="id_support_phone" 
+                                   value="{{ site_settings.support_phone|default:'' }}"
+                                   placeholder="09XXXXXXXXX" maxlength="20"
+                                   class="form-control bg-dark text-white border-secondary-subtle" dir="ltr">
+                        </p>
+                        <button type="submit" class="btn btn-modern btn-modern-primary w-100 py-2.5 fw-bold text-dark mt-3">
+                            <i class="fa-solid fa-save me-1"></i> ذخیره اطلاعات بانکی
+                        </button>
+                    </form>
+                </div>
+            </div>
         </div>
 
         <!-- تنظیمات قیمت‌گذاری -->
-        <div class="glass-card p-4">
-            <h5 class="text-cyan fw-bold mb-4" style="font-size: 1rem;">
-                <i class="fa-solid fa-coins me-2"></i> تنظیمات قیمت‌گذاری
-            </h5>
-            
-            <form method="post" class="django-form-wrapper">
-                {% csrf_token %}
-                <input type="hidden" name="form_type" value="crypto_setting">
-                {{ crypto_form.as_p }}
-                <button type="submit" class="btn btn-modern btn-modern-primary w-100 py-2.5 fw-bold text-dark mt-3">
-                    <i class="fa-solid fa-save me-1"></i> ذخیره تنظیمات قیمت
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="headingCrypto">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseCrypto" aria-expanded="false" aria-controls="collapseCrypto">
+                    <i class="fa-solid fa-coins text-cyan me-2"></i> تنظیمات قیمت‌گذاری
                 </button>
-            </form>
+            </h2>
+            <div id="collapseCrypto" class="accordion-collapse collapse" aria-labelledby="headingCrypto" data-bs-parent="#settingsAccordion">
+                <div class="accordion-body">
+                    <form method="post" class="django-form-wrapper">
+                        {% csrf_token %}
+                        <input type="hidden" name="form_type" value="crypto_setting">
+                        {{ crypto_form.as_p }}
+                        <button type="submit" class="btn btn-modern btn-modern-primary w-100 py-2.5 fw-bold text-dark mt-3">
+                            <i class="fa-solid fa-save me-1"></i> ذخیره تنظیمات قیمت
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- اعلامیه‌های چرخشی صفحه اصلی -->
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="headingAnnouncements">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseAnnouncements" aria-expanded="false" aria-controls="collapseAnnouncements">
+                    <i class="fa-solid fa-bullhorn text-warning me-2"></i> اعلامیه‌های چرخشی صفحه اصلی
+                </button>
+            </h2>
+            <div id="collapseAnnouncements" class="accordion-collapse collapse" aria-labelledby="headingAnnouncements" data-bs-parent="#settingsAccordion">
+                <div class="accordion-body">
+                    <div class="alert alert-info bg-light border-secondary-subtle rounded-4">
+                        <small class="text-custom-muted">
+                            <i class="fa-solid fa-info-circle me-1"></i>
+                            تا ۳ اعلامیه می‌توانید فعال کنید. این اعلامیه‌ها در چرخ‌و‌فلک بنرهای صفحه اصلی نمایش داده می‌شوند.
+                        </small>
+                    </div>
+                    <form method="post" class="django-form-wrapper">
+                        {% csrf_token %}
+                        <input type="hidden" name="form_type" value="site_setting">
+                        <div class="row g-3">
+                            <!-- Announcement 1 -->
+                            <div class="col-12">
+                                <h6 class="text-cyan fw-bold mb-2" style="font-size: 0.85rem;"><i class="fa-solid fa-1 me-1"></i> اعلامیه ۱</h6>
+                            </div>
+                            <div class="col-md-6">
+                                {{ site_form.announcement_1_active.label_tag }}
+                                {{ site_form.announcement_1_active }}
+                            </div>
+                            <div class="col-md-6">
+                                {{ site_form.announcement_1_color.label_tag }}
+                                {{ site_form.announcement_1_color }}
+                            </div>
+                            <div class="col-12">
+                                {{ site_form.announcement_1_title.label_tag }}
+                                {{ site_form.announcement_1_title }}
+                            </div>
+                            <div class="col-12">
+                                {{ site_form.announcement_1_text.label_tag }}
+                                {{ site_form.announcement_1_text }}
+                            </div>
+                            <div class="col-12">
+                                {{ site_form.announcement_1_icon.label_tag }}
+                                {{ site_form.announcement_1_icon }}
+                                <small class="text-custom-muted d-block mt-1">مثال: fa-solid fa-bullhorn, fa-solid fa-gift, fa-solid fa-bolt</small>
+                            </div>
+                            
+                            <hr class="my-3" style="border-color: rgba(255,255,255,0.1);">
+                            
+                            <!-- Announcement 2 -->
+                            <div class="col-12">
+                                <h6 class="text-green fw-bold mb-2" style="font-size: 0.85rem;"><i class="fa-solid fa-2 me-1"></i> اعلامیه ۲</h6>
+                            </div>
+                            <div class="col-md-6">
+                                {{ site_form.announcement_2_active.label_tag }}
+                                {{ site_form.announcement_2_active }}
+                            </div>
+                            <div class="col-md-6">
+                                {{ site_form.announcement_2_color.label_tag }}
+                                {{ site_form.announcement_2_color }}
+                            </div>
+                            <div class="col-12">
+                                {{ site_form.announcement_2_title.label_tag }}
+                                {{ site_form.announcement_2_title }}
+                            </div>
+                            <div class="col-12">
+                                {{ site_form.announcement_2_text.label_tag }}
+                                {{ site_form.announcement_2_text }}
+                            </div>
+                            <div class="col-12">
+                                {{ site_form.announcement_2_icon.label_tag }}
+                                {{ site_form.announcement_2_icon }}
+                                <small class="text-custom-muted d-block mt-1">مثال: fa-solid fa-bullhorn, fa-solid fa-gift, fa-solid fa-bolt</small>
+                            </div>
+                            
+                            <hr class="my-3" style="border-color: rgba(255,255,255,0.1);">
+                            
+                            <!-- Announcement 3 -->
+                            <div class="col-12">
+                                <h6 class="text-coral fw-bold mb-2" style="font-size: 0.85rem;"><i class="fa-solid fa-3 me-1"></i> اعلامیه ۳</h6>
+                            </div>
+                            <div class="col-md-6">
+                                {{ site_form.announcement_3_active.label_tag }}
+                                {{ site_form.announcement_3_active }}
+                            </div>
+                            <div class="col-md-6">
+                                {{ site_form.announcement_3_color.label_tag }}
+                                {{ site_form.announcement_3_color }}
+                            </div>
+                            <div class="col-12">
+                                {{ site_form.announcement_3_title.label_tag }}
+                                {{ site_form.announcement_3_title }}
+                            </div>
+                            <div class="col-12">
+                                {{ site_form.announcement_3_text.label_tag }}
+                                {{ site_form.announcement_3_text }}
+                            </div>
+                            <div class="col-12">
+                                {{ site_form.announcement_3_icon.label_tag }}
+                                {{ site_form.announcement_3_icon }}
+                                <small class="text-custom-muted d-block mt-1">مثال: fa-solid fa-bullhorn, fa-solid fa-gift, fa-solid fa-bolt</small>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-modern btn-modern-primary w-100 py-2.5 fw-bold text-dark mt-3">
+                            <i class="fa-solid fa-save me-1"></i> ذخیره تنظیمات سایت (شامل اعلامیه‌ها)
+                        </button>
+                    </form>
+                </div>
+            </div>
         </div>
     </div>
 </div>

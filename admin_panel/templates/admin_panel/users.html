@@ -151,6 +151,61 @@
                             {% endif %}
                         </div>
 
+                        <!-- موجودی‌های کیف پول -->
+                        <div class="mt-2 border-bottom border-secondary-subtle pb-3">
+                            <span class="text-muted d-block mb-2 small fw-bold">
+                                <i class="fa-solid fa-wallet text-cyan me-1"></i>موجودی‌های کیف پول
+                            </span>
+                            <form action="{% url 'panel_user_wallet_balances' u.id %}" method="post" class="d-flex flex-column gap-1">
+                                {% csrf_token %}
+                                <div class="row g-1">
+                                    <div class="col-6">
+                                        <label class="form-label text-muted small mb-0">TRX</label>
+                                        <input type="number" name="trx_balance" class="form-control form-control-sm bg-white text-dark border-secondary-subtle" 
+                                               value="{{ u.trx_balance }}" step="0.00000001" min="0" style="font-size: 0.7rem; border-radius: 6px;">
+                                    </div>
+                                    <div class="col-6">
+                                        <label class="form-label text-muted small mb-0">USDT</label>
+                                        <input type="number" name="usdt_balance" class="form-control form-control-sm bg-white text-dark border-secondary-subtle" 
+                                               value="{{ u.usdt_balance }}" step="0.00000001" min="0" style="font-size: 0.7rem; border-radius: 6px;">
+                                    </div>
+                                    <div class="col-6">
+                                        <label class="form-label text-muted small mb-0">BTC</label>
+                                        <input type="number" name="btc_balance" class="form-control form-control-sm bg-white text-dark border-secondary-subtle" 
+                                               value="{{ u.btc_balance }}" step="0.00000001" min="0" style="font-size: 0.7rem; border-radius: 6px;">
+                                    </div>
+                                    <div class="col-6">
+                                        <label class="form-label text-muted small mb-0">ETH</label>
+                                        <input type="number" name="eth_balance" class="form-control form-control-sm bg-white text-dark border-secondary-subtle" 
+                                               value="{{ u.eth_balance }}" step="0.00000001" min="0" style="font-size: 0.7rem; border-radius: 6px;">
+                                    </div>
+                                    <div class="col-6">
+                                        <label class="form-label text-muted small mb-0">SOL</label>
+                                        <input type="number" name="sol_balance" class="form-control form-control-sm bg-white text-dark border-secondary-subtle" 
+                                               value="{{ u.sol_balance }}" step="0.00000001" min="0" style="font-size: 0.7rem; border-radius: 6px;">
+                                    </div>
+                                    <div class="col-6">
+                                        <label class="form-label text-muted small mb-0">BNB</label>
+                                        <input type="number" name="bnb_balance" class="form-control form-control-sm bg-white text-dark border-secondary-subtle" 
+                                               value="{{ u.bnb_balance }}" step="0.00000001" min="0" style="font-size: 0.7rem; border-radius: 6px;">
+                                    </div>
+                                    <div class="col-6">
+                                        <label class="form-label text-muted small mb-0">XRP</label>
+                                        <input type="number" name="xrp_balance" class="form-control form-control-sm bg-white text-dark border-secondary-subtle" 
+                                               value="{{ u.xrp_balance }}" step="0.00000001" min="0" style="font-size: 0.7rem; border-radius: 6px;">
+                                    </div>
+                                    <div class="col-6">
+                                        <label class="form-label text-muted small mb-0">PM</label>
+                                        <input type="number" name="pm_balance" class="form-control form-control-sm bg-white text-dark border-secondary-subtle" 
+                                               value="{{ u.pm_balance }}" step="0.01" min="0" style="font-size: 0.7rem; border-radius: 6px;">
+                                    </div>
+                                </div>
+                                <button type="submit" class="btn btn-sm btn-modern btn-modern-primary w-100 mt-2 py-2" style="font-size: 0.75rem; border-radius: 8px;">
+                                    <i class="fa-solid fa-save me-1"></i> ذخیره موجودی‌ها
+                                </button>
+                            </form>
+                        </div>
+
                         <!-- تصاویر مدارک -->
                         {% if u.national_card_image or u.selfie_image %}
                         <div class="mt-2 border-bottom border-secondary-subtle pb-3">

@@ -372,3 +372,49 @@ def send_admin_message(request, user_id):
         messages.success(request, f"پیام با موفقیت برای {user.username} ارسال شد.")
 
     return redirect('panel_users')
+
+
+@staff_member_required
+@require_POST
+def update_user_wallet_balances(request, user_id):
+    """بروزرسانی موجودی‌های کیف پول کاربر توسط ادمین"""
+    from decimal import Decimal, InvalidOperation
+    user = get_object_or_404(CustomUser, id=user_id)
+    
+    balance_fields = {
+        'trx_balance': 'ترون',
+        'usdt_balance': 'تتر (TRC20)',
+        'btc_balance': 'بیت کوین',
+        'eth_balance': 'اتریوم',
+        'sol_balance': 'سولانا',
+        'bnb_balance': 'بینانس',
+        'xrp_balance': 'ریپل',
+        'pm_balance': 'پرفکت مانی',
+    }
+    
+    updated = []
+    errors = []
+    
+    for field, label in balance_fields.items():
+        value = request.POST.get(field, '').strip()
+        if value:
+            try:
+                decimal_value = Decimal(value)
+                if decimal_value < 0:
+                    errors.append(f"{label}: مقدار نمی‌تواند منفی باشد")
+                else:
+                    setattr(user, field, decimal_value)
+                    updated.append(f"{label}: {decimal_value}")
+            except (InvalidOperation, ValueError):
+                errors.append(f"{label}: مقدار نامعتبر")
+    
+    if updated:
+        user.save()
+        messages.success(request, f"موجودی‌های به‌روزرسانی شده برای {user.username}: {', '.join(updated)}")
+    if errors:
+        for err in errors:
+            messages.error(request, err)
+    if not updated and not errors:
+        messages.warning(request, "هیچ مقداری برای به‌روزرسانی ارسال نشده است.")
+    
+    return redirect('panel_users')

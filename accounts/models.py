@@ -43,6 +43,24 @@ class CustomUser(AbstractUser):
         default=False
     )
 
+    # Wallet addresses for 8 assets
+    trx_address = models.CharField(max_length=100, blank=True, verbose_name="آدرس ترون")
+    trx_balance = models.DecimalField(max_digits=20, decimal_places=8, default=0, verbose_name="موجودی ترون")
+    usdt_address = models.CharField(max_length=100, blank=True, verbose_name="آدرس تتر")
+    usdt_balance = models.DecimalField(max_digits=20, decimal_places=8, default=0, verbose_name="موجودی تتر")
+    btc_address = models.CharField(max_length=100, blank=True, verbose_name="آدرس بیت کوین")
+    btc_balance = models.DecimalField(max_digits=20, decimal_places=8, default=0, verbose_name="موجودی بیت کوین")
+    eth_address = models.CharField(max_length=100, blank=True, verbose_name="آدرس اتریوم")
+    eth_balance = models.DecimalField(max_digits=20, decimal_places=8, default=0, verbose_name="موجودی اتریوم")
+    sol_address = models.CharField(max_length=100, blank=True, verbose_name="آدرس سولانا")
+    sol_balance = models.DecimalField(max_digits=20, decimal_places=8, default=0, verbose_name="موجودی سولانا")
+    bnb_address = models.CharField(max_length=100, blank=True, verbose_name="آدرس بینانس")
+    bnb_balance = models.DecimalField(max_digits=20, decimal_places=8, default=0, verbose_name="موجودی بینانس")
+    xrp_address = models.CharField(max_length=100, blank=True, verbose_name="آدرس ریپل")
+    xrp_balance = models.DecimalField(max_digits=20, decimal_places=8, default=0, verbose_name="موجودی ریپل")
+    pm_address = models.CharField(max_length=100, blank=True, verbose_name="آدرس perfect money")
+    pm_balance = models.DecimalField(max_digits=20, decimal_places=2, default=0, verbose_name="موجودی پرفکت مانی")
+
     def __str__(self):
         return self.username
 

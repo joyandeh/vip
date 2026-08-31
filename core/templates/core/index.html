@@ -12,14 +12,11 @@
     <p class="text-custom-muted mb-3" style="font-size: 0.8rem;">بازار معاملاتی ارزهای دیجیتال</p>
     
     <!-- دکمه‌های خرید و فروش -->
-            <div class="d-flex gap-2 justify-content-center mb-2">
-                <a href="{% url 'buy_crypto' %}" class="btn btn-modern btn-modern-primary py-2 px-4 flex-grow-1 fw-bold" style="font-size: 0.85rem;">
-                    <i class="fa-solid fa-cart-shopping me-1"></i> خرید از سایت
-                </a>
-                <a href="{% url 'sell_crypto' %}" class="btn btn-modern py-2 px-4 flex-grow-1 fw-bold" style="font-size: 0.85rem; background: rgba(255,82,82,0.15); border: 1px solid rgba(255,82,82,0.3); color: var(--accent-coral);">
-                    <i class="fa-solid fa-hand-holding-dollar me-1"></i> فروش به سایت
-                </a>
-            </div>
+                <div class="d-flex gap-2 justify-content-center mb-2">
+                    <a href="{% url 'buy_crypto' %}" class="btn btn-modern btn-modern-primary py-2 px-4 flex-grow-1 fw-bold" style="font-size: 0.85rem;">
+                        <i class="fa-solid fa-cart-shopping me-1"></i> خرید از سایت
+                    </a>
+                </div>
     
         <!-- معامله سریع امن تلفنی -->
                     {% if site_settings.support_phone %}
@@ -179,14 +176,11 @@
         </div>
 
         <!-- دکمه‌های خرید و فروش مستقیم -->
-                <div class="d-flex gap-2 mt-3">
-                    <a id="btnGoBuy" href="{% url 'buy_crypto' %}" class="btn btn-modern btn-modern-primary w-50 py-2 fw-bold" style="font-size:0.8rem;">
-                        <i class="fa-solid fa-cart-shopping me-1"></i> خرید
-                    </a>
-                    <a id="btnGoSell" href="{% url 'sell_crypto' %}" class="btn w-50 py-2 fw-bold" style="font-size:0.8rem; background: rgba(255,82,82,0.15); border: 1px solid rgba(255,82,82,0.3); color: var(--accent-coral);">
-                        <i class="fa-solid fa-hand-holding-dollar me-1"></i> فروش
-                    </a>
-                </div>
+                        <div class="d-flex gap-2 mt-3">
+                            <a id="btnGoBuy" href="{% url 'buy_crypto' %}" class="btn btn-modern btn-modern-primary w-100 py-2 fw-bold" style="font-size:0.8rem;">
+                                <i class="fa-solid fa-cart-shopping me-1"></i> خرید
+                            </a>
+                        </div>
     </div>
 </div>
 
@@ -194,104 +188,64 @@
 <div class="mb-3">
     <div id="bannerCarousel" class="carousel slide glass-card p-3" data-bs-ride="carousel" data-bs-interval="4000" style="border-radius: 18px;">
         <div class="carousel-inner">
-            <!-- بنر ۱: پشتیبانی 24/7 -->
+            <!-- Dynamic Announcements from Admin Settings -->
+                        {% if site_settings.announcement_1_active and site_settings.announcement_1_title %}
+                        <div class="carousel-item active">
+                            <div class="d-flex align-items-center gap-3">
+                                <div class="d-flex align-items-center justify-content-center rounded-circle flex-shrink-0" style="width: 50px; height: 50px; background: rgba({% if site_settings.announcement_1_color == 'cyan' %}0,229,255{% elif site_settings.announcement_1_color == 'green' %}0,230,118{% elif site_settings.announcement_1_color == 'coral' %}255,82,82{% else %}251,191,36{% endif %},0.1); border: 1px solid rgba({% if site_settings.announcement_1_color == 'cyan' %}0,229,255{% elif site_settings.announcement_1_color == 'green' %}0,230,118{% elif site_settings.announcement_1_color == 'coral' %}255,82,82{% else %}251,191,36{% endif %},0.2);">
+                                    <i class="{{ site_settings.announcement_1_icon|default:'fa-solid fa-bullhorn' }} {% if site_settings.announcement_1_color == 'cyan' %}text-cyan{% elif site_settings.announcement_1_color == 'green' %}text-neon-green{% elif site_settings.announcement_1_color == 'coral' %}text-coral{% else %}text-warning{% endif %} h5 mb-0"></i>
+                                </div>
+                                <div>
+                                    <h6 class="{% if site_settings.announcement_1_color == 'cyan' %}text-white{% elif site_settings.announcement_1_color == 'green' %}text-neon-green{% elif site_settings.announcement_1_color == 'coral' %}text-coral{% else %}text-warning{% endif %} fw-bold mb-1" style="font-size: 0.9rem;">{{ site_settings.announcement_1_title }}</h6>
+                                    <p class="text-custom-muted mb-0 small">{{ site_settings.announcement_1_text }}</p>
+                                </div>
+                            </div>
+                        </div>
+                        {% endif %}
+
+                        {% if site_settings.announcement_2_active and site_settings.announcement_2_title %}
+                        <div class="carousel-item{% if not site_settings.announcement_1_active %} active{% endif %}">
+                            <div class="d-flex align-items-center gap-3">
+                                <div class="d-flex align-items-center justify-content-center rounded-circle flex-shrink-0" style="width: 50px; height: 50px; background: rgba({% if site_settings.announcement_2_color == 'cyan' %}0,229,255{% elif site_settings.announcement_2_color == 'green' %}0,230,118{% elif site_settings.announcement_2_color == 'coral' %}255,82,82{% else %}251,191,36{% endif %},0.1); border: 1px solid rgba({% if site_settings.announcement_2_color == 'cyan' %}0,229,255{% elif site_settings.announcement_2_color == 'green' %}0,230,118{% elif site_settings.announcement_2_color == 'coral' %}255,82,82{% else %}251,191,36{% endif %},0.2);">
+                                    <i class="{{ site_settings.announcement_2_icon|default:'fa-solid fa-gift' }} {% if site_settings.announcement_2_color == 'cyan' %}text-cyan{% elif site_settings.announcement_2_color == 'green' %}text-neon-green{% elif site_settings.announcement_2_color == 'coral' %}text-coral{% else %}text-warning{% endif %} h5 mb-0"></i>
+                                </div>
+                                <div>
+                                    <h6 class="{% if site_settings.announcement_2_color == 'cyan' %}text-white{% elif site_settings.announcement_2_color == 'green' %}text-neon-green{% elif site_settings.announcement_2_color == 'coral' %}text-coral{% else %}text-warning{% endif %} fw-bold mb-1" style="font-size: 0.9rem;">{{ site_settings.announcement_2_title }}</h6>
+                                    <p class="text-custom-muted mb-0 small">{{ site_settings.announcement_2_text }}</p>
+                                </div>
+                            </div>
+                        </div>
+                        {% endif %}
+
+                        {% if site_settings.announcement_3_active and site_settings.announcement_3_title %}
+                        <div class="carousel-item{% if not site_settings.announcement_1_active and not site_settings.announcement_2_active %} active{% endif %}">
+                            <div class="d-flex align-items-center gap-3">
+                                <div class="d-flex align-items-center justify-content-center rounded-circle flex-shrink-0" style="width: 50px; height: 50px; background: rgba({% if site_settings.announcement_3_color == 'cyan' %}0,229,255{% elif site_settings.announcement_3_color == 'green' %}0,230,118{% elif site_settings.announcement_3_color == 'coral' %}255,82,82{% else %}251,191,36{% endif %},0.1); border: 1px solid rgba({% if site_settings.announcement_3_color == 'cyan' %}0,229,255{% elif site_settings.announcement_3_color == 'green' %}0,230,118{% elif site_settings.announcement_3_color == 'coral' %}255,82,82{% else %}251,191,36{% endif %},0.2);">
+                                    <i class="{{ site_settings.announcement_3_icon|default:'fa-solid fa-bolt' }} {% if site_settings.announcement_3_color == 'cyan' %}text-cyan{% elif site_settings.announcement_3_color == 'green' %}text-neon-green{% elif site_settings.announcement_3_color == 'coral' %}text-coral{% else %}text-warning{% endif %} h5 mb-0"></i>
+                                </div>
+                                <div>
+                                    <h6 class="{% if site_settings.announcement_3_color == 'cyan' %}text-white{% elif site_settings.announcement_3_color == 'green' %}text-neon-green{% elif site_settings.announcement_3_color == 'coral' %}text-coral{% else %}text-warning{% endif %} fw-bold mb-1" style="font-size: 0.9rem;">{{ site_settings.announcement_3_title }}</h6>
+                                    <p class="text-custom-muted mb-0 small">{{ site_settings.announcement_3_text }}</p>
+                                </div>
+                            </div>
+                        </div>
+                        {% endif %}
+
+            <!-- Fallback: if no announcements active, show default message -->
+            {% if not site_settings.announcement_1_active and not site_settings.announcement_2_active and not site_settings.announcement_3_active %}
             <div class="carousel-item active">
-                <a href="{{ telegram_url|default:'https://t.me/tronlnd_support' }}" target="_blank" class="text-decoration-none">
-                    <div class="d-flex align-items-center gap-3">
-                        <div class="d-flex align-items-center justify-content-center rounded-circle flex-shrink-0" style="width: 50px; height: 50px; background: rgba(0,229,255,0.1); border: 1px solid rgba(0,229,255,0.2);">
-                            <i class="fa-solid fa-headset text-cyan h5 mb-0"></i>
-                        </div>
-                        <div>
-                            <h6 class="text-white fw-bold mb-1" style="font-size: 0.9rem;">پشتیبانی 24/7</h6>
-                            <p class="text-custom-muted mb-0 small">پاسخگویی در هر ساعت از شبانه‌روز</p>
-                        </div>
-                    </div>
-                </a>
-            </div>
-            
-            <!-- بنر ۲: معرفی به دوستان -->
-            <div class="carousel-item">
-                <div class="d-flex align-items-center gap-3">
-                    <div class="d-flex align-items-center justify-content-center rounded-circle flex-shrink-0" style="width: 50px; height: 50px; background: rgba(0,230,118,0.1); border: 1px solid rgba(0,230,118,0.2);">
-                        <i class="fa-solid fa-user-plus text-neon-green h5 mb-0"></i>
-                    </div>
-                    <div>
-                        <h6 class="text-white fw-bold mb-1" style="font-size: 0.9rem;">ترون لند را معرفی کنید</h6>
-                        <p class="text-custom-muted mb-0 small">با معرفی سایت به دوستان، همکاری کنید</p>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- بنر ۳: دسترسی به ادمین -->
-            <div class="carousel-item">
-                <div class="d-flex align-items-center gap-3">
-                    <div class="d-flex align-items-center justify-content-center rounded-circle flex-shrink-0" style="width: 50px; height: 50px; background: rgba(255,82,82,0.1); border: 1px solid rgba(255,82,82,0.2);">
-                        <i class="fa-solid fa-user-shield text-coral h5 mb-0"></i>
-                    </div>
-                    <div>
-                        <h6 class="text-white fw-bold mb-1" style="font-size: 0.9rem;">ارتباط با مدیر سایت</h6>
-                        <p class="text-custom-muted mb-0 small">در صورت بروز مشکل با پشتیبانی در ارتباط باشید</p>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- بنر ۴: واسطه را حذف کنید -->
-            <div class="carousel-item">
-                <div class="d-flex align-items-center gap-3">
-                    <div class="d-flex align-items-center justify-content-center rounded-circle flex-shrink-0" style="width: 50px; height: 50px; background: rgba(251,191,36,0.1); border: 1px solid rgba(251,191,36,0.2);">
-                        <i class="fa-solid fa-bolt text-warning h5 mb-0"></i>
-                    </div>
-                    <div>
-                        <h6 class="text-white fw-bold mb-1" style="font-size: 0.9rem;">واسطه را حذف کنید</h6>
-                        <p class="text-custom-muted mb-0 small">ارزان و سریع معامله کنید</p>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- بنر ۵: معامله سریع تلفنی -->
-            {% if site_settings.support_phone %}
-            <div class="carousel-item">
-                <div class="d-flex align-items-center gap-3" data-bs-toggle="collapse" data-bs-target="#phoneInfo">
-                    <div class="d-flex align-items-center justify-content-center rounded-circle flex-shrink-0" style="width: 50px; height: 50px; background: rgba(0,230,118,0.15); border: 1px solid rgba(0,230,118,0.25);">
-                        <i class="fa-solid fa-phone-volume text-neon-green h5 mb-0"></i>
-                    </div>
-                    <div>
-                        <h6 class="text-neon-green fw-bold mb-1" style="font-size: 0.9rem;">معامله سریع امن تلفنی</h6>
-                        <p class="text-custom-muted mb-0 small">برای اطلاعات بیشتر کلیک کنید</p>
+                <div class="d-flex align-items-center gap-3 justify-content-center">
+                    <div class="text-center">
+                        <i class="fa-solid fa-bullhorn text-custom-muted" style="font-size: 2rem;"></i>
+                        <h6 class="text-custom-muted fw-bold mt-2 mb-1" style="font-size: 0.9rem;">هیچ اعلانیه فعالی وجود ندارد</h6>
+                        <p class="text-custom-muted small mb-0">از پنل مدیریت > تنظیمات > اعلامیه‌های چرخشی، اعلانیه‌ها را فعال کنید</p>
                     </div>
                 </div>
             </div>
             {% endif %}
-
-                        <!-- بنر ۶: واریز انی و در لحظه بانکی -->
-                        <div class="carousel-item">
-                            <div class="d-flex align-items-center gap-3">
-                                <div class="d-flex align-items-center justify-content-center rounded-circle flex-shrink-0" style="width: 50px; height: 50px; background: rgba(0,229,255,0.1); border: 1px solid rgba(0,229,255,0.2);">
-                                    <i class="fa-solid fa-bolt-lightning text-cyan h5 mb-0"></i>
-                                </div>
-                                <div>
-                                    <h6 class="text-white fw-bold mb-1" style="font-size: 0.9rem;">واریز انی و در لحظه بانکی</h6>
-                                    <p class="text-custom-muted mb-0 small">برای خرید و فروش در هر ساعت</p>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- بنر ۷: خرید بدون محدودیت تا سقف ۴۰۰ میلیون -->
-                        <div class="carousel-item">
-                            <div class="d-flex align-items-center gap-3">
-                                <div class="d-flex align-items-center justify-content-center rounded-circle flex-shrink-0" style="width: 50px; height: 50px; background: rgba(0,230,118,0.1); border: 1px solid rgba(0,230,118,0.2);">
-                                    <i class="fa-solid fa-money-bill-wave text-neon-green h5 mb-0"></i>
-                                </div>
-                                <div>
-                                    <h6 class="text-white fw-bold mb-1" style="font-size: 0.9rem;">خرید بدون محدودیت</h6>
-                                    <p class="text-custom-muted mb-0 small">تا سقف ۴۰۰ میلیون در روز (خرید و برداشت) برای هر کد ملی</p>
-                                </div>
-                            </div>
-                        </div>
-
-                    </div>
-                </div>
-            </div>
+        </div>
+    </div>
+</div>
 
             <!-- اطلاعات تماس تلفنی -->
             {% if site_settings.support_phone %}
@@ -333,6 +287,7 @@
 
 {% endblock %}
 
+
 {% block extra_js %}
 <script>
     function updateCalculator() {
@@ -360,13 +315,13 @@
         }
         
         let total = finalPrice * amount;
-
+        
         if (isNaN(total) || amount <= 0) {
             totalDisplay.innerHTML = '۰ <span style="font-size:0.7rem; font-weight:normal;">تومان</span>';
             unitPriceDisplay.innerHTML = '۰ <span style="font-size:0.7rem; font-weight:normal;">تومان</span>';
             return;
         }
-
+        
         unitPriceDisplay.innerHTML = finalPrice.toLocaleString('fa-IR') + ' <span style="font-size:0.7rem; font-weight:normal;">تومان</span>';
         totalDisplay.innerHTML = total.toLocaleString('fa-IR') + ' <span style="font-size:0.7rem; font-weight:normal;">تومان</span>';
     }
@@ -375,7 +330,7 @@
         const cryptoSelect = document.getElementById('cryptoSelect');
         const amountInput = document.getElementById('amount');
         const priceTypeInputs = document.querySelectorAll('input[name="priceType"]');
-
+        
         if (cryptoSelect && amountInput) {
             cryptoSelect.addEventListener('change', updateCalculator);
             amountInput.addEventListener('input', updateCalculator);

@@ -6,6 +6,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}tronlnd | پلتفرم معاملاتی رمزارز{% endblock %}</title>
 
+    <link rel="icon" type="image/png" sizes="32x32" href="{% static 'images/logo.png' %}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{% static 'images/logo.png' %}">
+    <link rel="apple-touch-icon" href="{% static 'images/logo.png' %}">
+
     <link href="{% static 'css/bootstrap.rtl.min.css' %}" rel="stylesheet">
     <link href="{% static 'css/fontawesome.min.css' %}" rel="stylesheet">
     <link href="{% static 'css/vazirmatn.css' %}" rel="stylesheet" type="text/css" />
@@ -512,37 +516,47 @@
         </main>
 
         <div class="bottom-nav">
-                    <a href="{% url 'home' %}" class="bottom-nav-item {% if request.resolver_match.url_name == 'home' %}active{% endif %}">
-                        <i class="fa-solid fa-chart-pie"></i>
-                        <span>بازار</span>
-                    </a>
-                    <a href="{% url 'request_history' %}" class="bottom-nav-item {% if request.resolver_match.url_name == 'request_history' %}active{% endif %}">
-                        <i class="fa-solid fa-clock-rotate-left"></i>
-                        <span>سوابق</span>
-                    </a>
+                            <a href="{% url 'home' %}" class="bottom-nav-item {% if request.resolver_match.url_name == 'home' %}active{% endif %}">
+                                <i class="fa-solid fa-chart-pie"></i>
+                                <span>بازار</span>
+                            </a>
+                            {% if user.is_authenticated and user.is_staff %}
+                                <a href="{% url 'panel_settings' %}" class="bottom-nav-item {% if request.resolver_match.url_name == 'panel_settings' %}active{% endif %}">
+                                    <i class="fa-solid fa-gears"></i>
+                                    <span>تنظیمات</span>
+                                </a>
+                            {% else %}
+                                <a href="{% url 'request_history' %}" class="bottom-nav-item {% if request.resolver_match.url_name == 'request_history' %}active{% endif %}">
+                                    <i class="fa-solid fa-clock-rotate-left"></i>
+                                    <span>سوابق</span>
+                                </a>
+                            {% endif %}
 
-                    <a href="{% url 'buy_crypto' %}" class="bottom-nav-item action-hub">
-                        <i class="fa-solid fa-right-left"></i>
-                        <span>معامله</span>
-                    </a>
+                            <a href="{% url 'buy_crypto' %}" class="bottom-nav-item action-hub">
+                                <i class="fa-solid fa-right-left"></i>
+                                <span>معامله</span>
+                            </a>
 
-            {% if user.is_authenticated and user.is_staff %}
-            <a href="{% url 'panel_dashboard' %}" class="bottom-nav-item {% if request.resolver_match.url_name == 'panel_dashboard' %}active{% endif %}" style="color: var(--accent-cyan);">
-                <i class="fa-solid fa-user-shield text-cyan"></i>
-                <span>مدیریت</span>
-            </a>
-            {% else %}
-            <a href="#" class="bottom-nav-item">
-                <i class="fa-solid fa-wallet"></i>
-                <span>کیف پول</span>
-            </a>
-            {% endif %}
-
-            <a href="{% url 'profile' %}" class="bottom-nav-item {% if request.resolver_match.url_name == 'profile' %}active{% endif %}">
-                <i class="fa-solid fa-user-gear"></i>
-                <span>تنظیمات</span>
-            </a>
-        </div>
+                    {% if user.is_authenticated and user.is_staff %}
+                                <a href="{% url 'panel_dashboard' %}" class="bottom-nav-item {% if request.resolver_match.url_name == 'panel_dashboard' %}active{% endif %}" style="color: var(--accent-cyan);">
+                                    <i class="fa-solid fa-user-shield text-cyan"></i>
+                                    <span>مدیریت</span>
+                                </a>
+                                <a href="{% url 'panel_users' %}" class="bottom-nav-item {% if request.resolver_match.url_name == 'panel_users' %}active{% endif %}" style="color: var(--accent-cyan);">
+                                    <i class="fa-solid fa-users text-cyan"></i>
+                                    <span>کاربران</span>
+                                </a>
+                                {% else %}
+                                <a href="{% url 'wallet' %}" class="bottom-nav-item {% if request.resolver_match.url_name == 'wallet' %}active{% endif %}">
+                                                         <i class="fa-solid fa-wallet"></i>
+                                                         <span>کیف پول</span>
+                                                     </a>
+                                <a href="{% url 'profile' %}" class="bottom-nav-item {% if request.resolver_match.url_name == 'profile' %}active{% endif %}">
+                                    <i class="fa-solid fa-user-gear"></i>
+                                    <span>تنظیمات</span>
+                                </a>
+                                {% endif %}
+                </div>
 
     </div>
 
@@ -601,6 +615,58 @@
             }
         });
     </script>
-    {% block extra_js %}{% endblock %}
-</body>
-</html>
+        {% block extra_js %}{% endblock %}
+                <style>
+                                        .floating-support-btn {
+                                            position: fixed;
+                                            bottom: 90px;
+                                            left: 16px;
+                                            width: 56px;
+                                            height: 56px;
+                                            background: linear-gradient(135deg, var(--accent-cyan), var(--accent-green));
+                                            color: white;
+                                            border-radius: 50%;
+                                            display: flex;
+                                            align-items: center;
+                                            justify-content: center;
+                                            font-size: 1.5rem;
+                                            z-index: 1050;
+                                            box-shadow: 0 4px 20px rgba(0, 229, 255, 0.4);
+                                            transition: all 0.3s ease;
+                                            animation: pulse 2s infinite;
+                                        }
+                                        .floating-support-btn:hover,
+                                        .floating-support-btn:focus {
+                                            background: linear-gradient(135deg, var(--accent-green), var(--accent-cyan));
+                                            transform: scale(1.1);
+                                            box-shadow: 0 6px 28px rgba(0, 230, 118, 0.5);
+                                            color: white;
+                                            text-decoration: none;
+                                        }
+                                        .floating-support-btn:focus {
+                                            outline: 2px solid var(--accent-cyan);
+                                            outline-offset: 2px;
+                                        }
+                                        @keyframes pulse {
+                                            0% { box-shadow: 0 4px 20px rgba(0, 229, 255, 0.4); }
+                                            50% { box-shadow: 0 4px 28px rgba(0, 229, 255, 0.6), 0 0 0 8px rgba(0, 229, 255, 0.1); }
+                                            100% { box-shadow: 0 4px 20px rgba(0, 229, 255, 0.4); }
+                                        }
+                                        /* Mobile touch optimization */
+                                        @media (max-width: 768px) {
+                                            .floating-support-btn {
+                                                bottom: 80px;
+                                                left: 12px;
+                                                width: 52px;
+                                                height: 52px;
+                                                font-size: 1.3rem;
+                                            }
+                                        }
+                                    </style>
+                                    {% if request.resolver_match.url_name == 'home' and site_settings.support_phone %}
+                                                                        <a href="https://t.me/{{ site_settings.support_phone|cut:' ' }}" target="_blank" rel="noopener noreferrer" class="floating-support-btn" aria-label="پشتیبانی در تلگرام" title="پشتیبانی تلگرام">
+                                                                            <i class="fa-solid fa-headset"></i>
+                                                                        </a>
+                                                                        {% endif %}
+        </body>
+        </html>

@@ -1,0 +1,440 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block title %}کیف پول - ترونلند{% endblock %}
+
+{% block content %}
+<!-- Wallet Header Card -->
+<div class="glass-card p-4 mb-4 text-center position-relative overflow-hidden" style="border-radius: 20px;">
+    <div class="position-absolute top-0 start-0 p-3 opacity-10" style="width: 100px; height: 100px;">
+        <i class="fa-solid fa-wallet h1 text-cyan" style="font-size: 6rem; opacity: 0.08;"></i>
+    </div>
+    <div class="position-absolute bottom-0 end-0 p-3 opacity-5" style="width: 80px; height: 80px;">
+        <i class="fa-solid fa-chart-line h1 text-cyan" style="font-size: 5rem; opacity: 0.05;"></i>
+    </div>
+    <span class="text-custom-muted d-block small mb-1">موجودی کل کیف پول</span>
+    <h2 class="fw-bold tracking-wide text-cyan mb-2" style="font-size: 1.8rem;">
+        <span id="totalBalance">۰</span> <span class="small h6 text-white">USDT</span>
+    </h2>
+    <div class="d-flex justify-content-center gap-2 mt-2">
+        <span class="badge bg-success-subtle text-neon-green rounded-pill px-3 py-1 small">
+            <i class="fa-solid fa-arrow-trend-up me-1"></i> ۰% تغییر امروز
+        </span>
+    </div>
+</div>
+
+<!-- Wallet Assets Grid - 4 rows × 2 columns -->
+<div class="row g-3" id="wallet-grid">
+    {% for asset in assets %}
+    <div class="col-6">
+        <div class="glass-card wallet-asset-card p-3 h-100 d-flex flex-column" 
+             style="border-radius: 16px; border: 1px solid var(--light-border-glass);"
+             data-asset="{{ asset.name }}">
+            <!-- Asset Header: icon + name + edit -->
+            <div class="d-flex align-items-center justify-content-between mb-2 gap-2">
+                <div class="d-flex align-items-center gap-2">
+                    <div class="wallet-icon d-flex align-items-center justify-content-center rounded-circle flex-shrink-0"
+                         style="width: 40px; height: 40px;"
+                         data-color="{{ asset.color }}">
+                        <i class="{{ asset.icon }} h5 mb-0"></i>
+                    </div>
+                    <div>
+                        <h6 class="fw-bold mb-0 text-truncate" style="font-size: 0.9rem; max-width: 120px;">{{ asset.name }}</h6>
+                        <span class="text-custom-muted small" style="font-size: 0.65rem;">آدرس کیف پول</span>
+                    </div>
+                </div>
+                <!-- Edit Button - icon only -->
+                <button type="button" class="btn btn-glass btn-sm p-1 flex-shrink-0"
+                        style="font-size: 0.7rem; border-radius: 8px; width: 32px; height: 32px; display:flex;align-items:center;justify-content:center;"
+                        data-bs-toggle="modal" data-bs-target="#editModal{{ asset.id }}">
+                    <i class="fa-solid fa-pen"></i>
+                </button>
+            </div>
+
+            <!-- Address Box with subtle logo watermark -->
+            <div class="flex-grow-1 d-flex flex-column justify-content-center mb-3 position-relative">
+                <div class="address-box w-100 rounded-3 px-3 py-2.5 position-relative overflow-hidden"
+                     style="font-family: 'Vazirmatn', monospace; font-size: 0.78rem; word-break: break-all; 
+                            border: 1px solid var(--light-border-glass); background: var(--light-bg-main);
+                            direction: ltr; text-align: left; min-height: 48px; display: flex; align-items: center;
+                            z-index: 1;"
+                     id="address-display-{{ asset.id }}">
+                    <!-- Watermark icon -->
+                    <div class="position-absolute top-50 start-50 translate-middle opacity-10" style="z-index:-1; pointer-events:none;">
+                        <i class="{{ asset.icon }}" style="font-size: 3rem; color: var(--accent-cyan);"></i>
+                    </div>
+                    {{ asset.address|default:'─' }}
+                </div>
+            </div>
+
+            <!-- Balance Centered + Withdraw Button -->
+            <div class="d-flex flex-column align-items-center gap-2">
+                <div class="text-center">
+                    <span class="text-custom-muted d-block small mb-1">موجودی</span>
+                    <h4 class="fw-bold mb-0 text-cyan balance-amount" 
+                        style="font-size: 1.25rem; font-variant-numeric: tabular-nums; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;"
+                        id="balance-display-{{ asset.id }}">
+                        {{ asset.balance|default:'۰' }}
+                    </h4>
+                </div>
+                <a href="{% url 'sell_crypto' %}" class="btn btn-glass-primary py-2 px-4 w-100 text-center"
+                        style="font-size: 0.75rem; border-radius: 10px; white-space: nowrap;">
+                    <i class="fa-solid fa-bank me-1"></i> برداشت بانکی
+                </a>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+<!-- Edit Address/Balance Modal Templates -->
+{% for asset in assets %}
+<div class="modal fade" id="editModal{{ asset.id }}" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content glass-modal" style="border-radius: 16px; border: 1px solid var(--light-border-glass);">
+            <div class="modal-header border-0 pb-0">
+                <h5 class="modal-title fw-bold" style="color: var(--light-text-color);">
+                    <i class="fa-solid fa-pen me-2" style="color: var(--accent-cyan);"></i> ویرایش {{ asset.name }}
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="بستن"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-3">
+                    <label class="form-label small fw-medium">آدرس کیف پول</label>
+                    <input type="text" class="form-control form-control-lg glass-input"
+                           id="edit-address-{{ asset.id }}"
+                           value="{{ asset.address }}"
+                           placeholder="آدرس را وارد کنید"
+                           style="font-family: 'Vazirmatn', monospace; direction: ltr; text-align: left;">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label small fw-medium">موجودی</label>
+                    <input type="number" class="form-control form-control-lg glass-input"
+                           id="edit-balance-{{ asset.id }}"
+                           value="{{ asset.balance }}"
+                           min="0" step="0.00000001"
+                           placeholder="0.00">
+                </div>
+                <div class="alert alert-info glass-alert rounded-4 mb-0">
+                    <small class="d-flex align-items-center">
+                        <i class="fa-solid fa-info-circle me-1" style="color: var(--accent-cyan);"></i>
+                        آدرس و موجودی برای {{ asset.name }} در دیتابیس به‌روزرسانی خواهد شد.
+                    </small>
+                </div>
+            </div>
+            <div class="modal-footer border-0 pt-0">
+                <button type="button" class="btn btn-glass py-2 px-4" data-bs-dismiss="modal">لغو</button>
+                <button type="button" class="btn btn-glass-primary py-2 px-4"
+                        onclick="saveWalletData({{ asset.id }}, '{{ asset.address_field }}', '{{ asset.balance_field }}')">
+                    <i class="fa-solid fa-save me-1"></i> ذخیره
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endfor %}
+
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* ========================================
+       WALLET PAGE - Glassmorphism Design
+       4 rows × 2 columns layout
+       ======================================== */
+
+    /* Grid: 2 columns on all screens, 4 rows for 8 assets */
+    #wallet-grid .col-6 {
+        padding: 0 4px;
+    }
+    #wallet-grid .row {
+        margin: 0 -4px;
+    }
+
+    /* Wallet Asset Card - Compact Glass Cards */
+    .wallet-asset-card {
+        min-height: 165px;
+        display: flex;
+        flex-direction: column;
+        background: var(--light-bg-card) !important;
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        transition: all 0.3s ease;
+        box-shadow: 
+            0 4px 16px var(--light-shadow-color),
+            inset 0 1px 0 rgba(255, 255, 255, 0.6);
+    }
+
+    .wallet-asset-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 
+            0 8px 28px var(--light-shadow-color),
+            inset 0 1px 0 rgba(255, 255, 255, 0.8),
+            0 0 0 1px var(--accent-cyan);
+        border-color: var(--accent-cyan) !important;
+    }
+
+    /* Colored Icon Circles - Per Asset Color */
+    .wallet-icon {
+        background: linear-gradient(135deg, 
+            rgba(var(--icon-rgb), 0.15) 0%, 
+            rgba(var(--icon-rgb), 0.05) 100%);
+        border: 1.5px solid rgba(var(--icon-rgb), 0.25);
+        box-shadow: 
+            0 2px 8px rgba(var(--icon-rgb), 0.15),
+            inset 0 1px 0 rgba(255, 255, 255, 0.3);
+    }
+    .wallet-icon i {
+        filter: drop-shadow(0 1px 2px rgba(var(--icon-rgb), 0.3));
+    }
+
+    /* Asset-specific icon colors via inline style data-color */
+    .wallet-icon[data-color="cyan"] { --icon-rgb: 0, 229, 255; }
+    .wallet-icon[data-color="green"] { --icon-rgb: 0, 230, 118; }
+    .wallet-icon[data-color="coral"] { --icon-rgb: 255, 82, 82; }
+    .wallet-icon[data-color="warning"] { --icon-rgb: 255, 193, 7; }
+    .wallet-icon[data-color="neon-green"] { --icon-rgb: 0, 230, 118; }
+
+    /* Address Box - Clean Glass Input Style with watermark */
+    .address-box {
+        color: var(--light-text-color) !important;
+        border-radius: 10px !important;
+        transition: all 0.2s ease;
+        font-variant-numeric: tabular-nums;
+    }
+    .address-box:hover {
+        background: var(--light-bg-card) !important;
+        border-color: var(--accent-cyan) !important;
+        box-shadow: 0 0 0 3px rgba(0, 229, 255, 0.1);
+    }
+    .address-box:empty::before {
+        content: '─ ─ ─ ─ ─ ─ ─ ─';
+        color: var(--light-text-muted);
+    }
+
+    /* Balance Amount - Vibrant Cyan */
+    .balance-amount {
+        color: var(--accent-cyan) !important;
+        font-weight: 700 !important;
+    }
+
+    /* Glass Buttons - Modern Glassmorphism */
+    .btn-glass {
+        background: rgba(255, 255, 255, 0.7) !important;
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border: 1px solid rgba(0, 0, 0, 0.08) !important;
+        color: var(--light-text-color) !important;
+        font-weight: 600;
+        transition: all 0.2s ease;
+        box-shadow: 0 2px 8px var(--light-shadow-color);
+    }
+    .btn-glass:hover {
+        background: rgba(255, 255, 255, 0.9) !important;
+        border-color: rgba(0, 0, 0, 0.15) !important;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 14px var(--light-shadow-color);
+    }
+
+    .btn-glass-primary {
+        background: linear-gradient(135deg, var(--accent-cyan) 0%, #00b8d4 100%) !important;
+        border: none !important;
+        color: #000 !important;
+        font-weight: 700;
+        box-shadow: 0 4px 16px rgba(0, 229, 255, 0.35);
+    }
+    .btn-glass-primary:hover {
+        background: linear-gradient(135deg, #00d4e6 0%, var(--accent-cyan) 100%) !important;
+        transform: translateY(-1px);
+        box-shadow: 0 6px 20px rgba(0, 229, 255, 0.45);
+        color: #000 !important;
+    }
+
+    /* Glass Inputs in Modal */
+    .glass-input {
+        background: rgba(255, 255, 255, 0.8) !important;
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        border: 1px solid rgba(0, 0, 0, 0.08) !important;
+        color: var(--light-text-color) !important;
+        border-radius: 12px !important;
+        font-weight: 500;
+        transition: all 0.2s ease;
+    }
+    .glass-input:focus {
+        border-color: var(--accent-cyan) !important;
+        box-shadow: 0 0 0 4px rgba(0, 229, 255, 0.15) !important;
+        background: #fff !important;
+    }
+    .glass-input::placeholder {
+        color: #999 !important;
+    }
+
+    /* Glass Modal */
+    .glass-modal {
+        background: var(--light-bg-main) !important;
+        backdrop-filter: blur(24px);
+        -webkit-backdrop-filter: blur(24px);
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.12);
+    }
+    .glass-modal .modal-header,
+    .glass-modal .modal-footer {
+        border-color: var(--light-border-glass) !important;
+    }
+    .glass-modal .modal-title {
+        color: var(--light-text-color) !important;
+    }
+    .glass-modal .btn-close {
+        filter: invert(0.3);
+    }
+
+    /* Glass Alert */
+    .glass-alert {
+        background: rgba(0, 229, 255, 0.08) !important;
+        border: 1px solid rgba(0, 229, 255, 0.15) !important;
+        color: var(--light-text-color) !important;
+        border-radius: 12px !important;
+    }
+
+    /* Muted Text */
+    .text-custom-muted {
+        color: #64748b !important;
+    }
+
+    /* Badge in Header */
+    .bg-success-subtle {
+        background: rgba(0, 230, 118, 0.12) !important;
+    }
+    .text-neon-green {
+        color: #00b050 !important;
+    }
+
+    /* Divider */
+    .border-top {
+        border-color: var(--light-border-glass) !important;
+    }
+
+    /* RTL Support for Persian */
+    .text-truncate {
+        max-width: 100%;
+    }
+
+    /* Smooth Transitions */
+    .wallet-asset-card,
+    .address-box,
+    .btn-glass,
+    .btn-glass-primary,
+    .glass-input {
+        transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    /* Reduced Motion */
+    @media (prefers-reduced-motion: reduce) {
+        .wallet-asset-card,
+        .address-box,
+        .btn-glass,
+        .btn-glass-primary,
+        .glass-input {
+            transition: none;
+        }
+        .wallet-asset-card:hover {
+            transform: none;
+        }
+    }
+
+    /* Scrollbar for Modal */
+    .modal-body::-webkit-scrollbar {
+        width: 6px;
+    }
+    .modal-body::-webkit-scrollbar-track {
+        background: transparent;
+    }
+    .modal-body::-webkit-scrollbar-thumb {
+        background: rgba(0, 0, 0, 0.15);
+        border-radius: 3px;
+    }
+    .modal-body::-webkit-scrollbar-thumb:hover {
+        background: rgba(0, 0, 0, 0.25);
+    }
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Update total balance (placeholder)
+    document.addEventListener('DOMContentLoaded', function() {
+        document.getElementById('totalBalance').textContent = '۰';
+    });
+
+    // Save wallet data via AJAX
+    function saveWalletData(assetId, addressField, balanceField) {
+        const address = document.getElementById('edit-address-' + assetId).value.trim();
+        const balance = document.getElementById('edit-balance-' + assetId).value;
+
+        const btn = event.target.closest('button');
+        const originalText = btn.innerHTML;
+        btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin me-1"></i> در حال ذخیره...';
+        btn.disabled = true;
+
+        fetch('{% url "update_wallet_address" %}', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': '{{ csrf_token }}'
+            },
+            body: JSON.stringify({
+                address_field: addressField,
+                balance_field: balanceField,
+                address: address,
+                balance: balance
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                document.getElementById('address-display-' + assetId).textContent = address || '─';
+                document.getElementById('balance-display-' + assetId).textContent = balance;
+
+                const modal = bootstrap.Modal.getInstance(document.getElementById('editModal' + assetId));
+                if (modal) modal.hide();
+
+                showToast('آدرس و موجودی با موفقیت به‌روزرسانی شد.', 'success');
+            } else {
+                showToast('خطا: ' + (data.error || 'نامشخص'), 'danger');
+            }
+        })
+        .catch(error => {
+            showToast('خطای شبکه: ' + error.message, 'danger');
+        })
+        .finally(() => {
+            btn.innerHTML = originalText;
+            btn.disabled = false;
+        });
+    }
+
+    // Simple toast notification
+    function showToast(message, type) {
+        let container = document.getElementById('toast-container');
+        if (!container) {
+            container = document.createElement('div');
+            container.id = 'toast-container';
+            container.className = 'toast-container position-fixed bottom-0 end-0 p-3';
+            container.style.zIndex = '9999';
+            document.body.appendChild(container);
+        }
+
+        const toast = document.createElement('div');
+        toast.className = 'toast align-items-center text-white bg-' + type + ' border-0 glass-toast';
+        toast.setAttribute('role', 'alert');
+        toast.setAttribute('aria-live', 'assertive');
+        toast.setAttribute('aria-atomic', 'true');
+        toast.innerHTML = '<div class="d-flex"><div class="toast-body">' + message + '</div><button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button></div>';
+
+        container.appendChild(toast);
+        const bsToast = new bootstrap.Toast(toast, { delay: 3000 });
+        bsToast.show();
+
+        toast.addEventListener('hidden.bs.toast', () => toast.remove());
+    }
+</script>
+{% endblock %}

@@ -126,20 +126,124 @@
     {% endif %}
 
     {% if not request.user.is_verified %}
-    <div class="glass-card p-3 mb-3" style="border-radius:12px; font-size:0.75rem;">
-        <p class="mb-2 text-custom-muted small">
-            <i class="fa-solid fa-circle-info text-cyan me-2"></i>
-            برای تکمیل احراز هویت خود، اطلاعات زیر را همراه با متنی که روی یک برگه کاغذ می‌نویسید، در کنار چهره خود به همراه کارت ملی یا شناسنامه در قالب یک عکس با کیفیت بالا ارسال کنید.
-        </p>
-        <div class="text-center">
-            <a href="{% url 'profile' %}?edit=documents" class="btn btn-modern btn-modern-primary py-2 px-4 mt-2" style="font-size:0.85rem;">
-                <i class="fa-solid fa-upload me-1"></i> ارسال مدارک جدید
-            </a>
-        </div>
-    </div>
-    {% endif %}
+            <div class="glass-card p-3 mb-3" style="border-radius:12px; font-size:0.75rem;">
+                <p class="mb-2 text-custom-muted small">
+                    <i class="fa-solid fa-circle-info text-cyan me-2"></i>
+                    برای تکمیل احراز هویت خود، اطلاعات زیر را همراه با متنی که روی یک برگه کاغذ می‌نویسید، در کنار چهره خود به همراه کارت ملی یا شناسنامه در قالب یک عکس با کیفیت بالا ارسال کنید.
+                </p>
+                <div class="text-center">
+                    <a href="{% url 'profile' %}?edit=documents" class="btn btn-modern btn-modern-primary py-2 px-4 mt-2" style="font-size:0.85rem;">
+                        <i class="fa-solid fa-upload me-1"></i> ارسال مدارک جدید
+                    </a>
+                </div>
+            </div>
+            {% endif %}
 
-        <!-- دکمه خروج از حساب -->
+            <!-- Wallet Addresses Section - Horizontal List -->
+            <div class="glass-card p-3 mb-4">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h6 class="fw-bold mb-0 text-white d-flex align-items-center gap-2">
+                        <i class="fa-solid fa-wallet text-cyan"></i>
+                        <span>آدرس‌های کیف پول</span>
+                    </h6>
+                    <a href="{% url 'wallet' %}" class="btn btn-sm btn-modern btn-modern-outline py-1 px-3" style="font-size:0.75rem;">
+                        <i class="fa-solid fa-arrow-left me-1"></i> مدیریت کامل در کیف پول
+                    </a>
+                </div>
+
+                <div class="wallet-addresses-list">
+                    {% for asset in wallet_assets %}
+                    <div class="wallet-address-item p-3 mb-3 rounded-4 position-relative d-flex flex-column flex-md-row align-items-center gap-3" style="background: rgba({% if asset.color == 'cyan' %}0,229,255{% elif asset.color == 'green' %}0,230,118{% elif asset.color == 'coral' %}255,82,82{% else %}251,191,36{% endif %},0.05); border: 1px solid rgba({% if asset.color == 'cyan' %}0,229,255{% elif asset.color == 'green' %}0,230,118{% elif asset.color == 'coral' %}255,82,82{% else %}251,191,36{% endif %},0.12);">
+                        <!-- Color accent bar on left -->
+                        <div class="position-absolute top-0 bottom-0 start-0" style="width: 4px; border-radius: 4px 0 0 4px; background: {% if asset.color == 'cyan' %}var(--accent-cyan){% elif asset.color == 'green' %}var(--accent-green){% elif asset.color == 'coral' %}var(--accent-coral){% else %}var(--accent-warning){% endif %};"></div>
+                    
+                        <div class="ps-4 d-flex align-items-center justify-content-between flex-wrap gap-3 w-100">
+                            <!-- Asset Info -->
+                            <div class="d-flex align-items-center gap-3 min-width-0 flex-shrink-0">
+                                <div class="d-flex align-items-center justify-content-center rounded-circle flex-shrink-0" 
+                                     style="width: 44px; height: 44px; background: rgba({% if asset.color == 'cyan' %}0,229,255{% elif asset.color == 'green' %}0,230,118{% elif asset.color == 'coral' %}255,82,82{% else %}251,191,36{% endif %},0.12); border: 1px solid rgba({% if asset.color == 'cyan' %}0,229,255{% elif asset.color == 'green' %}0,230,118{% elif asset.color == 'coral' %}255,82,82{% else %}251,191,36{% endif %},0.2);">
+                                    <i class="{{ asset.icon }} h6 mb-0" style="color: {% if asset.color == 'cyan' %}var(--accent-cyan){% elif asset.color == 'green' %}var(--accent-green){% elif asset.color == 'coral' %}var(--accent-coral){% else %}var(--accent-warning){% endif %};"></i>
+                                </div>
+                                <div class="min-width-0">
+                                    <h6 class="fw-bold mb-1" style="font-size: 0.9rem;">{{ asset.name }}</h6>
+                                    <p class="text-custom-muted mb-0 small">آدرس کیف پول</p>
+                                </div>
+                            </div>
+                        
+                            <!-- Address Display (click to copy) - Horizontal -->
+                                                        <div class="address-container flex-grow-1 d-flex align-items-center gap-2 min-width-0" style="min-width: 0;">
+                                                            <span class="address-display flex-grow-1 min-width-0 text-truncate" 
+                                                                 style="font-family: monospace; font-size: 0.85rem; color: var(--light-text-color); direction: ltr; text-align: left; cursor: pointer; transition: all 0.2s ease; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;"
+                                                                 id="wallet-address-display-{{ asset.id }}"
+                                                                 ondblclick="copyAddress('wallet-address-display-{{ asset.id }}')"
+                                                                 title="دابل‌کلیک برای کپی">
+                                                                {{ asset.address|default:'─' }}
+                                                            </span>
+                                                        </div>
+                        
+                            <!-- Balance (read-only) -->
+                            <div class="balance-display flex-shrink-0 d-flex align-items-center gap-2" style="white-space: nowrap;">
+                                <span class="text-custom-muted small">موجودی:</span>
+                                <span class="fw-bold" style="font-size: 0.95rem; color: {% if asset.color == 'cyan' %}var(--accent-cyan){% elif asset.color == 'green' %}var(--accent-green){% elif asset.color == 'coral' %}var(--accent-coral){% else %}var(--accent-warning){% endif %};" id="wallet-balance-display-{{ asset.id }}">
+                                    {{ asset.balance|default:'۰' }}
+                                </span>
+                            </div>
+                        
+                            <!-- Edit Button -->
+                            <button type="button" class="btn btn-modern btn-modern-outline btn-sm py-1.5 px-3 flex-shrink-0" 
+                                    style="font-size: 0.75rem; border-radius: 10px; white-space: nowrap;"
+                                    data-bs-toggle="modal" data-bs-target="#editWalletModal{{ asset.id }}">
+                                <i class="fa-solid fa-pen me-1"></i> ویرایش آدرس
+                            </button>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- Edit Wallet Address Modals (Address Only) -->
+            {% for asset in wallet_assets %}
+            <div class="modal fade" id="editWalletModal{{ asset.id }}" tabindex="-1" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content" style="background: var(--light-bg-card); border: 1px solid var(--light-border-glass); border-radius: 20px;">
+                        <div class="modal-header border-0 pb-0">
+                            <h5 class="modal-title fw-bold" style="color: var(--light-text-color);">
+                                <i class="fa-solid fa-pen me-2" style="color: {% if asset.color == 'cyan' %}var(--accent-cyan){% elif asset.color == 'green' %}var(--accent-green){% elif asset.color == 'coral' %}var(--accent-coral){% else %}var(--accent-warning){% endif %};"></i> ویرایش آدرس {{ asset.name }}
+                            </h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="بستن"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="mb-3">
+                                <label class="form-label" style="font-size: 0.9rem;">آدرس کیف پول {{ asset.name }}</label>
+                                <input type="text" class="form-control form-control-lg" 
+                                       id="wallet-edit-address-{{ asset.id }}" 
+                                       value="{{ asset.address }}" 
+                                       placeholder="آدرس را وارد کنید"
+                                       style="font-family: monospace; direction: ltr; text-align: left;">
+                                <div class="form-text text-custom-muted small mt-1">
+                                    آدرس موجود: <span class="text-white fw-medium">{{ asset.address|default:'تنظیم نشده' }}</span>
+                                </div>
+                            </div>
+                            <div class="alert alert-info bg-light border-secondary-subtle rounded-4">
+                                <small>
+                                    <i class="fa-solid fa-info-circle me-1"></i>
+                                    فقط آدرس قابل ویرایش است. موجودی به‌صورت خودکار از شبکه بلاکچین همگام‌سازی می‌شود.
+                                </small>
+                            </div>
+                        </div>
+                        <div class="modal-footer border-0 pt-0">
+                            <button type="button" class="btn btn-modern py-2 px-4" data-bs-dismiss="modal">لغو</button>
+                            <button type="button" class="btn btn-modern btn-modern-primary py-2 px-4" 
+                                    onclick="saveWalletAddressProfile({{ asset.id }}, '{{ asset.address_field }}')">
+                                <i class="fa-solid fa-save me-1"></i> ذخیره آدرس
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+
+            <!-- دکمه خروج از حساب -->
         <div class="glass-card p-3 mb-3 text-center">
             <a href="{% url 'logout' %}" class="btn btn-modern btn-modern-outline w-100 py-3 text-coral" 
                style="border-color: rgba(255,82,82,0.3); font-weight: 600;"
@@ -210,11 +314,43 @@
     }
 
     .info-item .btn-modern-outline {
-        margin-right: auto;
-        margin-left: 8px;
-    }
-</style>
-{% endblock %}
+            margin-right: auto;
+            margin-left: 8px;
+        }
+
+        /* Wallet asset cards in profile */
+        .wallet-asset-card {
+            transition: all 0.3s ease;
+        }
+        .wallet-asset-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Light mode wallet address items */
+                        body.light-mode .wallet-address-item {
+                            background: var(--light-bg-card) !important;
+                            border: 1px solid var(--light-border-glass) !important;
+                            box-shadow: 0 4px 12px var(--light-shadow-color);
+                        }
+                        body.light-mode .wallet-address-item:hover {
+                            box-shadow: 0 8px 24px var(--light-shadow-color);
+                            border-color: var(--accent-cyan);
+                        }
+                        body.light-mode .address-display {
+                            color: var(--light-text-color) !important;
+                        }
+                        body.light-mode .form-control,
+                        body.light-mode .form-select {
+                            background-color: #ffffff !important;
+                            color: var(--light-text-color) !important;
+                            border-color: rgba(0, 0, 0, 0.1) !important;
+                        }
+                        body.light-mode .form-control::placeholder {
+                            color: #888 !important;
+                        }
+    </style>
+    {% endblock %}
 
 {% block extra_js %}
 <script>
@@ -273,16 +409,100 @@ document.addEventListener("DOMContentLoaded", function() {
             } else {
                 alert("رمز عبور باید حداقل ۸ کاراکتر باشد.");
             }
-        } else if (editParam === 'documents') {
-            // برای ارسال مجدد مدارک، کاربر را به صفحه ثبت‌نام redirect می‌کنیم با این تفاوت که
-            // یک مودال مخصوص نمایش می‌دهیم (یا با form ساده)
-            window.location.href = "{% url 'register' %}?reupload=1";
-        }
-        // حذف پارامتر edit از URL بدون ریلود
-        var url = new URL(window.location);
-        url.searchParams.delete('edit');
-        window.history.replaceState({}, '', url);
-    }
-});
-</script>
-{% endblock %}
+                    } else if (editParam === 'documents') {
+                        // برای ارسال مجدد مدارک، کاربر را به صفحه ثبت‌نام redirect می‌کنیم با این تفاوت که
+                        // یک مودال مخصوص نمایش می‌دهیم (یا با form ساده)
+                        window.location.href = "{% url 'register' %}?reupload=1";
+                    }
+                    // حذف پارامتر edit از URL بدون ریلود
+                    var url = new URL(window.location);
+                    url.searchParams.delete('edit');
+                    window.history.replaceState({}, '', url);
+                }
+            });
+
+                        // Save wallet address via AJAX (for profile page - address only)
+                        function saveWalletAddressProfile(assetId, addressField) {
+                            const address = document.getElementById('wallet-edit-address-' + assetId).value.trim();
+                
+                            const btn = event.target.closest('button');
+                            const originalText = btn.innerHTML;
+                            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin me-1"></i> در حال ذخیره...';
+                            btn.disabled = true;
+                
+                            fetch('{% url "update_wallet_address" %}', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                    'X-CSRFToken': '{{ csrf_token }}'
+                                },
+                                body: JSON.stringify({
+                                    address_field: addressField,
+                                    address: address
+                                })
+                            })
+                            .then(response => response.json())
+                            .then(data => {
+                                if (data.success) {
+                                    // Update display
+                                    document.getElementById('wallet-address-display-' + assetId).textContent = address || '─';
+                        
+                                    // Close modal
+                                    const modal = bootstrap.Modal.getInstance(document.getElementById('editWalletModal' + assetId));
+                                    if (modal) modal.hide();
+                        
+                                    // Show success message
+                                    showToast('آدرس با موفقیت به‌روزرسانی شد.', 'success');
+                                } else {
+                                    showToast('خطا: ' + (data.error || 'نامشخص'), 'danger');
+                                }
+                            })
+                            .catch(error => {
+                                showToast('خطای شبکه: ' + error.message, 'danger');
+                            })
+                            .finally(() => {
+                                btn.innerHTML = originalText;
+                                btn.disabled = false;
+                            });
+                        }
+
+                        // Copy address to clipboard
+                        function copyAddress(elementId) {
+                            const element = document.getElementById(elementId);
+                            const text = element.textContent.trim();
+                            if (text && text !== '─') {
+                                navigator.clipboard.writeText(text).then(function() {
+                                    showToast('آدرس کپی شد!', 'success');
+                                }).catch(function() {
+                                    showToast('کپی ناموفق بود', 'danger');
+                                });
+                            }
+                        }
+
+                        // Simple toast notification
+                        function showToast(message, type) {
+                            // Create toast container if not exists
+                            let container = document.getElementById('toast-container');
+                            if (!container) {
+                                container = document.createElement('div');
+                                container.id = 'toast-container';
+                                container.className = 'toast-container position-fixed bottom-0 end-0 p-3';
+                                container.style.zIndex = '9999';
+                                document.body.appendChild(container);
+                            }
+                
+                            const toast = document.createElement('div');
+                            toast.className = 'toast align-items-center text-white bg-' + type + ' border-0';
+                            toast.setAttribute('role', 'alert');
+                            toast.setAttribute('aria-live', 'assertive');
+                            toast.setAttribute('aria-atomic', 'true');
+                            toast.innerHTML = '<div class="d-flex"><div class="toast-body">' + message + '</div><button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button></div>';
+                
+                            container.appendChild(toast);
+                            const bsToast = new bootstrap.Toast(toast, { delay: 3000 });
+                            bsToast.show();
+                
+                            toast.addEventListener('hidden.bs.toast', () => toast.remove());
+                        }
+                        </script>
+                        {% endblock %}

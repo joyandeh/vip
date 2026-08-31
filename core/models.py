@@ -192,6 +192,85 @@ class SiteSetting(models.Model):
         verbose_name="شماره تلفن پشتیبانی"
     )
 
+    # Announcements for homepage carousel
+    announcement_1_title = models.CharField(
+        max_length=100,
+        blank=True,
+        verbose_name="عنوان اعلامیه ۱"
+    )
+    announcement_1_text = models.TextField(
+        blank=True,
+        verbose_name="متن اعلامیه ۱"
+    )
+    announcement_1_icon = models.CharField(
+        max_length=50,
+        blank=True,
+        default="fa-solid fa-bullhorn",
+        verbose_name="آیکون اعلامیه ۱ (مثال: fa-solid fa-bullhorn)"
+    )
+    announcement_1_color = models.CharField(
+        max_length=20,
+        blank=True,
+        default="cyan",
+        verbose_name="رنگ اعلامیه ۱ (cyan, green, coral, warning)"
+    )
+    announcement_1_active = models.BooleanField(
+        default=False,
+        verbose_name="فعال بودن اعلامیه ۱"
+    )
+
+    announcement_2_title = models.CharField(
+        max_length=100,
+        blank=True,
+        verbose_name="عنوان اعلامیه ۲"
+    )
+    announcement_2_text = models.TextField(
+        blank=True,
+        verbose_name="متن اعلامیه ۲"
+    )
+    announcement_2_icon = models.CharField(
+        max_length=50,
+        blank=True,
+        default="fa-solid fa-gift",
+        verbose_name="آیکون اعلامیه ۲"
+    )
+    announcement_2_color = models.CharField(
+        max_length=20,
+        blank=True,
+        default="green",
+        verbose_name="رنگ اعلامیه ۲"
+    )
+    announcement_2_active = models.BooleanField(
+        default=False,
+        verbose_name="فعال بودن اعلامیه ۲"
+    )
+
+    announcement_3_title = models.CharField(
+        max_length=100,
+        blank=True,
+        verbose_name="عنوان اعلامیه ۳"
+    )
+    announcement_3_text = models.TextField(
+        blank=True,
+        verbose_name="متن اعلامیه ۳"
+    )
+    announcement_3_icon = models.CharField(
+        max_length=50,
+        blank=True,
+        default="fa-solid fa-bolt",
+        verbose_name="آیکون اعلامیه ۳"
+    )
+    announcement_3_color = models.CharField(
+        max_length=20,
+        blank=True,
+        default="coral",
+        verbose_name="رنگ اعلامیه ۳"
+    )
+    announcement_3_active = models.BooleanField(
+        default=False,
+        verbose_name="فعال بودن اعلامیه ۳"
+    )
+
     def save(self, *args, **kwargs):
         self.pk = 1
         super().save(*args, **kwargs)
