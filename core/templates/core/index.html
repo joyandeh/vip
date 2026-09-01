@@ -12,11 +12,14 @@
     <p class="text-custom-muted mb-3" style="font-size: 0.8rem;">بازار معاملاتی ارزهای دیجیتال</p>
     
     <!-- دکمه‌های خرید و فروش -->
-                <div class="d-flex gap-2 justify-content-center mb-2">
-                    <a href="{% url 'buy_crypto' %}" class="btn btn-modern btn-modern-primary py-2 px-4 flex-grow-1 fw-bold" style="font-size: 0.85rem;">
-                        <i class="fa-solid fa-cart-shopping me-1"></i> خرید از سایت
-                    </a>
-                </div>
+                    <div class="d-flex gap-2 justify-content-center mb-2">
+                        <a href="{% url 'buy_crypto' %}" class="btn btn-modern btn-modern-primary py-2 px-4 flex-grow-1 fw-bold" style="font-size: 0.85rem;">
+                            <i class="fa-solid fa-cart-shopping me-1"></i> خرید از سایت
+                        </a>
+                        <a href="{% url 'sell_crypto' %}" class="btn btn-modern py-2 px-4 flex-grow-1 fw-bold" style="font-size: 0.85rem; background: rgba(255, 82, 82, 0.15); border: 1px solid rgba(255, 82, 82, 0.3); color: var(--accent-coral); border-radius: 10px;">
+                            <i class="fa-solid fa-hand-holding-dollar me-1"></i> فروش به سایت
+                        </a>
+                    </div>
     
         <!-- معامله سریع امن تلفنی -->
                     {% if site_settings.support_phone %}

@@ -131,9 +131,43 @@
 {% block extra_css %}
 <style>
     /* ========================================
-       WALLET PAGE - Glassmorphism Design
+       WALLET PAGE - Warm Glassmorphism Design
        4 rows × 2 columns layout
+       Warm, readable color palette
        ======================================== */
+
+    /* Warm CSS Variables Override */
+    :root {
+        --wallet-accent: #D97706;           /* Warm amber */
+        --wallet-accent-light: #F59E0B;     /* Lighter amber */
+        --wallet-accent-dark: #B45309;      /* Darker amber */
+        --wallet-coral: #EA580C;            /* Warm coral */
+        --wallet-coral-light: #F97316;      /* Lighter coral */
+        --wallet-success: #16A34A;          /* Warm green */
+        --wallet-success-light: #22C55E;    /* Lighter green */
+        --wallet-bg-warm: #FFFEF7;          /* Warm off-white */
+        --wallet-bg-card: rgba(255, 254, 247, 0.95);
+        --wallet-border: rgba(217, 119, 6, 0.12);
+        --wallet-border-hover: rgba(217, 119, 6, 0.25);
+        --wallet-shadow: rgba(217, 119, 6, 0.08);
+        --wallet-shadow-hover: rgba(217, 119, 6, 0.15);
+        --wallet-text: #1C1917;             /* Warm near-black */
+        --wallet-text-muted: #78716C;       /* Warm gray */
+        --wallet-text-light: #A8A29E;       /* Lighter warm gray */
+    }
+
+    /* Apply warm theme to light mode */
+    body.light-mode {
+        --light-bg-main: var(--wallet-bg-warm) !important;
+        --light-bg-card: var(--wallet-bg-card) !important;
+        --light-border-glass: var(--wallet-border) !important;
+        --light-shadow-color: var(--wallet-shadow) !important;
+        --light-text-color: var(--wallet-text) !important;
+        --accent-cyan: var(--wallet-accent) !important;
+        --accent-green: var(--wallet-success) !important;
+        --accent-coral: var(--wallet-coral) !important;
+        --accent-warning: var(--wallet-coral-light) !important;
+    }
 
     /* Grid: 2 columns on all screens, 4 rows for 8 assets */
     #wallet-grid .col-6 {
@@ -148,25 +182,27 @@
         min-height: 165px;
         display: flex;
         flex-direction: column;
-        background: var(--light-bg-card) !important;
+        background: var(--wallet-bg-card) !important;
         backdrop-filter: blur(20px);
         -webkit-backdrop-filter: blur(20px);
+        border: 1px solid var(--wallet-border) !important;
+        border-radius: 16px;
         transition: all 0.3s ease;
         box-shadow: 
-            0 4px 16px var(--light-shadow-color),
-            inset 0 1px 0 rgba(255, 255, 255, 0.6);
+            0 4px 16px var(--wallet-shadow),
+            inset 0 1px 0 rgba(255, 255, 255, 0.8);
     }
 
     .wallet-asset-card:hover {
         transform: translateY(-2px);
         box-shadow: 
-            0 8px 28px var(--light-shadow-color),
-            inset 0 1px 0 rgba(255, 255, 255, 0.8),
-            0 0 0 1px var(--accent-cyan);
-        border-color: var(--accent-cyan) !important;
+            0 8px 28px var(--wallet-shadow-hover),
+            inset 0 1px 0 rgba(255, 255, 255, 0.9),
+            0 0 0 1px var(--wallet-accent);
+        border-color: var(--wallet-accent) !important;
     }
 
-    /* Colored Icon Circles - Per Asset Color */
+    /* Colored Icon Circles - Per Asset Warm Colors */
     .wallet-icon {
         background: linear-gradient(135deg, 
             rgba(var(--icon-rgb), 0.15) 0%, 
@@ -180,135 +216,154 @@
         filter: drop-shadow(0 1px 2px rgba(var(--icon-rgb), 0.3));
     }
 
-    /* Asset-specific icon colors via inline style data-color */
-    .wallet-icon[data-color="cyan"] { --icon-rgb: 0, 229, 255; }
-    .wallet-icon[data-color="green"] { --icon-rgb: 0, 230, 118; }
-    .wallet-icon[data-color="coral"] { --icon-rgb: 255, 82, 82; }
-    .wallet-icon[data-color="warning"] { --icon-rgb: 255, 193, 7; }
-    .wallet-icon[data-color="neon-green"] { --icon-rgb: 0, 230, 118; }
+    /* Asset-specific icon colors - Warm palette */
+    .wallet-icon[data-color="cyan"] { --icon-rgb: 217, 119, 6; }       /* Amber */
+    .wallet-icon[data-color="green"] { --icon-rgb: 22, 163, 74; }      /* Warm green */
+    .wallet-icon[data-color="coral"] { --icon-rgb: 234, 88, 12; }      /* Coral */
+    .wallet-icon[data-color="warning"] { --icon-rgb: 249, 115, 22; }   /* Orange */
+    .wallet-icon[data-color="neon-green"] { --icon-rgb: 22, 163, 74; } /* Warm green */
 
     /* Address Box - Clean Glass Input Style with watermark */
     .address-box {
-        color: var(--light-text-color) !important;
+        color: var(--wallet-text) !important;
         border-radius: 10px !important;
+        border: 1px solid var(--wallet-border) !important;
+        background: var(--wallet-bg-warm) !important;
         transition: all 0.2s ease;
         font-variant-numeric: tabular-nums;
     }
     .address-box:hover {
-        background: var(--light-bg-card) !important;
-        border-color: var(--accent-cyan) !important;
-        box-shadow: 0 0 0 3px rgba(0, 229, 255, 0.1);
+        background: var(--wallet-bg-card) !important;
+        border-color: var(--wallet-accent) !important;
+        box-shadow: 0 0 0 3px rgba(217, 119, 6, 0.15);
     }
     .address-box:empty::before {
         content: '─ ─ ─ ─ ─ ─ ─ ─';
-        color: var(--light-text-muted);
+        color: var(--wallet-text-light);
     }
 
-    /* Balance Amount - Vibrant Cyan */
+    /* Balance Amount - Warm Amber */
     .balance-amount {
-        color: var(--accent-cyan) !important;
+        color: var(--wallet-accent) !important;
         font-weight: 700 !important;
     }
 
-    /* Glass Buttons - Modern Glassmorphism */
+    /* Glass Buttons - Warm Glassmorphism */
     .btn-glass {
-        background: rgba(255, 255, 255, 0.7) !important;
+        background: rgba(255, 255, 255, 0.8) !important;
         backdrop-filter: blur(12px);
         -webkit-backdrop-filter: blur(12px);
-        border: 1px solid rgba(0, 0, 0, 0.08) !important;
-        color: var(--light-text-color) !important;
+        border: 1px solid var(--wallet-border) !important;
+        color: var(--wallet-text) !important;
         font-weight: 600;
         transition: all 0.2s ease;
-        box-shadow: 0 2px 8px var(--light-shadow-color);
+        box-shadow: 0 2px 8px var(--wallet-shadow);
     }
     .btn-glass:hover {
-        background: rgba(255, 255, 255, 0.9) !important;
-        border-color: rgba(0, 0, 0, 0.15) !important;
+        background: rgba(255, 255, 255, 0.95) !important;
+        border-color: var(--wallet-border-hover) !important;
         transform: translateY(-1px);
-        box-shadow: 0 4px 14px var(--light-shadow-color);
+        box-shadow: 0 4px 14px var(--wallet-shadow);
     }
 
     .btn-glass-primary {
-        background: linear-gradient(135deg, var(--accent-cyan) 0%, #00b8d4 100%) !important;
+        background: linear-gradient(135deg, var(--wallet-accent) 0%, var(--wallet-accent-light) 100%) !important;
         border: none !important;
-        color: #000 !important;
+        color: #fff !important;
         font-weight: 700;
-        box-shadow: 0 4px 16px rgba(0, 229, 255, 0.35);
+        box-shadow: 0 4px 16px rgba(217, 119, 6, 0.35);
     }
     .btn-glass-primary:hover {
-        background: linear-gradient(135deg, #00d4e6 0%, var(--accent-cyan) 100%) !important;
+        background: linear-gradient(135deg, var(--wallet-accent-light) 0%, var(--wallet-accent) 100%) !important;
         transform: translateY(-1px);
-        box-shadow: 0 6px 20px rgba(0, 229, 255, 0.45);
-        color: #000 !important;
+        box-shadow: 0 6px 20px rgba(217, 119, 6, 0.45);
+        color: #fff !important;
     }
 
     /* Glass Inputs in Modal */
     .glass-input {
-        background: rgba(255, 255, 255, 0.8) !important;
+        background: rgba(255, 255, 255, 0.9) !important;
         backdrop-filter: blur(10px);
         -webkit-backdrop-filter: blur(10px);
-        border: 1px solid rgba(0, 0, 0, 0.08) !important;
-        color: var(--light-text-color) !important;
+        border: 1px solid var(--wallet-border) !important;
+        color: var(--wallet-text) !important;
         border-radius: 12px !important;
         font-weight: 500;
         transition: all 0.2s ease;
     }
     .glass-input:focus {
-        border-color: var(--accent-cyan) !important;
-        box-shadow: 0 0 0 4px rgba(0, 229, 255, 0.15) !important;
+        border-color: var(--wallet-accent) !important;
+        box-shadow: 0 0 0 4px rgba(217, 119, 6, 0.15) !important;
         background: #fff !important;
     }
     .glass-input::placeholder {
-        color: #999 !important;
+        color: var(--wallet-text-light) !important;
     }
 
     /* Glass Modal */
     .glass-modal {
-        background: var(--light-bg-main) !important;
+        background: var(--wallet-bg-warm) !important;
         backdrop-filter: blur(24px);
         -webkit-backdrop-filter: blur(24px);
-        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.12);
+        border: 1px solid var(--wallet-border) !important;
+        box-shadow: 0 20px 60px rgba(217, 119, 6, 0.12);
     }
     .glass-modal .modal-header,
     .glass-modal .modal-footer {
-        border-color: var(--light-border-glass) !important;
+        border-color: var(--wallet-border) !important;
     }
     .glass-modal .modal-title {
-        color: var(--light-text-color) !important;
+        color: var(--wallet-text) !important;
     }
     .glass-modal .btn-close {
-        filter: invert(0.3);
+        filter: invert(0.2) sepia(1) saturate(5) hue-rotate(30deg);
     }
 
     /* Glass Alert */
     .glass-alert {
-        background: rgba(0, 229, 255, 0.08) !important;
-        border: 1px solid rgba(0, 229, 255, 0.15) !important;
-        color: var(--light-text-color) !important;
+        background: rgba(217, 119, 6, 0.08) !important;
+        border: 1px solid rgba(217, 119, 6, 0.15) !important;
+        color: var(--wallet-text) !important;
         border-radius: 12px !important;
     }
-
-    /* Muted Text */
-    .text-custom-muted {
-        color: #64748b !important;
+    .glass-alert i {
+        color: var(--wallet-accent) !important;
     }
 
-    /* Badge in Header */
+    /* Muted Text - Warm */
+    .text-custom-muted {
+        color: var(--wallet-text-muted) !important;
+    }
+
+    /* Badge in Header - Warm */
     .bg-success-subtle {
-        background: rgba(0, 230, 118, 0.12) !important;
+        background: rgba(22, 163, 74, 0.12) !important;
     }
     .text-neon-green {
-        color: #00b050 !important;
+        color: var(--wallet-success) !important;
+    }
+
+    /* Header accents */
+    .text-cyan {
+        color: var(--wallet-accent) !important;
+    }
+    .text-white {
+        color: var(--wallet-text) !important;
     }
 
     /* Divider */
     .border-top {
-        border-color: var(--light-border-glass) !important;
+        border-color: var(--wallet-border) !important;
     }
 
     /* RTL Support for Persian */
     .text-truncate {
         max-width: 100%;
+    }
+
+    /* Watermark icon color */
+    .address-box .position-absolute i {
+        color: var(--wallet-accent) !important;
     }
 
     /* Smooth Transitions */
@@ -342,11 +397,24 @@
         background: transparent;
     }
     .modal-body::-webkit-scrollbar-thumb {
-        background: rgba(0, 0, 0, 0.15);
+        background: rgba(217, 119, 6, 0.2);
         border-radius: 3px;
     }
     .modal-body::-webkit-scrollbar-thumb:hover {
-        background: rgba(0, 0, 0, 0.25);
+        background: rgba(217, 119, 6, 0.35);
+    }
+
+    /* Header card warm accents */
+    .glass-card:first-of-type .text-cyan,
+    .glass-card:first-of-type .fa-wallet,
+    .glass-card:first-of-type .fa-chart-line {
+        color: var(--wallet-accent) !important;
+    }
+    .glass-card:first-of-type .text-white {
+        color: var(--wallet-text) !important;
+    }
+    .glass-card:first-of-type .bg-success-subtle {
+        background: rgba(22, 163, 74, 0.12) !important;
     }
 </style>
 {% endblock %}
@@ -356,6 +424,21 @@
     // Update total balance (placeholder)
     document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('totalBalance').textContent = '۰';
+
+        // Click to copy address
+        document.querySelectorAll('.address-box').forEach(function(el) {
+            el.style.cursor = 'pointer';
+            el.addEventListener('click', function() {
+                var text = this.textContent.trim();
+                if (text && text !== '─' && text !== '─ ─ ─ ─ ─ ─ ─ ─') {
+                    navigator.clipboard.writeText(text).then(function() {
+                        showToast('آدرس کپی شد', 'success');
+                    }).catch(function() {
+                        showToast('کپی ناموفق بود', 'danger');
+                    });
+                }
+            });
+        });
     });
 
     // Save wallet data via AJAX
