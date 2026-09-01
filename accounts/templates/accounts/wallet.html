@@ -107,25 +107,17 @@
                            placeholder="آدرس را وارد کنید"
                            style="font-family: 'Vazirmatn', monospace; direction: ltr; text-align: left;">
                 </div>
-                <div class="mb-3">
-                    <label class="form-label small fw-medium">موجودی</label>
-                    <input type="number" class="form-control form-control-lg glass-input"
-                           id="edit-balance-{{ asset.id }}"
-                           value="{{ asset.balance }}"
-                           min="0" step="0.00000001"
-                           placeholder="0.00">
-                </div>
                 <div class="alert alert-info glass-alert rounded-4 mb-0">
                     <small class="d-flex align-items-center">
                         <i class="fa-solid fa-info-circle me-1" style="color: var(--accent-cyan);"></i>
-                        آدرس و موجودی برای {{ asset.name }} در دیتابیس به‌روزرسانی خواهد شد.
+                        آدرس کیف پول برای {{ asset.name }} در دیتابیس به‌روزرسانی خواهد شد.
                     </small>
                 </div>
             </div>
             <div class="modal-footer border-0 pt-0">
                 <button type="button" class="btn btn-glass py-2 px-4" data-bs-dismiss="modal">لغو</button>
                 <button type="button" class="btn btn-glass-primary py-2 px-4"
-                        onclick="saveWalletData({{ asset.id }}, '{{ asset.address_field }}', '{{ asset.balance_field }}')">
+                        onclick="saveWalletData({{ asset.id }}, '{{ asset.address_field }}')">
                     <i class="fa-solid fa-save me-1"></i> ذخیره
                 </button>
             </div>
@@ -367,9 +359,8 @@
     });
 
     // Save wallet data via AJAX
-    function saveWalletData(assetId, addressField, balanceField) {
+    function saveWalletData(assetId, addressField) {
         const address = document.getElementById('edit-address-' + assetId).value.trim();
-        const balance = document.getElementById('edit-balance-' + assetId).value;
 
         const btn = event.target.closest('button');
         const originalText = btn.innerHTML;
@@ -384,21 +375,18 @@
             },
             body: JSON.stringify({
                 address_field: addressField,
-                balance_field: balanceField,
-                address: address,
-                balance: balance
+                address: address
             })
         })
         .then(response => response.json())
         .then(data => {
             if (data.success) {
                 document.getElementById('address-display-' + assetId).textContent = address || '─';
-                document.getElementById('balance-display-' + assetId).textContent = balance;
 
                 const modal = bootstrap.Modal.getInstance(document.getElementById('editModal' + assetId));
                 if (modal) modal.hide();
 
-                showToast('آدرس و موجودی با موفقیت به‌روزرسانی شد.', 'success');
+                showToast('آدرس کیف پول با موفقیت به‌روزرسانی شد.', 'success');
             } else {
                 showToast('خطا: ' + (data.error || 'نامشخص'), 'danger');
             }

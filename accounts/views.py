@@ -320,7 +320,7 @@ def change_transaction_status(request, tx_id):
 
 @login_required
 def update_wallet_address(request):
-    """AJAX endpoint to update wallet address and/or balance"""
+    """AJAX endpoint to update wallet address (balance editing removed)"""
     from django.http import JsonResponse
     from decimal import Decimal
     
@@ -331,35 +331,22 @@ def update_wallet_address(request):
     try:
         data = json.loads(request.body)
         address_field = data.get('address_field')
-        balance_field = data.get('balance_field')
         address = data.get('address', '').strip()
-        balance = data.get('balance', '0')
         
         # Validate fields
         valid_address_fields = ['trx_address', 'usdt_address', 'btc_address', 'eth_address', 
                                 'sol_address', 'bnb_address', 'xrp_address', 'pm_address']
-        valid_balance_fields = ['trx_balance', 'usdt_balance', 'btc_balance', 'eth_balance',
-                                'sol_balance', 'bnb_balance', 'xrp_balance', 'pm_balance']
         
-        # Check if at least address_field is provided and valid
+        # Check if address_field is provided and valid
         if not address_field or address_field not in valid_address_fields:
             return JsonResponse({'success': False, 'error': 'Invalid field'}, status=400)
         
-        # If balance_field is provided, validate it too
-        if balance_field and balance_field not in valid_balance_fields:
-            return JsonResponse({'success': False, 'error': 'Invalid field'}, status=400)
-        
-        # Update user
+        # Update user - only address
         user = request.user
         setattr(user, address_field, address)
-        if balance_field:
-            try:
-                setattr(user, balance_field, Decimal(str(balance)))
-            except:
-                setattr(user, balance_field, Decimal('0'))
         user.save()
         
-        return JsonResponse({'success': True, 'message': 'آدرس و موجودی با موفقیت به‌روزرسانی شد.'})
+        return JsonResponse({'success': True, 'message': 'آدرس کیف پول با موفقیت به‌روزرسانی شد.'})
     except Exception as e:
         return JsonResponse({'success': False, 'error': str(e)}, status=400)
 
