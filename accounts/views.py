@@ -97,7 +97,10 @@ def wallet(request):
         {
             'name': 'ترون',
             'icon': 'fa-solid fa-t',
-            'color': 'cyan',
+            'color': 'coral',          
+            'withdraw_bg': '#EA580C',   # Coral red
+            'withdraw_text': '#FFFFFF',
+            'watermark_color': '#EA580C',
             'address': user.trx_address or '─',
             'balance': user.trx_balance,
             'address_field': 'trx_address',
@@ -107,7 +110,10 @@ def wallet(request):
         {
             'name': 'تتر',
             'icon': 'fa-solid fa-coins',
-            'color': 'cyan',
+            'color': 'green',          
+            'withdraw_bg': '#16A34A',   # Warm green
+            'withdraw_text': '#FFFFFF',
+            'watermark_color': '#16A34A',
             'address': user.usdt_address or '─',
             'balance': user.usdt_balance,
             'address_field': 'usdt_address',
@@ -117,7 +123,10 @@ def wallet(request):
         {
             'name': 'بیت کوین',
             'icon': 'fa-brands fa-bitcoin',
-            'color': 'coral',
+            'color': 'coral',          
+            'withdraw_bg': '#F7931A',   # Bitcoin orange
+            'withdraw_text': '#FFFFFF',
+            'watermark_color': '#F7931A',
             'address': user.btc_address or '─',
             'balance': user.btc_balance,
             'address_field': 'btc_address',
@@ -127,7 +136,10 @@ def wallet(request):
         {
             'name': 'اتریوم',
             'icon': 'fa-brands fa-ethereum',
-            'color': 'cyan',
+            'color': 'purple',         
+            'withdraw_bg': '#627EEA',   # Ethereum purple
+            'withdraw_text': '#FFFFFF',
+            'watermark_color': '#627EEA',
             'address': user.eth_address or '─',
             'balance': user.eth_balance,
             'address_field': 'eth_address',
@@ -137,7 +149,10 @@ def wallet(request):
         {
             'name': 'سولانا',
             'icon': 'fa-solid fa-sun',
-            'color': 'warning',
+            'color': 'warning',        
+            'withdraw_bg': '#9945FF',   # Solana purple
+            'withdraw_text': '#FFFFFF',
+            'watermark_color': '#9945FF',
             'address': user.sol_address or '─',
             'balance': user.sol_balance,
             'address_field': 'sol_address',
@@ -147,7 +162,10 @@ def wallet(request):
         {
             'name': 'بینانس',
             'icon': 'fa-solid fa-coins',
-            'color': 'warning',
+            'color': 'warning',        
+            'withdraw_bg': '#F3BA2F',   # BNB yellow
+            'withdraw_text': '#1C1917',
+            'watermark_color': '#F3BA2F',
             'address': user.bnb_address or '─',
             'balance': user.bnb_balance,
             'address_field': 'bnb_address',
@@ -157,7 +175,10 @@ def wallet(request):
         {
             'name': 'ریپل',
             'icon': 'fa-solid fa-xmark',
-            'color': 'warning',
+            'color': 'warning',        
+            'withdraw_bg': '#0077B5',   # XRP blue
+            'withdraw_text': '#FFFFFF',
+            'watermark_color': '#0077B5',
             'address': user.xrp_address or '─',
             'balance': user.xrp_balance,
             'address_field': 'xrp_address',
@@ -167,7 +188,10 @@ def wallet(request):
         {
             'name': 'perfect money',
             'icon': 'fa-solid fa-dollar-sign',
-            'color': 'neon-green',
+            'color': 'neon-green',     
+            'withdraw_bg': '#16A34A',   # Warm green
+            'withdraw_text': '#FFFFFF',
+            'watermark_color': '#16A34A',
             'address': user.pm_address or '─',
             'balance': user.pm_balance,
             'address_field': 'pm_address',

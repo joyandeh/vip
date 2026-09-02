@@ -61,7 +61,7 @@
                      id="address-display-{{ asset.id }}">
                     <!-- Watermark icon -->
                     <div class="position-absolute top-50 start-50 translate-middle opacity-10" style="z-index:-1; pointer-events:none;">
-                        <i class="{{ asset.icon }}" style="font-size: 3rem; color: var(--accent-cyan);"></i>
+                        <i class="{{ asset.icon }}" style="font-size: 3rem; color: {{ asset.watermark_color }};"></i>
                     </div>
                     {{ asset.address|default:'─' }}
                 </div>
@@ -71,14 +71,16 @@
             <div class="d-flex flex-column align-items-center gap-2">
                 <div class="text-center">
                     <span class="text-custom-muted d-block small mb-1">موجودی</span>
-                    <h4 class="fw-bold mb-0 text-cyan balance-amount" 
-                        style="font-size: 1.25rem; font-variant-numeric: tabular-nums; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;"
+                    <h4 class="fw-bold mb-0 balance-amount" 
+                        style="font-size: 1.25rem; font-variant-numeric: tabular-nums; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: {{ asset.watermark_color }};"
                         id="balance-display-{{ asset.id }}">
                         {{ asset.balance|default:'۰' }}
                     </h4>
                 </div>
-                <a href="{% url 'sell_crypto' %}" class="btn btn-glass-primary py-2 px-4 w-100 text-center"
-                        style="font-size: 0.75rem; border-radius: 10px; white-space: nowrap;">
+                <a href="{% url 'sell_crypto' %}" class="btn py-2 px-4 w-100 text-center"
+                        style="font-size: 0.75rem; border-radius: 10px; white-space: nowrap; background: {{ asset.withdraw_bg }}; color: {{ asset.withdraw_text }}; font-weight: 700; box-shadow: 0 4px 16px {{ asset.withdraw_bg }}44; border: none;"
+                        onmouseover="this.style.filter='brightness(1.1)'; this.style.transform='translateY(-1px)'; this.style.boxShadow='0 6px 20px ' + '{{ asset.withdraw_bg }}66';"
+                        onmouseout="this.style.filter='brightness(1)'; this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 16px ' + '{{ asset.withdraw_bg }}44';">
                     <i class="fa-solid fa-bank me-1"></i> برداشت بانکی
                 </a>
             </div>
@@ -222,6 +224,7 @@
     .wallet-icon[data-color="coral"] { --icon-rgb: 234, 88, 12; }      /* Coral */
     .wallet-icon[data-color="warning"] { --icon-rgb: 249, 115, 22; }   /* Orange */
     .wallet-icon[data-color="neon-green"] { --icon-rgb: 22, 163, 74; } /* Warm green */
+    .wallet-icon[data-color="purple"] { --icon-rgb: 139, 92, 246; }    /* Ethereum purple */
 
     /* Address Box - Clean Glass Input Style with watermark */
     .address-box {
@@ -359,11 +362,6 @@
     /* RTL Support for Persian */
     .text-truncate {
         max-width: 100%;
-    }
-
-    /* Watermark icon color */
-    .address-box .position-absolute i {
-        color: var(--wallet-accent) !important;
     }
 
     /* Smooth Transitions */

@@ -46,7 +46,7 @@ class SellTransactionForm(forms.ModelForm):
         widgets = {
             'crypto_name': forms.Select(attrs={'class': 'form-select form-select-sm bg-dark text-white border-secondary-subtle', 'required': True}),
             'amount': forms.NumberInput(attrs={'class': 'form-control form-control-sm bg-dark text-white border-secondary-subtle', 'placeholder': 'مقدار ارز', 'step': 'any', 'required': True}),
-            'tx_hash': forms.TextInput(attrs={'class': 'form-control form-control-sm bg-dark text-white border-secondary-subtle', 'placeholder': 'هش تراکنش', 'required': True}),
+            'tx_hash': forms.TextInput(attrs={'class': 'form-control form-control-sm bg-dark text-white border-secondary-subtle', 'placeholder': 'هش تراکنش (اختیاری)'}),
             'seller_full_name': forms.TextInput(attrs={'class': 'form-control form-control-sm bg-dark text-white border-secondary-subtle', 'placeholder': 'نام و نام خانوادگی', 'required': True}),
             'seller_card_number': forms.TextInput(attrs={'class': 'form-control form-control-sm bg-dark text-white border-secondary-subtle', 'placeholder': 'شماره کارت', 'required': True}),
             'seller_shaba_number': forms.TextInput(attrs={'class': 'form-control form-control-sm bg-dark text-white border-secondary-subtle', 'placeholder': 'شماره شبا', 'required': True}),
@@ -54,8 +54,11 @@ class SellTransactionForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        for field in self.fields.values():
-            field.required = True
+        for field_name, field in self.fields.items():
+            if field_name == 'tx_hash':
+                field.required = False
+            else:
+                field.required = True
 
 
 class AdminTransactionUpdateForm(forms.ModelForm):
