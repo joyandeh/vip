@@ -1,5 +1,5 @@
 {% extends 'core/base.html' %}
-{% load static %}
+{% load static humanize %}
 
 {% block title %}کیف پول - ترونلند{% endblock %}
 
@@ -13,12 +13,15 @@
         <i class="fa-solid fa-chart-line h1 text-cyan" style="font-size: 5rem; opacity: 0.05;"></i>
     </div>
     <span class="text-custom-muted d-block small mb-1">موجودی کل کیف پول</span>
-    <h2 class="fw-bold tracking-wide text-cyan mb-2" style="font-size: 1.8rem;">
-        <span id="totalBalance">۰</span> <span class="small h6 text-white">USDT</span>
+    <h2 class="fw-bold tracking-wide text-cyan mb-1" style="font-size: 1.6rem;">
+        <span id="totalBalance">{{ total_balance_usdt|floatformat:2 }}</span> <span class="small h6 text-white">USDT</span>
     </h2>
+    <div class="text-white fw-medium mb-2" style="font-size: 1.1rem;">
+        {{ total_balance_toman|intcomma }} تومان
+    </div>
     <div class="d-flex justify-content-center gap-2 mt-2">
         <span class="badge bg-success-subtle text-neon-green rounded-pill px-3 py-1 small">
-            <i class="fa-solid fa-arrow-trend-up me-1"></i> ۰% تغییر امروز
+            <i class="fa-solid fa-arrow-trend-up me-1"></i> نرخ دلار: {{ toman_rate|intcomma }} تومان
         </span>
     </div>
 </div>
@@ -30,7 +33,7 @@
         <div class="glass-card wallet-asset-card p-3 h-100 d-flex flex-column" 
              style="border-radius: 16px; border: 1px solid var(--light-border-glass);"
              data-asset="{{ asset.name }}">
-            <!-- Asset Header: icon + name + edit -->
+            <!-- Asset Header: icon + name -->
             <div class="d-flex align-items-center justify-content-between mb-2 gap-2">
                 <div class="d-flex align-items-center gap-2">
                     <div class="wallet-icon d-flex align-items-center justify-content-center rounded-circle flex-shrink-0"
@@ -40,15 +43,9 @@
                     </div>
                     <div>
                         <h6 class="fw-bold mb-0 text-truncate" style="font-size: 0.9rem; max-width: 120px;">{{ asset.name }}</h6>
-                        <span class="text-custom-muted small" style="font-size: 0.65rem;">آدرس کیف پول</span>
+                        <span class="text-custom-muted small" style="font-size: 0.65rem;">آدرس کیف پول سایت</span>
                     </div>
                 </div>
-                <!-- Edit Button - icon only -->
-                <button type="button" class="btn btn-glass btn-sm p-1 flex-shrink-0"
-                        style="font-size: 0.7rem; border-radius: 8px; width: 32px; height: 32px; display:flex;align-items:center;justify-content:center;"
-                        data-bs-toggle="modal" data-bs-target="#editModal{{ asset.id }}">
-                    <i class="fa-solid fa-pen"></i>
-                </button>
             </div>
 
             <!-- Address Box with subtle logo watermark -->
@@ -88,45 +85,6 @@
     </div>
     {% endfor %}
 </div>
-
-<!-- Edit Address/Balance Modal Templates -->
-{% for asset in assets %}
-<div class="modal fade" id="editModal{{ asset.id }}" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content glass-modal" style="border-radius: 16px; border: 1px solid var(--light-border-glass);">
-            <div class="modal-header border-0 pb-0">
-                <h5 class="modal-title fw-bold" style="color: var(--light-text-color);">
-                    <i class="fa-solid fa-pen me-2" style="color: var(--accent-cyan);"></i> ویرایش {{ asset.name }}
-                </h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="بستن"></button>
-            </div>
-            <div class="modal-body">
-                <div class="mb-3">
-                    <label class="form-label small fw-medium">آدرس کیف پول</label>
-                    <input type="text" class="form-control form-control-lg glass-input"
-                           id="edit-address-{{ asset.id }}"
-                           value="{{ asset.address }}"
-                           placeholder="آدرس را وارد کنید"
-                           style="font-family: 'Vazirmatn', monospace; direction: ltr; text-align: left;">
-                </div>
-                <div class="alert alert-info glass-alert rounded-4 mb-0">
-                    <small class="d-flex align-items-center">
-                        <i class="fa-solid fa-info-circle me-1" style="color: var(--accent-cyan);"></i>
-                        آدرس کیف پول برای {{ asset.name }} در دیتابیس به‌روزرسانی خواهد شد.
-                    </small>
-                </div>
-            </div>
-            <div class="modal-footer border-0 pt-0">
-                <button type="button" class="btn btn-glass py-2 px-4" data-bs-dismiss="modal">لغو</button>
-                <button type="button" class="btn btn-glass-primary py-2 px-4"
-                        onclick="saveWalletData({{ asset.id }}, '{{ asset.address_field }}')">
-                    <i class="fa-solid fa-save me-1"></i> ذخیره
-                </button>
-            </div>
-        </div>
-    </div>
-</div>
-{% endfor %}
 
 {% endblock %}
 
@@ -419,10 +377,8 @@
 
 {% block extra_js %}
 <script>
-    // Update total balance (placeholder)
+    // Click to copy address
     document.addEventListener('DOMContentLoaded', function() {
-        document.getElementById('totalBalance').textContent = '۰';
-
         // Click to copy address
         document.querySelectorAll('.address-box').forEach(function(el) {
             el.style.cursor = 'pointer';
@@ -438,48 +394,6 @@
             });
         });
     });
-
-    // Save wallet data via AJAX
-    function saveWalletData(assetId, addressField) {
-        const address = document.getElementById('edit-address-' + assetId).value.trim();
-
-        const btn = event.target.closest('button');
-        const originalText = btn.innerHTML;
-        btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin me-1"></i> در حال ذخیره...';
-        btn.disabled = true;
-
-        fetch('{% url "update_wallet_address" %}', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRFToken': '{{ csrf_token }}'
-            },
-            body: JSON.stringify({
-                address_field: addressField,
-                address: address
-            })
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                document.getElementById('address-display-' + assetId).textContent = address || '─';
-
-                const modal = bootstrap.Modal.getInstance(document.getElementById('editModal' + assetId));
-                if (modal) modal.hide();
-
-                showToast('آدرس کیف پول با موفقیت به‌روزرسانی شد.', 'success');
-            } else {
-                showToast('خطا: ' + (data.error || 'نامشخص'), 'danger');
-            }
-        })
-        .catch(error => {
-            showToast('خطای شبکه: ' + error.message, 'danger');
-        })
-        .finally(() => {
-            btn.innerHTML = originalText;
-            btn.disabled = false;
-        });
-    }
 
     // Simple toast notification
     function showToast(message, type) {

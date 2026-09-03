@@ -171,10 +171,29 @@ class SiteSetting(models.Model):
         blank=True,
         verbose_name="آدرس کیف پول سولانا (SOL)"
     )
+    bnb_wallet_address = models.CharField(
+        max_length=255,
+        blank=True,
+        verbose_name="آدرس کیف پول بینانس (BNB)"
+    )
+    xrp_wallet_address = models.CharField(
+        max_length=255,
+        blank=True,
+        verbose_name="آدرس کیف پول ریپل (XRP)"
+    )
+    pm_wallet_address = models.CharField(
+        max_length=255,
+        blank=True,
+        verbose_name="آدرس کیف پول پرفکت مانی (PM)"
+    )
     site_card_number = models.CharField(
         max_length=20,
         blank=True,
         verbose_name="شماره کارت سایت (برای خرید)"
+    )
+    toman_rate = models.PositiveIntegerField(
+        default=85000,
+        verbose_name="قیمت دلار به تومان"
     )
     site_iban = models.CharField(
         max_length=30,

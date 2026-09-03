@@ -90,18 +90,51 @@ def user_logout(request):
 
 @login_required
 def wallet(request):
-    """صفحه کیف پول کاربر - نمایش آدرس‌ها و موجودی‌ها"""
+    """صفحه کیف پول کاربر - نمایش آدرس‌ها و موجودی‌ها از تنظیمات سایت"""
+    from core.models import SiteSetting, CryptoApiSetting
+    from core.services import get_crypto_prices
+    from decimal import Decimal
+    
     user = request.user
-    # Prepare asset data for display
+    site_settings = SiteSetting.get_solo()
+    
+    # Get crypto prices and toman rate from CryptoApiSetting (panel pricing settings)
+    prices = get_crypto_prices()
+    crypto_setting = CryptoApiSetting.objects.filter(active=True).first()
+    toman_rate = crypto_setting.toman_rate if crypto_setting else (site_settings.toman_rate or 85000)
+    
+    # Calculate total balance in USDT equivalent
+    total_usdt = Decimal('0')
+    asset_balances = {
+        'TRX': Decimal(str(user.trx_balance or 0)),
+        'USDT': Decimal(str(user.usdt_balance or 0)),
+        'BTC': Decimal(str(user.btc_balance or 0)),
+        'ETH': Decimal(str(user.eth_balance or 0)),
+        'SOL': Decimal(str(user.sol_balance or 0)),
+        'BNB': Decimal(str(user.bnb_balance or 0)),
+        'XRP': Decimal(str(user.xrp_balance or 0)),
+        'PM': Decimal(str(user.pm_balance or 0)),
+    }
+    
+    # Convert all to USDT value
+    for symbol, balance in asset_balances.items():
+        if balance > 0 and symbol in prices and prices[symbol] > 0:
+            if symbol == 'USDT':
+                total_usdt += balance
+            else:
+                usd_value = balance * Decimal(str(prices[symbol]))
+                total_usdt += usd_value
+    
+    # Prepare asset data for display - using site-wide wallet addresses
     assets = [
         {
             'name': 'ترون',
             'icon': 'fa-solid fa-t',
-            'color': 'coral',          
+            'color': 'coral',         
             'withdraw_bg': '#EA580C',   # Coral red
             'withdraw_text': '#FFFFFF',
             'watermark_color': '#EA580C',
-            'address': user.trx_address or '─',
+            'address': site_settings.trx_wallet_address or '─',
             'balance': user.trx_balance,
             'address_field': 'trx_address',
             'balance_field': 'trx_balance',
@@ -110,11 +143,11 @@ def wallet(request):
         {
             'name': 'تتر',
             'icon': 'fa-solid fa-coins',
-            'color': 'green',          
+            'color': 'green',        
             'withdraw_bg': '#16A34A',   # Warm green
             'withdraw_text': '#FFFFFF',
             'watermark_color': '#16A34A',
-            'address': user.usdt_address or '─',
+            'address': site_settings.usdt_wallet_address or '─',
             'balance': user.usdt_balance,
             'address_field': 'usdt_address',
             'balance_field': 'usdt_balance',
@@ -123,11 +156,11 @@ def wallet(request):
         {
             'name': 'بیت کوین',
             'icon': 'fa-brands fa-bitcoin',
-            'color': 'coral',          
+            'color': 'coral',         
             'withdraw_bg': '#F7931A',   # Bitcoin orange
             'withdraw_text': '#FFFFFF',
             'watermark_color': '#F7931A',
-            'address': user.btc_address or '─',
+            'address': site_settings.btc_wallet_address or '─',
             'balance': user.btc_balance,
             'address_field': 'btc_address',
             'balance_field': 'btc_balance',
@@ -136,11 +169,11 @@ def wallet(request):
         {
             'name': 'اتریوم',
             'icon': 'fa-brands fa-ethereum',
-            'color': 'purple',         
+            'color': 'purple',        
             'withdraw_bg': '#627EEA',   # Ethereum purple
             'withdraw_text': '#FFFFFF',
             'watermark_color': '#627EEA',
-            'address': user.eth_address or '─',
+            'address': site_settings.eth_wallet_address or '─',
             'balance': user.eth_balance,
             'address_field': 'eth_address',
             'balance_field': 'eth_balance',
@@ -149,11 +182,11 @@ def wallet(request):
         {
             'name': 'سولانا',
             'icon': 'fa-solid fa-sun',
-            'color': 'warning',        
+            'color': 'warning',       
             'withdraw_bg': '#9945FF',   # Solana purple
             'withdraw_text': '#FFFFFF',
             'watermark_color': '#9945FF',
-            'address': user.sol_address or '─',
+            'address': site_settings.sol_wallet_address or '─',
             'balance': user.sol_balance,
             'address_field': 'sol_address',
             'balance_field': 'sol_balance',
@@ -162,11 +195,11 @@ def wallet(request):
         {
             'name': 'بینانس',
             'icon': 'fa-solid fa-coins',
-            'color': 'warning',        
+            'color': 'warning',       
             'withdraw_bg': '#F3BA2F',   # BNB yellow
             'withdraw_text': '#1C1917',
             'watermark_color': '#F3BA2F',
-            'address': user.bnb_address or '─',
+            'address': site_settings.bnb_wallet_address or '─',
             'balance': user.bnb_balance,
             'address_field': 'bnb_address',
             'balance_field': 'bnb_balance',
@@ -175,11 +208,11 @@ def wallet(request):
         {
             'name': 'ریپل',
             'icon': 'fa-solid fa-xmark',
-            'color': 'warning',        
+            'color': 'warning',       
             'withdraw_bg': '#0077B5',   # XRP blue
             'withdraw_text': '#FFFFFF',
             'watermark_color': '#0077B5',
-            'address': user.xrp_address or '─',
+            'address': site_settings.xrp_wallet_address or '─',
             'balance': user.xrp_balance,
             'address_field': 'xrp_address',
             'balance_field': 'xrp_balance',
@@ -188,11 +221,11 @@ def wallet(request):
         {
             'name': 'perfect money',
             'icon': 'fa-solid fa-dollar-sign',
-            'color': 'neon-green',     
+            'color': 'neon-green',    
             'withdraw_bg': '#16A34A',   # Warm green
             'withdraw_text': '#FFFFFF',
             'watermark_color': '#16A34A',
-            'address': user.pm_address or '─',
+            'address': site_settings.pm_wallet_address or '─',
             'balance': user.pm_balance,
             'address_field': 'pm_address',
             'balance_field': 'pm_balance',
@@ -202,6 +235,9 @@ def wallet(request):
     context = {
         'user': user,
         'assets': assets,
+        'total_balance_usdt': total_usdt,
+        'total_balance_toman': int(total_usdt * toman_rate),
+        'toman_rate': toman_rate,
     }
     return render(request, 'accounts/wallet.html', context)
 

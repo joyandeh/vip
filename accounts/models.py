@@ -64,6 +64,11 @@ class CustomUser(AbstractUser):
     def __str__(self):
         return self.username
 
+    @property
+    def unread_messages_count(self):
+        """Return count of unread admin messages"""
+        return self.admin_messages.filter(is_read=False).count()
+
 
 class UserProfile(models.Model):
     KYC_STATUS_CHOICES = [

@@ -42,4 +42,5 @@ class SiteSettingAdmin(admin.ModelAdmin):
         'site_name',
         'contact_phone',
         'contact_telegram',
+        'toman_rate',
     )
