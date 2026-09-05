@@ -102,8 +102,9 @@ class SiteSettingForm(forms.ModelForm):
             'bnb_wallet_address',
             'xrp_wallet_address',
             'pm_wallet_address',
+            'ton_wallet_address',
+            'utop_wallet_address',
             'site_card_number',
-            'toman_rate',
             'site_iban',
             'site_account_holder',
             'support_phone',
@@ -159,13 +160,25 @@ class SiteSettingForm(forms.ModelForm):
             'sol_wallet_address': forms.TextInput(
                 attrs={'class': 'form-control bg-dark text-white border-secondary-subtle', 'dir': 'ltr'}
             ),
+            'bnb_wallet_address': forms.TextInput(
+                attrs={'class': 'form-control bg-dark text-white border-secondary-subtle', 'dir': 'ltr'}
+            ),
+            'xrp_wallet_address': forms.TextInput(
+                attrs={'class': 'form-control bg-dark text-white border-secondary-subtle', 'dir': 'ltr'}
+            ),
+            'pm_wallet_address': forms.TextInput(
+                attrs={'class': 'form-control bg-dark text-white border-secondary-subtle', 'dir': 'ltr'}
+            ),
+            'ton_wallet_address': forms.TextInput(
+                attrs={'class': 'form-control bg-dark text-white border-secondary-subtle', 'dir': 'ltr'}
+            ),
+            'utop_wallet_address': forms.TextInput(
+                attrs={'class': 'form-control bg-dark text-white border-secondary-subtle', 'dir': 'ltr'}
+            ),
             'site_card_number': forms.TextInput(
-                attrs={'class': 'form-control bg-dark text-white border-secondary-subtle', 'dir': 'ltr'}
-            ),
-            'toman_rate': forms.NumberInput(
-                attrs={'class': 'form-control bg-dark text-white border-secondary-subtle', 'dir': 'ltr'}
-            ),
-            'site_iban': forms.TextInput(
+                        attrs={'class': 'form-control bg-dark text-white border-secondary-subtle', 'dir': 'ltr'}
+                    ),
+                    'site_iban': forms.TextInput(
                 attrs={'class': 'form-control bg-dark text-white border-secondary-subtle', 'dir': 'ltr'}
             ),
             'site_account_holder': forms.TextInput(

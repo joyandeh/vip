@@ -154,7 +154,7 @@ class SiteSetting(models.Model):
     trx_wallet_address = models.CharField(
         max_length=255,
         blank=True,
-        verbose_name="آدرس کیف پول تزون (TRX)"
+        verbose_name="آدرس کیف پول ترون (TRX)"
     )
     btc_wallet_address = models.CharField(
         max_length=255,
@@ -186,14 +186,20 @@ class SiteSetting(models.Model):
         blank=True,
         verbose_name="آدرس کیف پول پرفکت مانی (PM)"
     )
+    ton_wallet_address = models.CharField(
+        max_length=255,
+        blank=True,
+        verbose_name="آدرس کیف پول تون کوین (TON)"
+    )
+    utop_wallet_address = models.CharField(
+        max_length=255,
+        blank=True,
+        verbose_name="آدرس کیف پول یوتوپیا (UTOPIA)"
+    )
     site_card_number = models.CharField(
         max_length=20,
         blank=True,
         verbose_name="شماره کارت سایت (برای خرید)"
-    )
-    toman_rate = models.PositiveIntegerField(
-        default=85000,
-        verbose_name="قیمت دلار به تومان"
     )
     site_iban = models.CharField(
         max_length=30,

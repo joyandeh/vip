@@ -101,7 +101,7 @@ def wallet(request):
     # Get crypto prices and toman rate from CryptoApiSetting (panel pricing settings)
     prices = get_crypto_prices()
     crypto_setting = CryptoApiSetting.objects.filter(active=True).first()
-    toman_rate = crypto_setting.toman_rate if crypto_setting else (site_settings.toman_rate or 85000)
+    toman_rate = crypto_setting.toman_rate if crypto_setting else 85000
     
     # Calculate total balance in USDT equivalent
     total_usdt = Decimal('0')
@@ -114,6 +114,8 @@ def wallet(request):
         'BNB': Decimal(str(user.bnb_balance or 0)),
         'XRP': Decimal(str(user.xrp_balance or 0)),
         'PM': Decimal(str(user.pm_balance or 0)),
+        'TON': Decimal(str(user.ton_balance or 0)),
+        'UTOPIA': Decimal(str(user.utop_balance or 0)),
     }
     
     # Convert all to USDT value
@@ -130,7 +132,7 @@ def wallet(request):
         {
             'name': 'ترون',
             'icon': 'fa-solid fa-t',
-            'color': 'coral',         
+            'color': 'coral',
             'withdraw_bg': '#EA580C',   # Coral red
             'withdraw_text': '#FFFFFF',
             'watermark_color': '#EA580C',
@@ -143,7 +145,7 @@ def wallet(request):
         {
             'name': 'تتر',
             'icon': 'fa-solid fa-coins',
-            'color': 'green',        
+            'color': 'green',
             'withdraw_bg': '#16A34A',   # Warm green
             'withdraw_text': '#FFFFFF',
             'watermark_color': '#16A34A',
@@ -156,7 +158,7 @@ def wallet(request):
         {
             'name': 'بیت کوین',
             'icon': 'fa-brands fa-bitcoin',
-            'color': 'coral',         
+            'color': 'coral',
             'withdraw_bg': '#F7931A',   # Bitcoin orange
             'withdraw_text': '#FFFFFF',
             'watermark_color': '#F7931A',
@@ -169,7 +171,7 @@ def wallet(request):
         {
             'name': 'اتریوم',
             'icon': 'fa-brands fa-ethereum',
-            'color': 'purple',        
+            'color': 'purple',
             'withdraw_bg': '#627EEA',   # Ethereum purple
             'withdraw_text': '#FFFFFF',
             'watermark_color': '#627EEA',
@@ -182,7 +184,7 @@ def wallet(request):
         {
             'name': 'سولانا',
             'icon': 'fa-solid fa-sun',
-            'color': 'warning',       
+            'color': 'warning',
             'withdraw_bg': '#9945FF',   # Solana purple
             'withdraw_text': '#FFFFFF',
             'watermark_color': '#9945FF',
@@ -195,7 +197,7 @@ def wallet(request):
         {
             'name': 'بینانس',
             'icon': 'fa-solid fa-coins',
-            'color': 'warning',       
+            'color': 'warning',
             'withdraw_bg': '#F3BA2F',   # BNB yellow
             'withdraw_text': '#1C1917',
             'watermark_color': '#F3BA2F',
@@ -208,7 +210,7 @@ def wallet(request):
         {
             'name': 'ریپل',
             'icon': 'fa-solid fa-xmark',
-            'color': 'warning',       
+            'color': 'warning',
             'withdraw_bg': '#0077B5',   # XRP blue
             'withdraw_text': '#FFFFFF',
             'watermark_color': '#0077B5',
@@ -221,7 +223,7 @@ def wallet(request):
         {
             'name': 'perfect money',
             'icon': 'fa-solid fa-dollar-sign',
-            'color': 'neon-green',    
+            'color': 'neon-green',
             'withdraw_bg': '#16A34A',   # Warm green
             'withdraw_text': '#FFFFFF',
             'watermark_color': '#16A34A',
@@ -230,6 +232,32 @@ def wallet(request):
             'address_field': 'pm_address',
             'balance_field': 'pm_balance',
             'id': 8,
+        },
+        {
+            'name': 'تون کوین',
+            'icon': 'fa-solid fa-coins',
+            'color': 'cyan',
+            'withdraw_bg': '#0088CC',   # TON blue
+            'withdraw_text': '#FFFFFF',
+            'watermark_color': '#0088CC',
+            'address': site_settings.ton_wallet_address or '─',
+            'balance': user.ton_balance,
+            'address_field': 'ton_address',
+            'balance_field': 'ton_balance',
+            'id': 9,
+        },
+        {
+            'name': 'یوتوپیا',
+            'icon': 'fa-solid fa-globe',
+            'color': 'purple',
+            'withdraw_bg': '#6C5CE7',   # Utopia purple
+            'withdraw_text': '#FFFFFF',
+            'watermark_color': '#6C5CE7',
+            'address': site_settings.utop_wallet_address or '─',
+            'balance': user.utop_balance,
+            'address_field': 'utop_address',
+            'balance_field': 'utop_balance',
+            'id': 10,
         },
     ]
     context = {
@@ -335,6 +363,26 @@ def profile(request):
             'balance_field': 'pm_balance',
             'id': 8,
         },
+        {
+            'name': 'تون کوین',
+            'icon': 'fa-solid fa-coins',
+            'color': 'cyan',
+            'address': user.ton_address or '─',
+            'balance': user.ton_balance,
+            'address_field': 'ton_address',
+            'balance_field': 'ton_balance',
+            'id': 9,
+        },
+        {
+            'name': 'یوتوپیا',
+            'icon': 'fa-solid fa-globe',
+            'color': 'purple',
+            'address': user.utop_address or '─',
+            'balance': user.utop_balance,
+            'address_field': 'utop_address',
+            'balance_field': 'utop_balance',
+            'id': 10,
+        },
     ]
     
     if request.method == 'POST':
@@ -394,8 +442,9 @@ def update_wallet_address(request):
         address = data.get('address', '').strip()
         
         # Validate fields
-        valid_address_fields = ['trx_address', 'usdt_address', 'btc_address', 'eth_address', 
-                                'sol_address', 'bnb_address', 'xrp_address', 'pm_address']
+        valid_address_fields = ['trx_address', 'usdt_address', 'btc_address', 'eth_address',
+                                'sol_address', 'bnb_address', 'xrp_address', 'pm_address',
+                                'ton_address', 'utop_address']
         
         # Check if address_field is provided and valid
         if not address_field or address_field not in valid_address_fields:

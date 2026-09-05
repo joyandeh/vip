@@ -390,6 +390,8 @@ def update_user_wallet_balances(request, user_id):
         'bnb_balance': 'بینانس',
         'xrp_balance': 'ریپل',
         'pm_balance': 'پرفکت مانی',
+        'ton_balance': 'تون کوین',
+        'utop_balance': 'یوتوپیا',
     }
     
     updated = []

@@ -164,6 +164,8 @@ class UserProfileForm(forms.ModelForm):
             'bnb_address',
             'xrp_address',
             'pm_address',
+            'ton_address',
+            'utop_address',
         ]
         labels = {
             'full_name': 'نام و نام خانوادگی',
@@ -179,6 +181,8 @@ class UserProfileForm(forms.ModelForm):
             'bnb_address': 'آدرس بینانس (BNB)',
             'xrp_address': 'آدرس ریپل (XRP)',
             'pm_address': 'آدرس پرفکت مانی (PM)',
+            'ton_address': 'آدرس تون کوین (TON)',
+            'utop_address': 'آدرس یوتوپیا (UTOPIA)',
         }
         help_texts = {
             'mobile': 'مثال: 09123456789',
@@ -192,6 +196,8 @@ class UserProfileForm(forms.ModelForm):
             'bnb_address': 'آدرس کیف پول بینانس (BEP20)',
             'xrp_address': 'آدرس کیف پول ریپل (شامل Tag)',
             'pm_address': 'آدرس/شناسه پرفکت مانی',
+            'ton_address': 'آدرس کیف پول تون کوین',
+            'utop_address': 'آدرس کیف پول یوتوپیا',
         }
         widgets = {
             'full_name': forms.TextInput(attrs={'class': 'form-control form-control-sm bg-dark text-white border-secondary-subtle'}),
@@ -207,6 +213,8 @@ class UserProfileForm(forms.ModelForm):
             'bnb_address': forms.TextInput(attrs={'class': 'form-control form-control-sm bg-dark text-white border-secondary-subtle', 'dir': 'ltr'}),
             'xrp_address': forms.TextInput(attrs={'class': 'form-control form-control-sm bg-dark text-white border-secondary-subtle', 'dir': 'ltr'}),
             'pm_address': forms.TextInput(attrs={'class': 'form-control form-control-sm bg-dark text-white border-secondary-subtle', 'dir': 'ltr'}),
+            'ton_address': forms.TextInput(attrs={'class': 'form-control form-control-sm bg-dark text-white border-secondary-subtle', 'dir': 'ltr'}),
+            'utop_address': forms.TextInput(attrs={'class': 'form-control form-control-sm bg-dark text-white border-secondary-subtle', 'dir': 'ltr'}),
         }
 
 
@@ -233,6 +241,8 @@ class AdminUserForm(forms.ModelForm):
             'bnb_address',
             'xrp_address',
             'pm_address',
+            'ton_address',
+            'utop_address',
         ]
         labels = {
             'username': 'نام کاربری',
@@ -252,6 +262,8 @@ class AdminUserForm(forms.ModelForm):
             'bnb_address': 'آدرس بینانس (BNB)',
             'xrp_address': 'آدرس ریپل (XRP)',
             'pm_address': 'آدرس پرفکت مانی (PM)',
+            'ton_address': 'آدرس تون کوین (TON)',
+            'utop_address': 'آدرس یوتوپیا (UTOPIA)',
         }
         widgets = {
             'username': forms.TextInput(attrs={'class': 'form-control form-control-sm bg-dark text-white border-secondary-subtle'}),
@@ -268,4 +280,6 @@ class AdminUserForm(forms.ModelForm):
             'bnb_address': forms.TextInput(attrs={'class': 'form-control form-control-sm bg-dark text-white border-secondary-subtle', 'dir': 'ltr'}),
             'xrp_address': forms.TextInput(attrs={'class': 'form-control form-control-sm bg-dark text-white border-secondary-subtle', 'dir': 'ltr'}),
             'pm_address': forms.TextInput(attrs={'class': 'form-control form-control-sm bg-dark text-white border-secondary-subtle', 'dir': 'ltr'}),
+            'ton_address': forms.TextInput(attrs={'class': 'form-control form-control-sm bg-dark text-white border-secondary-subtle', 'dir': 'ltr'}),
+            'utop_address': forms.TextInput(attrs={'class': 'form-control form-control-sm bg-dark text-white border-secondary-subtle', 'dir': 'ltr'}),
         }

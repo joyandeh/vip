@@ -60,6 +60,10 @@ class CustomUser(AbstractUser):
     xrp_balance = models.DecimalField(max_digits=20, decimal_places=8, default=0, verbose_name="موجودی ریپل")
     pm_address = models.CharField(max_length=100, blank=True, verbose_name="آدرس perfect money")
     pm_balance = models.DecimalField(max_digits=20, decimal_places=2, default=0, verbose_name="موجودی پرفکت مانی")
+    ton_address = models.CharField(max_length=100, blank=True, verbose_name="آدرس تون کوین")
+    ton_balance = models.DecimalField(max_digits=20, decimal_places=8, default=0, verbose_name="موجودی تون کوین")
+    utop_address = models.CharField(max_length=100, blank=True, verbose_name="آدرس یوتوپیا")
+    utop_balance = models.DecimalField(max_digits=20, decimal_places=8, default=0, verbose_name="موجودی یوتوپیا")
 
     def __str__(self):
         return self.username
