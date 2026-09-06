@@ -37,6 +37,10 @@ class Transaction(models.Model):
         ("BNB", "BNB"),
         ("SOL", "Solana"),
         ("TRX", "Tron"),
+        ("XRP", "Ripple"),
+        ("PM", "Perfect Money"),
+        ("TON", "Toncoin"),
+        ("UTOPIA", "Utopia"),
     ]
 
     crypto_name = models.CharField(

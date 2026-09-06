@@ -5,7 +5,7 @@ def get_crypto_prices():
 
     url = (
         "https://api.coingecko.com/api/v3/simple/price"
-        "?ids=bitcoin,ethereum,tether,tron,binancecoin,solana"
+        "?ids=bitcoin,ethereum,tether,tron,binancecoin,solana,ripple,the-open-network"
         "&vs_currencies=usd"
     )
 
@@ -25,6 +25,8 @@ def get_crypto_prices():
             "TRX": data["tron"]["usd"],
             "BNB": data["binancecoin"]["usd"],
             "SOL": data["solana"]["usd"],
+            "XRP": data["ripple"]["usd"],
+            "TON": data["the-open-network"]["usd"],
         }
 
     except Exception:
@@ -36,4 +38,6 @@ def get_crypto_prices():
             "TRX": 0,
             "BNB": 0,
             "SOL": 0,
+            "XRP": 0,
+            "TON": 0,
         }

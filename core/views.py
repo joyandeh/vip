@@ -11,6 +11,10 @@ CRYPTO_NAMES = {
     'BNB': 'بایننس کوین',
     'TRX': 'ترون',
     'SOL': 'سولانا',
+    'XRP': 'ریپل',
+    'PM': 'پرفکت مانی',
+    'TON': 'تون کوین',
+    'UTOPIA': 'یوتوپیا',
 }
 
 
@@ -41,6 +45,14 @@ def index(request):
                 usd_price * toman_rate
             )
         })
+
+    # Add PM (Perfect Money) as 1 USD = toman_rate
+    cryptos.append({
+        "symbol": "PM",
+        "name": "پرفکت مانی",
+        "price_usd": 1,
+        "price_toman": toman_rate
+    })
 
     site_settings = SiteSetting.get_solo()
 
