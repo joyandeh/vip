@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from .services import get_crypto_prices, get_usd_to_toman_rate, get_fallback_toman_rate
+from .services import get_crypto_prices, get_usd_to_toman_rate
 from .models import CryptoApiSetting, HomePageSection, SiteSetting
 
 
@@ -18,21 +18,12 @@ CRYPTO_NAMES = {
 
 
 def index(request):
+    # نرخ دلار: اگر اکتیو باشد دستی، وگرنه API، هیچ پیش‌فرضی
+    toman_rate = get_usd_to_toman_rate()
+    if toman_rate is None:
+        toman_rate = 0
 
-    # Get active setting for API URL
     active_setting = CryptoApiSetting.objects.filter(active=True).first()
-
-    # اولویت: ۱) نرخ API، ۲) تنظیمات دستی پنل (fallback), ۳) پیش‌فرض ۸۵۰۰۰
-    api_rate = get_usd_to_toman_rate()
-    if api_rate:
-        toman_rate = api_rate
-    else:
-        fallback_rate = get_fallback_toman_rate()
-        if fallback_rate:
-            toman_rate = fallback_rate
-        else:
-            toman_rate = 85000
-
     sell_buy_rate = getattr(active_setting, 'sell_buy_rate', 500) if active_setting else 500
 
     prices = get_crypto_prices()
@@ -40,7 +31,6 @@ def index(request):
     cryptos = []
 
     for symbol, usd_price in prices.items():
-
         cryptos.append({
             "symbol": symbol,
             "name": CRYPTO_NAMES.get(symbol, symbol),

@@ -100,8 +100,20 @@
             font-weight: 600;
         }
         body.light-mode .form-control::placeholder {
-            color: #888 !important;
-        }
+                    color: #888 !important;
+                    font-size: 0.85rem !important;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                    white-space: nowrap;
+                }
+                body.dark-mode .form-control::placeholder,
+                .form-control::placeholder {
+                    color: #888 !important;
+                    font-size: 0.85rem !important;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                    white-space: nowrap;
+                }
         body.light-mode .modal-content {
             background: var(--light-bg-main) !important;
         }

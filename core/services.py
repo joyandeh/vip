@@ -1,38 +1,31 @@
 import requests
+import re
 
 
 def get_usd_to_toman_rate():
-    """دریافت نرخ دلار به تومان از API، در صورت خطا None برمی‌گرداند"""
+    """دریافت نرخ دلار به تومان:
+    - اگر تنظیم فعالی وجود داشته باشد: نرخ دستی (toman_rate)
+    - وگرنه: اسکرپ از tgju.org
+    - هیچ پیش‌فرضی وجود ندارد
+    """
     from core.models import CryptoApiSetting
     
-    setting = CryptoApiSetting.objects.filter(active=True).first()
-    if not setting or not setting.usd_toman_api_url:
-        return None
+    # First: check for active setting
+    active_setting = CryptoApiSetting.objects.filter(active=True).first()
+    if active_setting:
+        return active_setting.toman_rate
 
-    url = setting.usd_toman_api_url
-
+    # Second: scrape from tgju.org (no auth required)
     try:
-        response = requests.get(url, timeout=8)
-        data = response.json()
-
-        # exchangerate-api.com فرمت: {"rates": {"IRR": 42000000}} (ریال)
-        if "rates" in data and "IRR" in data["rates"]:
-            # تبدیل ریال به تومان (تقسیم بر 10)
-            return int(data["rates"]["IRR"]) // 10
-
-        # freecurrencyapi.com فرمت: {"data": {"IRR": 42000000}} (ریال)
-        if "data" in data and "IRR" in data["data"]:
-            return int(data["data"]["IRR"]) // 10
-
-        # ارزهای دیگر که ممکن است IRR برگردانند
-        if "rates" in data:
-            for key, value in data["rates"].items():
-                if key.upper() in ("IRR", "TOMAN", "IRT"):
-                    # اگر TOMAN برگرداند مستقیم استفاده کن، اگر IRR برگرداند تقسیم بر 10
-                    if key.upper() == "TOMAN":
-                        return int(value)
-                    return int(value) // 10
-
+        response = requests.get('https://www.tgju.org/profile/price_dollar_rl', timeout=8)
+        html = response.text
+        
+        # Extract current price from HTML: <div class="price" data-col="info.last_trade.PDrCotVal">2,236,650</div>
+        match = re.search(r'class="price"\s+data-col="info\.last_trade\.PDrCotVal">([0-9,]+)', html)
+        if match:
+            rial_str = match.group(1).replace(',', '')
+            rial_value = int(rial_str)
+            return rial_value // 10  # Convert Rial to Toman
     except Exception:
         pass
 
@@ -40,24 +33,7 @@ def get_usd_to_toman_rate():
 
 
 def get_fallback_toman_rate():
-    """دریافت نرخ دستی از تنظیمات (اولویت: تنظیمات با نرخ غیر پیش‌فرض که اخیراً بروزرسانی شده، سپس فعال، سپس پیش‌فرض)"""
-    from core.models import CryptoApiSetting
-    
-    # First priority: most recently updated setting with non-default rate (user is configuring this)
-    custom_rate_setting = CryptoApiSetting.objects.exclude(toman_rate=85000).order_by('-updated_at').first()
-    if custom_rate_setting:
-        return custom_rate_setting.toman_rate
-    
-    # Second priority: active setting
-    active_setting = CryptoApiSetting.objects.filter(active=True).first()
-    if active_setting:
-        return active_setting.toman_rate
-    
-    # Third priority: most recently updated setting
-    latest_setting = CryptoApiSetting.objects.order_by('-updated_at').first()
-    if latest_setting:
-        return latest_setting.toman_rate
-    
+    """سازگاری - استفاده نکنید. منطق در get_usd_to_toman_rate یکپارچه شده."""
     return None
 
 

@@ -13,7 +13,7 @@ class CryptoApiSetting(models.Model):
     # USD to Toman API settings
     usd_toman_api_url = models.URLField(
         blank=True,
-        default="https://open.er-api.com/v6/latest/USD",
+        default="https://api.nerkh.io/v2/prices/json/lite/currency",
         verbose_name="آدرس API نرخ دلار به تومان",
     )
 

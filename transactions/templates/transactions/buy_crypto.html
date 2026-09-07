@@ -63,11 +63,8 @@
                 </div>
                 <div class="input-group" style="max-width: 100%;">
                     <span class="input-group-text bg-transparent border-0 text-neon-green fw-bold px-3" style="background: rgba(0, 230, 118, 0.1) !important; border-right: 1px solid rgba(0, 230, 118, 0.2) !important;"><i class="fa-solid fa-money-bill-wave"></i></span>
-                    <input type="text" id="calculated_total" class="form-control form-control-sm bg-transparent text-neon-green fw-bold border-0 text-end px-3" readonly style="font-size: 1.25rem; background: rgba(255,255,255,0.02) !important; box-shadow: inset 0 2px 8px rgba(0,0,0,0.15);" placeholder="ارز و مقدار را انتخاب کنید">
+                    <input type="text" id="calculated_total" class="form-control form-control-sm bg-transparent text-neon-green fw-bold border-0 text-end px-3" readonly style="font-size: 1rem; background: rgba(255,255,255,0.02) !important; box-shadow: inset 0 2px 8px rgba(0,0,0,0.15);" placeholder="ارز و مقدار را انتخاب کنید">
                     <span class="input-group-text bg-transparent border-0 text-custom-muted fw-medium px-3" style="background: rgba(255,255,255,0.03) !important; border-left: 1px solid rgba(255,255,255,0.05) !important;">تومان</span>
-                </div>
-                <div class="mt-2">
-                    <span class="text-custom-muted small" id="rate_info"></span>
                 </div>
             </div>
 
@@ -171,7 +168,6 @@ document.addEventListener('DOMContentLoaded', function() {
     const cryptoSelect = document.querySelector('[name="crypto_name"]');
     const amountInput = document.querySelector('[name="amount"]');
     const calculatedTotal = document.getElementById('calculated_total');
-    const rateInfo = document.getElementById('rate_info');
 
     function updateCalculation() {
         const crypto = cryptoSelect.value;
@@ -182,18 +178,11 @@ document.addEventListener('DOMContentLoaded', function() {
             const unitPrice = usdPrice * tomanRate;
             const total = unitPrice * amount;
 
-            calculatedTotal.value = total.toLocaleString('fa-IR');
-            rateInfo.textContent = `نرخ: ${usdPrice.toLocaleString()} $ × ${tomanRate.toLocaleString()} = ${unitPrice.toLocaleString()} تومان/واحد`;
-            rateInfo.className = 'text-neon-green small';
+            calculatedTotal.value = Math.floor(total).toLocaleString('fa-IR');
         } else if (crypto && prices[crypto]) {
-            const usdPrice = prices[crypto];
-            const unitPrice = usdPrice * tomanRate;
             calculatedTotal.value = 'مقدار را وارد کنید';
-            rateInfo.textContent = `نرخ واحد: ${unitPrice.toLocaleString()} تومان (${usdPrice.toLocaleString()} $ × ${tomanRate.toLocaleString()})`;
-            rateInfo.className = 'text-custom-muted small';
         } else {
             calculatedTotal.value = 'ارز و مقدار را انتخاب کنید';
-            rateInfo.textContent = '';
         }
     }
 

@@ -17,7 +17,7 @@ class BuyTransactionForm(forms.ModelForm):
         ]
         widgets = {
             'crypto_name': forms.Select(attrs={'class': 'form-control form-control-sm bg-dark text-white border-secondary-subtle', 'required': True}),
-            'amount': forms.NumberInput(attrs={'class': 'form-control form-control-sm bg-dark text-white border-secondary-subtle', 'placeholder': 'مقدار رمزارز', 'step': 'any', 'required': True}),
+            'amount': forms.TextInput(attrs={'class': 'form-control form-control-sm bg-dark text-white border-secondary-subtle', 'placeholder': 'مقدار رمزارز (مثال: 0.5)', 'inputmode': 'decimal', 'pattern': '[0-9]*(\.[0-9]+)?', 'required': True}),
             'destination_address': forms.TextInput(attrs={'class': 'form-control form-control-sm bg-dark text-white border-secondary-subtle', 'placeholder': 'آدرس مقصد ( ولت )', 'required': True}),
             'purchaser_full_name': forms.TextInput(attrs={'class': 'form-control form-control-sm bg-dark text-white border-secondary-subtle', 'placeholder': 'نام و نام خانوادگی', 'required': True}),
             'purchaser_card_number': forms.TextInput(attrs={'class': 'form-control form-control-sm bg-dark text-white border-secondary-subtle', 'placeholder': 'شماره کارت واریزی', 'required': True}),
@@ -45,7 +45,7 @@ class SellTransactionForm(forms.ModelForm):
         ]
         widgets = {
             'crypto_name': forms.Select(attrs={'class': 'form-select form-select-sm bg-dark text-white border-secondary-subtle', 'required': True}),
-            'amount': forms.NumberInput(attrs={'class': 'form-control form-control-sm bg-dark text-white border-secondary-subtle', 'placeholder': 'مقدار ارز', 'step': 'any', 'required': True}),
+            'amount': forms.TextInput(attrs={'class': 'form-control form-control-sm bg-dark text-white border-secondary-subtle', 'placeholder': 'مقدار ارز (مثال: 0.5)', 'inputmode': 'decimal', 'pattern': '[0-9]*(\.[0-9]+)?', 'required': True}),
             'tx_hash': forms.TextInput(attrs={'class': 'form-control form-control-sm bg-dark text-white border-secondary-subtle', 'placeholder': 'هش تراکنش یا کد فعال سازی'}),
             'seller_full_name': forms.TextInput(attrs={'class': 'form-control form-control-sm bg-dark text-white border-secondary-subtle', 'placeholder': 'نام و نام خانوادگی', 'required': True}),
             'seller_card_number': forms.TextInput(attrs={'class': 'form-control form-control-sm bg-dark text-white border-secondary-subtle', 'placeholder': 'شماره کارت', 'required': True}),

@@ -10,3 +10,4 @@ services:
       - "80:8000" 
     environment:
       - DEBUG=1
+      - TZ=Asia/Tehran
