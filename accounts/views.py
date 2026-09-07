@@ -92,16 +92,25 @@ def user_logout(request):
 def wallet(request):
     """صفحه کیف پول کاربر - نمایش آدرس‌ها و موجودی‌ها از تنظیمات سایت"""
     from core.models import SiteSetting, CryptoApiSetting
-    from core.services import get_crypto_prices
+    from core.services import get_crypto_prices, get_usd_to_toman_rate, get_fallback_toman_rate
     from decimal import Decimal
     
     user = request.user
     site_settings = SiteSetting.get_solo()
     
-    # Get crypto prices and toman rate from CryptoApiSetting (panel pricing settings)
+    # Get crypto prices and toman rate - priority: API > fallback > default
     prices = get_crypto_prices()
     crypto_setting = CryptoApiSetting.objects.filter(active=True).first()
-    toman_rate = crypto_setting.toman_rate if crypto_setting else 85000
+    
+    api_rate = get_usd_to_toman_rate()
+    if api_rate:
+        toman_rate = api_rate
+    else:
+        fallback_rate = get_fallback_toman_rate()
+        if fallback_rate:
+            toman_rate = fallback_rate
+        else:
+            toman_rate = 85000
     
     # Calculate total balance in USDT equivalent
     total_usdt = Decimal('0')

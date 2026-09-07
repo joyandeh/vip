@@ -10,13 +10,26 @@ class CryptoApiSetting(models.Model):
         blank=True
     )
 
+    # USD to Toman API settings
+    usd_toman_api_url = models.URLField(
+        blank=True,
+        default="https://open.er-api.com/v6/latest/USD",
+        verbose_name="آدرس API نرخ دلار به تومان",
+    )
+
     toman_rate = models.PositiveIntegerField(
         default=85000,
-        verbose_name="قیمت دلار به تومان"
+        verbose_name="قیمت دلار به تومان (دستی)"
     )
 
     active = models.BooleanField(
         default=True
+    )
+
+    # Track when setting was last modified for fallback priority
+    updated_at = models.DateTimeField(
+        auto_now=True,
+        verbose_name="آخرین بروزرسانی"
     )
 
     def __str__(self):

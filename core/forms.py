@@ -63,6 +63,7 @@ class CryptoApiSettingForm(forms.ModelForm):
         fields = [
             'api_url',
             'api_key',
+            'usd_toman_api_url',
             'toman_rate',
             'active',
         ]
@@ -74,10 +75,13 @@ class CryptoApiSettingForm(forms.ModelForm):
             'api_key': forms.TextInput(
                 attrs={'class': 'form-control bg-dark text-white border-secondary-subtle', 'dir': 'ltr'}
             ),
+            'usd_toman_api_url': forms.URLInput(
+                attrs={'class': 'form-control bg-dark text-white border-secondary-subtle', 'dir': 'ltr'}
+            ),
             'toman_rate': forms.NumberInput(
                 attrs={'class': 'form-control bg-dark text-white border-secondary-subtle', 'dir': 'ltr'}
             ),
-            'is_active': forms.CheckboxInput(
+            'active': forms.CheckboxInput(
                 attrs={'class': 'form-check-input'}
             ),
         }

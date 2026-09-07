@@ -223,6 +223,7 @@
                     <form method="post" class="django-form-wrapper">
                         {% csrf_token %}
                         <input type="hidden" name="form_type" value="crypto_setting">
+                        <input type="hidden" name="crypto-id" value="{{ crypto_form.instance.pk|default:'' }}">
                         {{ crypto_form.as_p }}
                         <button type="submit" class="btn btn-modern btn-modern-primary w-100 py-2.5 fw-bold text-dark mt-3">
                             <i class="fa-solid fa-save me-1"></i> ذخیره تنظیمات قیمت

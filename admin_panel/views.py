@@ -6,6 +6,7 @@ from django.views.decorators.http import require_POST
 from django.db.models import Sum, Count, Q
 from django.utils import timezone
 from django.http import HttpResponseForbidden
+from django.urls import reverse
 from datetime import timedelta
 
 from transactions.models import Transaction
@@ -179,18 +180,28 @@ def site_settings(request):
                 messages.error(request, "خطایی در ذخیره تنظیمات سایت رخ داد.")
 
         elif form_type == 'crypto_setting':
-            setting = CryptoApiSetting.objects.filter(active=True).first()
+            # Get the setting being edited (by ID if provided, else active, else new)
+            setting_id = request.POST.get('crypto-id')
+            if setting_id:
+                setting = get_object_or_404(CryptoApiSetting, pk=setting_id)
+            else:
+                setting = CryptoApiSetting.objects.filter(active=True).first() or CryptoApiSetting()
             form = CryptoApiSettingForm(
                 request.POST,
-                instance=setting or CryptoApiSetting(),
+                instance=setting,
                 prefix='crypto'
             )
             if form.is_valid():
-                form.save()
+                saved_setting = form.save()
                 messages.success(request, "تنظیمات قیمت‌گذاری ذخیره شد.")
-                return redirect('panel_settings')
+                # Redirect with the saved setting ID so GET shows the same record
+                return redirect(f"{reverse('panel_settings')}?crypto_id={saved_setting.pk}")
             else:
                 messages.error(request, "خطایی در ذخیره تنظیمات قیمت‌گذاری رخ داد.")
+                # On error, also pass the ID back
+                if setting_id:
+                    return redirect(f"{reverse('panel_settings')}?crypto_id={setting_id}")
+                return redirect('panel_settings')
 
         elif form_type == 'bank_setting':
             site = SiteSetting.get_solo()
@@ -207,9 +218,15 @@ def site_settings(request):
         prefix='site'
     )
 
-    active_crypto_setting = CryptoApiSetting.objects.filter(active=True).first()
+    # Handle crypto_id from query parameter (for showing the same record after save)
+    crypto_id = request.GET.get('crypto_id')
+    if crypto_id:
+        crypto_setting = get_object_or_404(CryptoApiSetting, pk=crypto_id)
+    else:
+        crypto_setting = CryptoApiSetting.objects.filter(active=True).first() or CryptoApiSetting()
+    
     crypto_form = CryptoApiSettingForm(
-        instance=active_crypto_setting or CryptoApiSetting(),
+        instance=crypto_setting,
         prefix='crypto'
     )
 

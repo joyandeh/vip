@@ -7,7 +7,7 @@ from django.http import HttpResponseForbidden
 from .forms import BuyTransactionForm, SellTransactionForm
 from .models import Transaction
 
-from core.services import get_crypto_prices
+from core.services import get_crypto_prices, get_usd_to_toman_rate, get_fallback_toman_rate
 from core.models import CryptoApiSetting, SiteSetting
 
 
@@ -21,7 +21,17 @@ def buy_crypto(request):
     site_settings = SiteSetting.get_solo()
     prices = get_crypto_prices()
     setting = CryptoApiSetting.objects.filter(active=True).first()
-    toman_rate = setting.toman_rate if setting else 85000
+
+    # Priority: API > fallback > default
+    api_rate = get_usd_to_toman_rate()
+    if api_rate:
+        toman_rate = api_rate
+    else:
+        fallback_rate = get_fallback_toman_rate()
+        if fallback_rate:
+            toman_rate = fallback_rate
+        else:
+            toman_rate = 85000
 
     if request.method == "POST":
         form = BuyTransactionForm(request.POST)
@@ -63,7 +73,17 @@ def sell_crypto(request):
     site_settings = SiteSetting.get_solo()
     prices = get_crypto_prices()
     setting = CryptoApiSetting.objects.filter(active=True).first()
-    toman_rate = setting.toman_rate if setting else 85000
+
+    # Priority: API > fallback > default
+    api_rate = get_usd_to_toman_rate()
+    if api_rate:
+        toman_rate = api_rate
+    else:
+        fallback_rate = get_fallback_toman_rate()
+        if fallback_rate:
+            toman_rate = fallback_rate
+        else:
+            toman_rate = 85000
 
     # نگاشت ارز به آدرس کیف پول از تنظیمات سایت
     wallet_addresses = {
