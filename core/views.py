@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from .services import get_crypto_prices, get_usd_to_toman_rate
+from .services import get_crypto_prices, get_usd_toman_rate, get_rates_status
 from .models import CryptoApiSetting, HomePageSection, SiteSetting
 
 
@@ -18,37 +18,39 @@ CRYPTO_NAMES = {
 
 
 def index(request):
-    # نرخ دلار: اگر اکتیو باشد دستی، وگرنه API، هیچ پیش‌فرضی
-    toman_rate = get_usd_to_toman_rate()
-    if toman_rate is None:
-        toman_rate = 0
-
+    # Get rates from cache/DB (no API calls in request path)
+    toman_rate = get_usd_toman_rate()
+    prices = get_crypto_prices()
+    
     active_setting = CryptoApiSetting.objects.filter(active=True).first()
     sell_buy_rate = getattr(active_setting, 'sell_buy_rate', 500) if active_setting else 500
 
-    prices = get_crypto_prices()
-
     cryptos = []
 
-    for symbol, usd_price in prices.items():
-        cryptos.append({
-            "symbol": symbol,
-            "name": CRYPTO_NAMES.get(symbol, symbol),
-            "price_usd": usd_price,
-            "price_toman": int(
-                usd_price * toman_rate
-            )
-        })
+    if prices:
+        for symbol, usd_price in prices.items():
+            price_toman = None
+            if toman_rate and usd_price:
+                price_toman = int(usd_price * toman_rate)
+            
+            cryptos.append({
+                "symbol": symbol,
+                "name": CRYPTO_NAMES.get(symbol, symbol),
+                "price_usd": float(usd_price) if usd_price else None,
+                "price_toman": price_toman,
+            })
 
     # Add PM (Perfect Money) as 1 USD = toman_rate
-    cryptos.append({
-        "symbol": "PM",
-        "name": "پرفکت مانی",
-        "price_usd": 1,
-        "price_toman": toman_rate
-    })
+    if toman_rate:
+        cryptos.append({
+            "symbol": "PM",
+            "name": "پرفکت مانی",
+            "price_usd": 1.0,
+            "price_toman": toman_rate,
+        })
 
     site_settings = SiteSetting.get_solo()
+    rates_status = get_rates_status()
 
     homepage_sections = HomePageSection.objects.filter(
         is_active=True
@@ -65,5 +67,6 @@ def index(request):
             "homepage_sections": homepage_sections,
             "unreads_count": 0,
             "telegram_url": "https://t.me/tronlnd_support",
+            "rates_status": rates_status,
         }
     )

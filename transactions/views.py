@@ -7,7 +7,7 @@ from django.http import HttpResponseForbidden
 from .forms import BuyTransactionForm, SellTransactionForm
 from .models import Transaction
 
-from core.services import get_crypto_prices, get_usd_to_toman_rate
+from core.services import get_crypto_prices, get_usd_toman_rate
 from core.models import CryptoApiSetting, SiteSetting
 
 
@@ -23,7 +23,7 @@ def buy_crypto(request):
     setting = CryptoApiSetting.objects.filter(active=True).first()
 
     # Priority: if active: manual, else API, no default
-    toman_rate = get_usd_to_toman_rate()
+    toman_rate = get_usd_toman_rate()
     if toman_rate is None:
         toman_rate = 0
 
@@ -69,7 +69,7 @@ def sell_crypto(request):
     setting = CryptoApiSetting.objects.filter(active=True).first()
 
     # Priority: if active: manual, else API, no default
-    toman_rate = get_usd_to_toman_rate()
+    toman_rate = get_usd_toman_rate()
     if toman_rate is None:
         toman_rate = 0
 

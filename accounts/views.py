@@ -101,8 +101,6 @@ def wallet(request):
     # Get crypto prices and toman rate - if active: manual, else API, no default
     prices = get_crypto_prices()
     toman_rate = get_usd_to_toman_rate()
-    if toman_rate is None:
-        toman_rate = 0
     
     # Calculate total balance in USDT equivalent
     total_usdt = Decimal('0')

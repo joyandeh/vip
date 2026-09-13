@@ -36,6 +36,31 @@ class CryptoApiSetting(models.Model):
         return self.api_url
 
 
+class CachedRate(models.Model):
+    """Store fetched rates from APIs with timestamps - no defaults, only real API data"""
+    RATE_TYPES = [
+        ('usd_toman', 'USD to Toman'),
+        ('crypto_price', 'Crypto Price (USD)'),
+    ]
+    
+    rate_type = models.CharField(max_length=20, choices=RATE_TYPES, db_index=True)
+    symbol = models.CharField(max_length=10, blank=True, default='', db_index=True)  # e.g., 'BTC', 'USDT' for crypto
+    value = models.DecimalField(max_digits=20, decimal_places=2)
+    source = models.CharField(max_length=50)  # e.g., 'nerkh.io', 'nobitex', 'coingecko'
+    fetched_at = models.DateTimeField(auto_now_add=True, db_index=True)
+    
+    class Meta:
+        ordering = ['-fetched_at']
+        indexes = [
+            models.Index(fields=['rate_type', 'symbol', '-fetched_at']),
+        ]
+        verbose_name = "نرخ ذخیره شده"
+        verbose_name_plural = "نرخ‌های ذخیره شده"
+    
+    def __str__(self):
+        return f"{self.get_rate_type_display()} {self.symbol}: {self.value} ({self.source})"
+
+
 class HomePageSection(models.Model):
 
     SECTION_CHOICES = [
