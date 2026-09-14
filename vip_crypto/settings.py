@@ -23,7 +23,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-yr@5%k5991+@j%q7%s^7__^#zr^z*r)^t#o8p36ru%+jmeo-)u'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ["*"]
 
@@ -65,6 +65,7 @@ CSRF_TRUSTED_ORIGINS = [
     'https://212.100.171.49',
     'http://127.0.0.1:8000',
     'http://localhost:8000',
+    'https://www.tronlnd.ir',
 ]
 
 ROOT_URLCONF = 'vip_crypto.urls'
