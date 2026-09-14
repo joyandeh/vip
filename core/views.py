@@ -20,6 +20,9 @@ CRYPTO_NAMES = {
 def index(request):
     # Get rates from cache/DB (no API calls in request path)
     toman_rate = get_usd_toman_rate()
+    # Convert to integer (no decimals) for display
+    toman_rate_int = int(toman_rate) if toman_rate is not None else None
+    
     prices = get_crypto_prices()
     
     active_setting = CryptoApiSetting.objects.filter(active=True).first()
@@ -30,8 +33,8 @@ def index(request):
     if prices:
         for symbol, usd_price in prices.items():
             price_toman = None
-            if toman_rate and usd_price:
-                price_toman = int(usd_price * toman_rate)
+            if toman_rate_int and usd_price:
+                price_toman = int(usd_price * toman_rate_int)
             
             cryptos.append({
                 "symbol": symbol,
@@ -41,12 +44,12 @@ def index(request):
             })
 
     # Add PM (Perfect Money) as 1 USD = toman_rate
-    if toman_rate:
+    if toman_rate_int:
         cryptos.append({
             "symbol": "PM",
             "name": "پرفکت مانی",
             "price_usd": 1.0,
-            "price_toman": toman_rate,
+            "price_toman": toman_rate_int,
         })
 
     site_settings = SiteSetting.get_solo()
@@ -61,7 +64,7 @@ def index(request):
         "core/index.html",
         {
             "cryptos": cryptos,
-            "toman_rate": toman_rate,
+            "toman_rate": toman_rate_int,
             "sell_buy_rate": sell_buy_rate,
             "site_settings": site_settings,
             "homepage_sections": homepage_sections,
