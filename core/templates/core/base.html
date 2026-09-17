@@ -7,18 +7,15 @@
     <title>{% block title %}tronlnd | پلتفرم معاملاتی رمزارز{% endblock %}</title>
 
     <link rel="icon" type="image/png" sizes="32x32" href="{% static 'images/logo.png' %}">
-    <link rel="icon" type="image/png" sizes="16x16" href="{% static 'images/logo.png' %}">
-    <link rel="apple-touch-icon" href="{% static 'images/logo.png' %}">
+        <link rel="icon" type="image/png" sizes="16x16" href="{% static 'images/logo.png' %}">
+        <link rel="apple-touch-icon" href="{% static 'images/logo.png' %}">
 
-    <link href="{% static 'css/bootstrap.rtl.min.css' %}" rel="stylesheet">
-    <link href="{% static 'css/fontawesome.min.css' %}" rel="stylesheet">
-    <link href="{% static 'css/vazirmatn.css' %}" rel="stylesheet" type="text/css" />
-    <link rel="preload" as="font" type="font/woff2" crossorigin href="{% static 'fonts/Vazirmatn-Regular.woff2' %}">
-    <link rel="preload" as="font" type="font/woff2" crossorigin href="{% static 'fonts/Vazirmatn-Medium.woff2' %}">
-    <link rel="preload" as="font" type="font/woff2" crossorigin href="{% static 'fonts/Vazirmatn-Bold.woff2' %}">
-    <link rel="preload" as="font" type="font/woff2" crossorigin href="{% static 'webfonts/fa-solid-900.woff2' %}">
-    <link rel="preload" as="font" type="font/woff2" crossorigin href="{% static 'webfonts/fa-regular-400.woff2' %}">
-    <style>
+        <link href="{% static 'css/bootstrap.rtl.min.css' %}" rel="stylesheet">
+        <link href="{% static 'css/vazirmatn.css' %}" rel="stylesheet" type="text/css" />
+        <link rel="preload" as="font" type="font/woff2" crossorigin href="{% static 'fonts/Vazirmatn-Regular.woff2' %}">
+        <link rel="preload" as="font" type="font/woff2" crossorigin href="{% static 'fonts/Vazirmatn-Medium.woff2' %}">
+        <link rel="preload" as="font" type="font/woff2" crossorigin href="{% static 'fonts/Vazirmatn-Bold.woff2' %}">
+        <style>
         :root {
             --bg-main: #0B0E14;
             --bg-card: rgba(20, 26, 38, 0.65);
@@ -241,32 +238,72 @@
         }
 
         /* Modern Action Buttons */
-        .btn-modern {
-            border-radius: 14px;
-            padding: 8px 20px;
-            font-weight: 600;
-            font-size: 0.9rem;
-            transition: all 0.2s ease;
-            border: none;
-            text-decoration: none;
-        }
+                .btn-modern {
+                    border-radius: 14px;
+                    padding: 8px 20px;
+                    font-weight: 600;
+                    font-size: 0.9rem;
+                    transition: all 0.2s ease;
+                    border: none;
+                    text-decoration: none;
+                }
 
-        .btn-modern-primary {
-            background: var(--accent-green);
-            color: #000000;
-        }
+                .btn-modern-primary {
+                    background: var(--accent-green);
+                    color: #000000;
+                }
 
-        .btn-modern-primary:hover {
-            background: #00c865;
-            box-shadow: 0 0 15px rgba(0, 230, 118, 0.4);
-            color: #000000;
-        }
+                .btn-modern-primary:hover {
+                    background: #00c865;
+                    box-shadow: 0 0 15px rgba(0, 230, 118, 0.4);
+                    color: #000000;
+                }
 
-        .btn-modern-outline {
-            background: transparent;
-            color: #FFFFFF;
-            border: 1px solid rgba(255, 255, 255, 0.15);
-        }
+                .btn-modern-outline {
+                    background: transparent;
+                    color: #FFFFFF;
+                    border: 1px solid rgba(255, 255, 255, 0.15);
+                }
+
+                /* Navbar inline SVG icons */
+                                .icon-20 {
+                                    width: 20px;
+                                    height: 20px;
+                                    flex-shrink: 0;
+                                }
+                                .icon-14 {
+                                    width: 14px;
+                                    height: 14px;
+                                    flex-shrink: 0;
+                                }
+                                .icon-32 {
+                                    width: 32px;
+                                    height: 32px;
+                                    flex-shrink: 0;
+                                }
+                                .icon-48 {
+                                    width: 48px;
+                                    height: 48px;
+                                    flex-shrink: 0;
+                                }
+
+                /* Theme toggle icons */
+                #sun-icon, #moon-icon {
+                    transition: opacity 0.2s ease;
+                }
+
+                body.light-mode #sun-icon {
+                    display: none;
+                }
+                body.light-mode #moon-icon {
+                    display: block;
+                }
+                body:not(.light-mode) #sun-icon {
+                    display: block;
+                }
+                body:not(.light-mode) #moon-icon {
+                    display: none;
+                }
 
         .btn-modern-outline:hover {
             background: rgba(255, 255, 255, 0.05);
@@ -294,33 +331,35 @@
         }
 
         .bottom-nav-item {
-            text-decoration: none;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            color: var(--text-muted);
-            font-size: 0.75rem;
-            font-weight: 500;
-            transition: color 0.2s ease;
-            width: 20%;
-            height: 100%;
-        }
+                    text-decoration: none;
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                    justify-content: center;
+                    color: var(--text-muted);
+                    font-size: 0.75rem;
+                    font-weight: 500;
+                    transition: color 0.2s ease;
+                    width: 20%;
+                    height: 100%;
+                }
 
-        .bottom-nav-item i {
-            font-size: 1.3rem;
-            margin-bottom: 4px;
-            transition: transform 0.2s ease;
-        }
+                .bottom-nav-item svg {
+                    width: 24px;
+                    height: 24px;
+                    margin-bottom: 4px;
+                    transition: transform 0.2s ease;
+                    stroke: currentColor;
+                }
 
-        .bottom-nav-item:hover,
-        .bottom-nav-item.active {
-            color: var(--accent-cyan);
-        }
+                .bottom-nav-item:hover,
+                .bottom-nav-item.active {
+                    color: var(--accent-cyan);
+                }
 
-        .bottom-nav-item:hover i {
-            transform: translateY(-2px);
-        }
+                .bottom-nav-item:hover svg {
+                    transform: translateY(-2px);
+                }
 
         /* Special Quick Action Center Button */
         .bottom-nav-item.action-hub {
@@ -382,58 +421,92 @@
 
         <nav class="navbar navbar-expand navbar-dark navbar-custom">
             <div class="container px-3">
-                <a class="navbar-brand brand-logo" href="{% url 'home' %}">
-                                    <img src="{% static 'images/logo-navbar.png' %}" alt="TronLND" style="height: 36px; width: auto;" class="me-1">
-                                    <span class="d-none d-md-inline">tron<span>lnd</span></span>
-                                </a>
+                            <a class="navbar-brand brand-logo" href="{% url 'home' %}">
+                                                <img src="{% static 'images/logo-navbar.png' %}" alt="TronLND" style="height: 36px; width: auto;" class="me-1">
+                                                <span class="d-none d-md-inline">tron<span>lnd</span></span>
+                                            </a>
 
-                <div class="d-flex align-items-center gap-2">
-                            <!-- آیکون نامه / اعلان - نمایش پیام‌های ادمین در مودال -->
-                            {% if user.is_authenticated %}
-                            <button class="btn btn-modern btn-modern-outline py-1 px-2 d-flex align-items-center justify-content-center position-relative" data-bs-toggle="modal" data-bs-target="#messagesModal" style="width:40px;height:40px;">
-                                <i class="fa-regular fa-envelope" style="font-size:1rem;"></i>
-                                {% with unread_count=user.unread_messages_count %}
-                                    {% if unread_count > 0 %}
-                                    <span class="position-absolute translate-middle badge rounded-pill bg-danger" style="top: -2px; right: -2px; font-size: 0.55rem; padding: 2px 5px; min-width: 18px; height: 18px; display: flex; align-items: center; justify-content: center;">
-                                        {{ unread_count }}
-                                    </span>
-                                    {% endif %}
-                                {% endwith %}
-                            </button>
-                            {% else %}
-                            <a href="#" class="btn btn-modern btn-modern-outline py-1 px-2 d-flex align-items-center justify-content-center position-relative" style="width:40px;height:40px;">
-                                <i class="fa-regular fa-envelope" style="font-size:1rem;"></i>
-                            </a>
-                            {% endif %}
-
-                    <button id="theme-toggle" class="btn btn-modern btn-modern-outline py-1 px-2 d-flex align-items-center justify-content-center" style="width:40px;height:40px;">
-                                            <i class="fa-solid fa-sun" style="font-size:1rem;"></i>
+                            <div class="d-flex align-items-center gap-2">
+                                        <!-- آیکون نامه / اعلان - نمایش پیام‌های ادمین در مودال -->
+                                        {% if user.is_authenticated %}
+                                        <button class="btn btn-modern btn-modern-outline d-flex align-items-center justify-content-center position-relative" data-bs-toggle="modal" data-bs-target="#messagesModal" style="width:40px;height:40px; padding:0;">
+                                            <svg class="icon-20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                                                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+                                                <polyline points="22,6 12,13 2,6"/>
+                                            </svg>
+                                            {% with unread_count=user.unread_messages_count %}
+                                                {% if unread_count > 0 %}
+                                                <span class="position-absolute translate-middle badge rounded-pill bg-danger" style="top: -2px; right: -2px; font-size: 0.55rem; padding: 2px 5px; min-width: 18px; height: 18px; display: flex; align-items: center; justify-content: center;">
+                                                    {{ unread_count }}
+                                                </span>
+                                                {% endif %}
+                                            {% endwith %}
                                         </button>
-                    {% if user.is_authenticated %}
-                    <div class="profile-panel-wrapper">
-                        <button class="btn btn-modern btn-modern-outline py-1 px-2 profile-panel-trigger" style="position:relative;z-index:1;">
-                            <i class="fa-regular fa-user"></i>
-                        </button>
+                                        {% else %}
+                                        <a href="#" class="btn btn-modern btn-modern-outline d-flex align-items-center justify-content-center position-relative" style="width:40px;height:40px; padding:0;">
+                                            <svg class="icon-20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                                                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+                                                <polyline points="22,6 12,13 2,6"/>
+                                            </svg>
+                                        </a>
+                                        {% endif %}
+
+                                <button id="theme-toggle" class="btn btn-modern btn-modern-outline d-flex align-items-center justify-content-center" style="width:40px;height:40px; padding:0;">
+                                                        <svg class="icon-20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" id="sun-icon">
+                                                            <circle cx="12" cy="12" r="5"/>
+                                                            <line x1="12" y1="1" x2="12" y2="3"/>
+                                                            <line x1="12" y1="21" x2="12" y2="23"/>
+                                                            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/>
+                                                            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+                                                            <line x1="1" y1="12" x2="3" y2="12"/>
+                                                            <line x1="21" y1="12" x2="23" y2="12"/>
+                                                            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/>
+                                                            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+                                                        </svg>
+                                                        <svg class="icon-20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" id="moon-icon" style="display:none;">
+                                                            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+                                                        </svg>
+                                                    </button>
+                                {% if user.is_authenticated %}
+                                <div class="profile-panel-wrapper">
+                                    <button class="btn btn-modern btn-modern-outline d-flex align-items-center justify-content-center profile-panel-trigger" style="width:40px;height:40px; padding:0; position:relative;z-index:1;">
+                                        <svg class="icon-20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                                            <circle cx="12" cy="7" r="4"/>
+                                        </svg>
+                                    </button>
                         <!-- پنل مدیریت به صورت Overlay روی صفحه -->
                         <div class="profile-overlay" id="profileOverlay" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; z-index:1070; background:rgba(0,0,0,0.5);">
                             <div class="profile-panel" style="position:absolute; top:60px; left:10px; right:10px; background:rgba(255,255,255,0.98); border-radius:16px; box-shadow:0 8px 32px rgba(0,0,0,0.3); border:1px solid rgba(0,0,0,0.08); padding:16px; max-width:360px; margin:0 auto;">
                                 <div class="d-flex justify-content-between align-items-center mb-3 pb-2" style="border-bottom:1px solid rgba(0,0,0,0.08);">
-                                    <span style="font-weight:700; color:#1a1a1a;">{{ user.full_name|default:user.username }}</span>
-                                    <button class="btn btn-sm p-0 profile-panel-close" style="background:none;border:none;font-size:1.2rem;color:#666;cursor:pointer;">
-                                        <i class="fa-solid fa-times"></i>
-                                    </button>
-                                </div>
-                                {% if user.is_staff %}
-                                <a class="d-block py-2 px-3 mb-1 rounded-3 text-decoration-none fw-bold" href="{% url 'panel_dashboard' %}" style="color:#0891b2; background:rgba(0,229,255,0.08);">
-                                    <i class="fa-solid fa-user-shield me-2"></i> پنل مدیریت پلتفرم
-                                </a>
-                                {% endif %}
-                                <a class="d-block py-2 px-3 mb-1 rounded-3 text-decoration-none" href="{% url 'profile' %}" style="color:#333;">
-                                    <i class="fa-solid fa-sliders me-2" style="color:#888;"></i> پروفایل کاربری
-                                </a>
-                                <a class="d-block py-2 px-3 rounded-3 text-decoration-none" href="{% url 'logout' %}" style="color:#ff5252;">
-                                    <i class="fa-solid fa-arrow-right-from-bracket me-2"></i> خروج
-                                </a>
+                                                                    <span style="font-weight:700; color:#1a1a1a;">{{ user.full_name|default:user.username }}</span>
+                                                                    <button class="btn btn-sm p-0 profile-panel-close" style="background:none;border:none;font-size:1.2rem;color:#666;cursor:pointer;">
+                                                                        <svg class="icon-20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                                                                            <line x1="18" y1="6" x2="6" y2="18"/>
+                                                                            <line x1="6" y1="6" x2="18" y2="18"/>
+                                                                        </svg>
+                                                                    </button>
+                                                                </div>
+                                                                {% if user.is_staff %}
+                                                                <a class="d-block py-2 px-3 mb-1 rounded-3 text-decoration-none fw-bold" href="{% url 'panel_dashboard' %}" style="color:#0891b2; background:rgba(0,229,255,0.08);">
+                                                                    <svg class="icon-20 me-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                                                                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                                                                    </svg> پنل مدیریت پلتفرم
+                                                                </a>
+                                                                {% endif %}
+                                                                <a class="d-block py-2 px-3 mb-1 rounded-3 text-decoration-none" href="{% url 'profile' %}" style="color:#333;">
+                                                                    <svg class="icon-20 me-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" style="color:#888;">
+                                                                        <circle cx="12" cy="12" r="3"/>
+                                                                        <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+                                                                    </svg> پروفایل کاربری
+                                                                </a>
+                                                                <a class="d-block py-2 px-3 rounded-3 text-decoration-none" href="{% url 'logout' %}" style="color:#ff5252;">
+                                                                    <svg class="icon-20 me-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                                                                        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+                                                                        <polyline points="16 17 21 12 16 7"/>
+                                                                        <line x1="21" y1="12" x2="9" y2="12"/>
+                                                                    </svg> خروج
+                                                                </a>
                             </div>
                         </div>
                     </div>
@@ -449,26 +522,37 @@
             {% block content %}
             <div class="glass-card p-4 mb-3 text-center position-relative overflow-hidden">
                 <div class="position-absolute top-0 end-0 p-3 opacity-25">
-                    <i class="fa-solid fa-wallet h1 text-cyan"></i>
-                </div>
-                <span class="text-custom-muted d-block small mb-1">موجودی کل کیف پول</span>
-                <h2 class="fw-bold tracking-wide text-cyan mb-2">۱,۴۲۰.۷۵ <span class="small h6 text-white">USDT</span></h2>
-                <div class="d-flex justify-content-center gap-2 mt-2">
-                    <span class="badge bg-success-subtle text-neon-green rounded-pill px-2 py-1 small">
-                        <i class="fa-solid fa-arrow-trend-up me-1"></i> ۲.۴%+ امروز
-                    </span>
-                </div>
+                                    <svg class="icon-48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true" style="color: var(--accent-cyan);">
+                                        <path d="M21 12V7H5v5"/>
+                                        <path d="M9 7v10"/>
+                                        <path d="M15 7v10"/>
+                                    </svg>
+                                </div>
+                                <span class="text-custom-muted d-block small mb-1">موجودی کل کیف پول</span>
+                                <h2 class="fw-bold tracking-wide text-cyan mb-2">۱,۴۲۰.۷۵ <span class="small h6 text-white">USDT</span></h2>
+                                <div class="d-flex justify-content-center gap-2 mt-2">
+                                    <span class="badge bg-success-subtle text-neon-green rounded-pill px-2 py-1 small">
+                                        <svg class="icon-14 me-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
+                                            <polyline points="23 6 13.5 15.5 8.5 10.5"/>
+                                            <line x1="17" y1="6" x2="17" y2="6"/>
+                                        </svg> ۲.۴%+ امروز
+                                    </span>
+                                </div>
             </div>
 
             <div class="glass-card p-3 mb-3">
-                <div class="d-flex justify-content-between align-items-center mb-3">
-                    <div class="d-flex align-items-center gap-2">
-                        <i class="fa-brands fa-ethereum text-purple h4 mb-0 text-cyan"></i>
-                        <div>
-                            <h6 class="mb-0 fw-bold">TRX / USDT</h6>
-                            <small class="text-custom-muted small">ترون</small>
-                        </div>
-                    </div>
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <div class="d-flex align-items-center gap-2">
+                                    <svg class="icon-32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true" style="color: var(--accent-cyan);">
+                                        <path d="M12 2L2 7l10 5 10-5-10-5z"/>
+                                        <path d="M2 17l10 5 10-5"/>
+                                        <path d="M2 12l10 5 10-5"/>
+                                    </svg>
+                                    <div>
+                                        <h6 class="mb-0 fw-bold">TRX / USDT</h6>
+                                        <small class="text-custom-muted small">ترون</small>
+                                    </div>
+                                </div>
                     <div class="text-end">
                         <h6 class="mb-0 fw-bold text-neon-green">۰.۱۱۸۴ $</h6>
                         <small class="text-neon-green small" style="font-size: 0.75rem;">+۵.۱۲%</small>
@@ -488,97 +572,136 @@
 
             <div class="row g-2 mb-4">
                             <div class="col-6">
-                                <a href="{% url 'buy_crypto' %}" class="btn btn-modern w-100 py-3 d-flex flex-column align-items-center justify-content-center" style="background: rgba(0, 230, 118, 0.1); border: 1px solid rgba(0, 230, 118, 0.2); color: var(--accent-green);">
-                                    <i class="fa-solid fa-circle-arrow-down mb-1 h5"></i>
-                                    <span>خرید سریع</span>
-                                </a>
-                            </div>
-                            <div class="col-6">
-                                <a href="{% url 'sell_crypto' %}" class="btn btn-modern w-100 py-3 d-flex flex-column align-items-center justify-content-center" style="background: rgba(255, 82, 82, 0.1); border: 1px solid rgba(255, 82, 82, 0.2); color: var(--accent-coral);">
-                                    <i class="fa-solid fa-circle-arrow-up mb-1 h5"></i>
-                                    <span>فروش سریع</span>
-                                </a>
-                            </div>
+                                                            <a href="{% url 'buy_crypto' %}" class="btn btn-modern w-100 py-3 d-flex flex-column align-items-center justify-content-center" style="background: rgba(0, 230, 118, 0.1); border: 1px solid rgba(0, 230, 118, 0.2); color: var(--accent-green);">
+                                                                <svg class="icon-32 mb-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                                                                    <polyline points="23 17 18 12 23 7"/>
+                                                                    <path d="M17 17l-5 5-5-5"/>
+                                                                </svg>
+                                                                <span>خرید سریع</span>
+                                                            </a>
+                                                        </div>
+                                                        <div class="col-6">
+                                                            <a href="{% url 'sell_crypto' %}" class="btn btn-modern w-100 py-3 d-flex flex-column align-items-center justify-content-center" style="background: rgba(255, 82, 82, 0.1); border: 1px solid rgba(255, 82, 82, 0.2); color: var(--accent-coral);">
+                                                                <svg class="icon-32 mb-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                                                                    <polyline points="23 7 18 12 23 17"/>
+                                                                    <path d="M7 17l5-5 5 5"/>
+                                                                </svg>
+                                                                <span>فروش سریع</span>
+                                                            </a>
+                                                        </div>
                         </div>
             {% endblock %}
         </main>
 
         <div class="bottom-nav">
-                            <a href="{% url 'home' %}" class="bottom-nav-item {% if request.resolver_match.url_name == 'home' %}active{% endif %}">
-                                <i class="fa-solid fa-chart-pie"></i>
-                                <span>بازار</span>
-                            </a>
-                            {% if user.is_authenticated and user.is_staff %}
-                                <a href="{% url 'panel_settings' %}" class="bottom-nav-item {% if request.resolver_match.url_name == 'panel_settings' %}active{% endif %}">
-                                    <i class="fa-solid fa-gears"></i>
-                                    <span>تنظیمات</span>
-                                </a>
+                                    <a href="{% url 'home' %}" class="bottom-nav-item {% if request.resolver_match.url_name == 'home' %}active{% endif %}">
+                                        <svg class="icon-20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                                            <path d="M12 2L2 7l10 5 10-5-10-5z"/>
+                                            <path d="M2 17l10 5 10-5"/>
+                                            <path d="M2 12l10 5 10-5"/>
+                                        </svg>
+                                        <span>بازار</span>
+                                    </a>
+                                    {% if user.is_authenticated and user.is_staff %}
+                                        <a href="{% url 'panel_settings' %}" class="bottom-nav-item {% if request.resolver_match.url_name == 'panel_settings' %}active{% endif %}">
+                                            <svg class="icon-20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                                                <circle cx="12" cy="12" r="3"/>
+                                                <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+                                            </svg>
+                                            <span>تنظیمات</span>
+                                        </a>
                             {% else %}
-                                <a href="{% url 'request_history' %}" class="bottom-nav-item {% if request.resolver_match.url_name == 'request_history' %}active{% endif %}">
-                                    <i class="fa-solid fa-clock-rotate-left"></i>
-                                    <span>سوابق</span>
-                                </a>
-                            {% endif %}
+                                                            <a href="{% url 'request_history' %}" class="bottom-nav-item {% if request.resolver_match.url_name == 'request_history' %}active{% endif %}">
+                                                                <svg class="icon-20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                                                                    <circle cx="12" cy="12" r="10"/>
+                                                                    <polyline points="12 6 12 12 16 14"/>
+                                                                </svg>
+                                                                <span>سوابق</span>
+                                                            </a>
+                                                        {% endif %}
 
-                            <a href="{% url 'buy_crypto' %}" class="bottom-nav-item action-hub">
-                                <i class="fa-solid fa-right-left"></i>
-                                <span>معامله</span>
-                            </a>
+                                                        <a href="{% url 'buy_crypto' %}" class="bottom-nav-item action-hub">
+                                                            <svg class="icon-20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                                                                <polyline points="23 4 23 10 17 10"/>
+                                                                <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/>
+                                                            </svg>
+                                                            <span>معامله</span>
+                                                        </a>
 
-                    {% if user.is_authenticated and user.is_staff %}
-                                <a href="{% url 'panel_dashboard' %}" class="bottom-nav-item {% if request.resolver_match.url_name == 'panel_dashboard' %}active{% endif %}" style="color: var(--accent-cyan);">
-                                    <i class="fa-solid fa-user-shield text-cyan"></i>
-                                    <span>مدیریت</span>
-                                </a>
-                                <a href="{% url 'panel_users' %}" class="bottom-nav-item {% if request.resolver_match.url_name == 'panel_users' %}active{% endif %}" style="color: var(--accent-cyan);">
-                                    <i class="fa-solid fa-users text-cyan"></i>
-                                    <span>کاربران</span>
-                                </a>
-                                {% else %}
-                                <a href="{% url 'wallet' %}" class="bottom-nav-item {% if request.resolver_match.url_name == 'wallet' %}active{% endif %}">
-                                                         <i class="fa-solid fa-wallet"></i>
-                                                         <span>کیف پول</span>
-                                                     </a>
-                                <a href="{% url 'profile' %}" class="bottom-nav-item {% if request.resolver_match.url_name == 'profile' %}active{% endif %}">
-                                    <i class="fa-solid fa-user-gear"></i>
-                                    <span>تنظیمات</span>
-                                </a>
-                                {% endif %}
+                                                {% if user.is_authenticated and user.is_staff %}
+                                                            <a href="{% url 'panel_dashboard' %}" class="bottom-nav-item {% if request.resolver_match.url_name == 'panel_dashboard' %}active{% endif %}" style="color: var(--accent-cyan);">
+                                                                <svg class="icon-20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" class="text-cyan">
+                                                                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                                                                </svg>
+                                                                <span>مدیریت</span>
+                                                            </a>
+                                                            <a href="{% url 'panel_users' %}" class="bottom-nav-item {% if request.resolver_match.url_name == 'panel_users' %}active{% endif %}" style="color: var(--accent-cyan);">
+                                                                <svg class="icon-20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" class="text-cyan">
+                                                                    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+                                                                    <circle cx="9" cy="7" r="4"/>
+                                                                    <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+                                                                    <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+                                                                </svg>
+                                                                <span>کاربران</span>
+                                                            </a>
+                                                            {% else %}
+                                                            <a href="{% url 'wallet' %}" class="bottom-nav-item {% if request.resolver_match.url_name == 'wallet' %}active{% endif %}">
+                                                                                     <svg class="icon-20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                                                                                         <path d="M21 12V7H5v5"/>
+                                                                                         <path d="M9 7v10"/>
+                                                                                         <path d="M15 7v10"/>
+                                                                                     </svg>
+                                                                                     <span>کیف پول</span>
+                                                                                 </a>
+                                                            <a href="{% url 'profile' %}" class="bottom-nav-item {% if request.resolver_match.url_name == 'profile' %}active{% endif %}">
+                                                                <svg class="icon-20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                                                                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                                                                    <circle cx="12" cy="7" r="4"/>
+                                                                </svg>
+                                                                <span>تنظیمات</span>
+                                                            </a>
+                                                            {% endif %}
                 </div>
 
     </div>
 
     <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
-    <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            const themeToggle = document.getElementById("theme-toggle");
-            const body = document.body;
+        <script>
+            document.addEventListener("DOMContentLoaded", function() {
+                const themeToggle = document.getElementById("theme-toggle");
+                const body = document.body;
+                const sunIcon = document.getElementById("sun-icon");
+                const moonIcon = document.getElementById("moon-icon");
 
-            // پیش‌فرض تم روشن است: فقط اگر کاربر قبلاً به صراحت dark-mode انتخاب کرده باشد، dark اعمال شود
-            const savedTheme = localStorage.getItem("theme");
-            if (savedTheme === "dark-mode") {
-                body.classList.remove("light-mode");
-                if (themeToggle) themeToggle.querySelector("i").classList.replace("fa-sun", "fa-moon");
-            } else {
-                // default light
-                body.classList.add("light-mode");
-                if (themeToggle) themeToggle.querySelector("i").classList.replace("fa-moon", "fa-sun");
-                localStorage.setItem("theme", "light-mode");
-            }
+                // پیش‌فرض تم روشن است: فقط اگر کاربر قبلاً به صراحت dark-mode انتخاب کرده باشد، dark اعمال شود
+                const savedTheme = localStorage.getItem("theme");
+                if (savedTheme === "dark-mode") {
+                    body.classList.remove("light-mode");
+                    if (sunIcon) sunIcon.style.display = "none";
+                    if (moonIcon) moonIcon.style.display = "block";
+                } else {
+                    // default light
+                    body.classList.add("light-mode");
+                    if (sunIcon) sunIcon.style.display = "block";
+                    if (moonIcon) moonIcon.style.display = "none";
+                    localStorage.setItem("theme", "light-mode");
+                }
 
-            if (themeToggle) {
-                themeToggle.addEventListener("click", function() {
-                    if (body.classList.contains("light-mode")) {
-                        body.classList.remove("light-mode");
-                        localStorage.setItem("theme", "dark-mode");
-                        themeToggle.querySelector("i").classList.replace("fa-sun", "fa-moon");
-                    } else {
-                        body.classList.add("light-mode");
-                        localStorage.setItem("theme", "light-mode");
-                        themeToggle.querySelector("i").classList.replace("fa-moon", "fa-sun");
-                    }
-                });
-            }
+                if (themeToggle) {
+                    themeToggle.addEventListener("click", function() {
+                        if (body.classList.contains("light-mode")) {
+                            body.classList.remove("light-mode");
+                            localStorage.setItem("theme", "dark-mode");
+                            if (sunIcon) sunIcon.style.display = "none";
+                            if (moonIcon) moonIcon.style.display = "block";
+                        } else {
+                            body.classList.add("light-mode");
+                            localStorage.setItem("theme", "light-mode");
+                            if (sunIcon) sunIcon.style.display = "block";
+                            if (moonIcon) moonIcon.style.display = "none";
+                        }
+                    });
+                }
 
             // پنل پروفایل به صورت Overlay
             const overlay = document.getElementById('profileOverlay');
@@ -657,9 +780,14 @@
                                                                                 <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" style="max-width: 90vw;">
                                                                                     <div class="modal-content" style="background: var(--light-bg-card); border: 1px solid var(--light-border-glass); border-radius: 20px;">
                                                                                         <div class="modal-header border-0 pb-0">
-                                                                                            <h5 class="modal-title fw-bold" style="color: var(--light-text-color);"><i class="fa-solid fa-envelope me-1" style="color: var(--accent-green);"></i> پیام‌های مدیریت</h5>
-                                                                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="بستن"></button>
-                                                                                        </div>
+                                                                                                                    <h5 class="modal-title fw-bold" style="color: var(--light-text-color);">
+                                                                                                                        <svg class="icon-20 me-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" style="color: var(--accent-green);">
+                                                                                                                            <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+                                                                                                                            <polyline points="22,6 12,13 2,6"/>
+                                                                                                                        </svg> پیام‌های مدیریت
+                                                                                                                    </h5>
+                                                                                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="بستن"></button>
+                                                                                                                </div>
                                                                                         <div class="modal-body pb-0" style="max-height: 60vh; overflow-y: auto;">
                                                                                             {% for msg in user.admin_messages.all|slice:":10" %}
                                                                                             <a class="d-block p-3 border-bottom text-decoration-none {% if not msg.is_read %}fw-bold{% endif %}" href="#" data-message-id="{{ msg.id }}" style="color: var(--light-text-color); border-color: var(--light-border-glass);">
@@ -684,9 +812,12 @@
                                                                             </div>
 
                                                                             {% if request.resolver_match.url_name == 'home' and site_settings.support_phone %}
-                                                                        <a href="https://t.me/{{ site_settings.support_phone|cut:' ' }}" target="_blank" rel="noopener noreferrer" class="floating-support-btn" aria-label="پشتیبانی در تلگرام" title="پشتیبانی تلگرام">
-                                                                            <i class="fa-solid fa-headset"></i>
-                                                                        </a>
-                                                                        {% endif %}
+                                                                                    <a href="https://t.me/{{ site_settings.support_phone|cut:' ' }}" target="_blank" rel="noopener noreferrer" class="floating-support-btn" aria-label="پشتیبانی در تلگرام" title="پشتیبانی تلگرام">
+                                                                                        <svg class="icon-24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                                                                                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                                                                                            <circle cx="12" cy="7" r="4"/>
+                                                                                        </svg>
+                                                                                    </a>
+                                                                                    {% endif %}
         </body>
         </html>

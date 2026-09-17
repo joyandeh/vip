@@ -19,7 +19,9 @@ def buy_crypto(request):
         return redirect("profile")
 
     site_settings = SiteSetting.get_solo()
-    prices = get_crypto_prices()
+    prices = get_crypto_prices() or {}
+    # Convert Decimal to float for JSON serialization in template
+    prices_json = {k: float(v) for k, v in prices.items()}
     setting = CryptoApiSetting.objects.filter(active=True).first()
 
     # Priority: if active: manual, else API, no default
@@ -52,7 +54,7 @@ def buy_crypto(request):
     return render(request, "transactions/buy_crypto.html", {
         "form": form,
         "site_settings": site_settings,
-        "prices": prices,
+        "prices": prices_json,
         "toman_rate": toman_rate,
     })
 
@@ -65,7 +67,9 @@ def sell_crypto(request):
         return redirect("profile")
 
     site_settings = SiteSetting.get_solo()
-    prices = get_crypto_prices()
+    prices = get_crypto_prices() or {}
+    # Convert Decimal to float for JSON serialization in template
+    prices_json = {k: float(v) for k, v in prices.items()}
     setting = CryptoApiSetting.objects.filter(active=True).first()
 
     # Priority: if active: manual, else API, no default
@@ -128,7 +132,7 @@ def sell_crypto(request):
     return render(request, "transactions/sell_crypto.html", {
         "form": form,
         "site_settings": site_settings,
-        "prices": prices,
+        "prices": prices_json,
         "toman_rate": toman_rate,
         "wallet_addresses": wallet_addresses,
     })
