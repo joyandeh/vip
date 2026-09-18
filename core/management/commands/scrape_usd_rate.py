@@ -1,5 +1,5 @@
 from django.core.management.base import BaseCommand
-from core.services import get_usd_to_toman_rate
+from core.services import get_usd_toman_rate
 from core.models import CryptoApiSetting
 
 
@@ -7,7 +7,7 @@ class Command(BaseCommand):
     help = 'اسکرپ نرخ دلار از tgju.org و ذخیره در تنظیمات'
 
     def handle(self, *args, **options):
-        rate = get_usd_to_toman_rate()
+        rate = get_usd_toman_rate()
         
         if rate is None:
             self.stdout.write(self.style.ERROR('نرخ دلار یافت نشد'))

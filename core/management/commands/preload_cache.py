@@ -1,5 +1,5 @@
 from django.core.management.base import BaseCommand
-from core.services import get_usd_to_toman_rate, get_crypto_prices
+from core.services import get_usd_toman_rate, get_crypto_prices
 
 
 class Command(BaseCommand):
@@ -7,7 +7,7 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         self.stdout.write('Preloading USD/Toman rate...')
-        rate = get_usd_to_toman_rate()
+        rate = get_usd_toman_rate()
         self.stdout.write(f'  USD/Toman rate: {rate:,} تومان')
 
         self.stdout.write('Preloading crypto prices...')
