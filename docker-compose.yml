@@ -30,5 +30,28 @@ services:
     restart: unless-stopped
     command: gunicorn vip_crypto.wsgi:application --bind 0.0.0.0:8000 --workers 3 --threads 2
 
+  scheduler:
+    build: .
+    container_name: vip_scheduler
+    depends_on:
+      redis:
+        condition: service_healthy
+    environment:
+      - REDIS_URL=redis://redis:6379/1
+      - DEBUG=0
+    volumes:
+      - ./media:/app/media
+      - ./static:/app/static
+    restart: unless-stopped
+    command: >
+      sh -c "
+        apt-get update -qq && apt-get install -y -qq cron &&
+        echo '*/5 * * * * root cd /app && python manage.py update_rates >> /var/log/cron.log 2>&1' > /etc/cron.d/update_rates &&
+        chmod 0644 /etc/cron.d/update_rates &&
+        crontab /etc/cron.d/update_rates &&
+        touch /var/log/cron.log &&
+        cron -f
+      "
+
 volumes:
   redis_data:
