@@ -42,16 +42,15 @@ services:
     volumes:
       - ./media:/app/media
       - ./static:/app/static
-    restart: unless-stopped
     command: >
       sh -c "
-        apt-get update -qq && apt-get install -y -qq cron &&
-        echo '*/5 * * * * root cd /app && python manage.py update_rates >> /var/log/cron.log 2>&1' > /etc/cron.d/update_rates &&
+        echo '*/5 * * * * root cd /app && REDIS_URL=redis://redis:6379/1 /usr/local/bin/python manage.py update_rates >> /var/log/cron.log 2>&1' > /etc/cron.d/update_rates &&
         chmod 0644 /etc/cron.d/update_rates &&
         crontab /etc/cron.d/update_rates &&
         touch /var/log/cron.log &&
         cron -f
       "
+    restart: unless-stopped
 
 volumes:
   redis_data:
